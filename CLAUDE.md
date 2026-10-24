@@ -1,5 +1,13 @@
 # CLAUDE.md
 
+## 📜 Language & Coding Rules
+
+1. **Siempre responder al usuario en español.**
+2. **Hacer ediciones quirúrgicas** — no reescribir archivos completos innecesariamente; realizar cambios precisos y mínimos.
+3. **Verificar siempre tipos** en `src/types/index.ts` antes de modificar componentes o `src/data/cadraData.ts`.
+
+---
+
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## 🛠️ Available Scripts
