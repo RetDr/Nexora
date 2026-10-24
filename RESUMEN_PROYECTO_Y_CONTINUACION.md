@@ -88,3 +88,4 @@ npm run dev
 3. Cambiar los colores de marca en `src/styles.css` a azul clínico (`#0284c7`).
 4. Conectar la Agenda Gantt a sillones dentales.
 5. Diseñar el widget del Odontograma interactivo en SVG.
+
