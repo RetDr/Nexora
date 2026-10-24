@@ -264,3 +264,26 @@ export const dentalTreatmentsCatalog = [
 4. **Fase 4: Conexión con Backend / API Dental (3 días):**
    - Conectar endpoints para historias clínicas (HL7 / FHIR o REST estándar) y persistencia en base de datos.
 
+---
+
+## 8. Estado Base Consolidado y Hoja de Ruta para Continuar
+
+### 8.1 Base visual consolidada en el proyecto
+El frontend se encuentra en un estado 100% operativo, libre de errores y alineado con los estándares del sistema de diseño Cadra:
+- **Header superior limpio:** Logotipo a la izquierda, barra central de pestañas con indicador deslizante y a la derecha solo el botón de notificaciones y el avatar `NH`, con espaciado amplio y simétrico.
+- **Píldora de Planta / Operaciones (`LiveFloorPill`):** Reubicada en la cabecera de página en un clúster de dos niveles sobre los botones de acción (`Export`, `Record payment`, `New order`), replicando la estructura de `Real.png`.
+- **Relieve 3D táctil en tarjetas:** Borde inferior extruido de 2.5px, bisel superior con brillo reflejado (`inset 0 1px 0`), sombras ambientales suaves y elevación física (`translateY(-2px)`) al interactuar.
+- **Animación numérica fluida:** `<AnimatedCounter />` sincronizado para arrancar siempre desde `0` al renderizar la vista, con duración de 850ms y curva cuadrática suave que no se corta en Windows.
+- **Corrección de módulos Accounting, HR y Reporting:**
+  - *Reporting:* Velocímetro amplio sin solapamiento de texto sobre la aguja (margen vertical despejado en la garganta del arco), curvas de ingresos con guías y alineación perfecta en Report Builder.
+  - *HR:* Cuadrícula responsiva de empleados con avatares, estados en tiempo real, 3 KPI cards superiores y panel lateral deslizable de ficha.
+  - *Accounting:* Cuadrículas divididas balanceadas en General Ledger, Invoices y Payments (transacciones agrupadas y facturas por pagar en columnas independientes).
+
+### 8.2 Pasos inmediatos al retomar la sesión
+Cuando desees iniciar la adaptación odontológica:
+1. **Crear archivo `src/config/clinic.config.ts`:** Copiar el esquema de la Sección 2 para centralizar nombres, gabinetes y especialidades.
+2. **Configurar paleta de color clínica:** Activar las variables de la Sección 3 en `src/styles.css` (azul médico `#0284c7` y verde turquesa `#0d9488`).
+3. **Adaptar `SchedulingPage.tsx` a Agenda de Sillones:** Conectar las filas del Gantt con los gabinetes (`Box 1`, `Box 2`, `Quirófano`) y los bloques de citas.
+4. **Construir el Odontograma SVG interactivo:** Integrarlo dentro de `DirectoryProfileDrawer.tsx` como pestaña o sección de odontograma del paciente.
+
+
