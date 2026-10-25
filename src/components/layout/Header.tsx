@@ -97,20 +97,13 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenP
 
   return (
     <header className="cadra-header">
-      {/* Brand VitaDent */}
-      <div className="cadra-brand" onClick={() => onNavigate('/agenda')}>
+      {/* Brand VitaDent con Logo Horizontal */}
+      <div className="cadra-brand" onClick={() => onNavigate('/inicio')} style={{ cursor: 'pointer' }} title="Ir a Inicio">
         <img
-          src="/vitadent_symbol.png"
-          alt="VitaDent"
-          style={{ height: '36px', width: 'auto', objectFit: 'contain' }}
+          src="/Logo_Horizontal.png"
+          alt="VitaDent Clínica Odontológica"
+          style={{ height: '38px', width: 'auto', maxWidth: '210px', objectFit: 'contain' }}
         />
-        <div className="cadra-brand-titles">
-          <span className="cadra-brand-name">
-            <span style={{ color: '#A94384' }}>Vita</span>
-            <span style={{ color: '#8A8A8F' }}>Dent</span>
-          </span>
-          <span className="cadra-brand-sub">clínica odontológica</span>
-        </div>
       </div>
 
       {/* Main Nav Pill Bar with Animated Sliding Indicator */}
@@ -177,14 +170,20 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenP
           )}
         </div>
 
-        {/* User Profile Avatar */}
+        {/* User Profile Avatar: Admin Nathalia Leon */}
         <button
           className="cadra-avatar-btn"
           onClick={onOpenProfile}
-          title="Dra. Sofía Valenzuela (Directora Médica)"
-          style={{ backgroundColor: '#A94384', color: '#ffffff', fontWeight: 700 }}
+          title="Nathalia Leon (Administradora General)"
+          style={{
+            backgroundColor: '#A94384',
+            color: '#ffffff',
+            fontWeight: 700,
+            boxShadow: '0 2px 8px rgba(169, 67, 132, 0.35)',
+            border: '2px solid rgba(255, 255, 255, 0.8)',
+          }}
         >
-          SV
+          NL
         </button>
       </div>
     </header>

@@ -26,7 +26,7 @@ import { SettingsPage } from './pages/settings/SettingsPage'
 export function App() {
   const getPathFromHash = () => {
     const raw = window.location.hash.replace(/^#/, '')
-    return raw || '/agenda' // Por defecto abre la Agenda de Sillones de VitaDent
+    return raw || '/inicio' // Por defecto abre la pestaña Inicio
   }
 
   const [currentPath, setCurrentPath] = useState<string>(getPathFromHash)
@@ -83,7 +83,7 @@ export function App() {
       return <SchedulingPage onNavigate={navigate} onOpenCreate={() => setIsCreateOpen(true)} />
     }
     if (currentPath === '/pacientes' || currentPath === '/contacts') {
-      return <ContactsPage onNavigate={navigate} onOpenCreate={() => setIsCreateOpen(true)} />
+      return <ContactsPage onNavigate={navigate} onOpenCreate={() => setIsCreateOpen(true)} onToast={showToast} />
     }
     if (currentPath === '/pagos' || currentPath === '/accounting/payments') {
       return <PaymentsPage onNavigate={navigate} onOpenCreate={() => setIsCreateOpen(true)} onToast={showToast} />
@@ -194,16 +194,23 @@ export function App() {
         </main>
       </div>
 
-      {/* VitaDent Footer */}
+      {/* Footer con Marca Atenea Studio y VitaDent */}
       <footer className="cadra-app-footer">
         <div className="footer-left">
-          <span>VitaDent — Gestión Odontológica Integral</span>
+          <div className="atenea-studio-badge">
+            <span className="atenea-sparkle">✦</span>
+            <span>Diseño & Tecnología por</span>
+            <strong className="atenea-brand-name">Atenea Studio</strong>
+          </div>
           <span className="footer-sep">•</span>
-          <span>Clínica Odontológica Principal</span>
+          <span className="font-semibold text-main">VitaDent</span>
+          <span>— Gestión Odontológica Integral</span>
+          <span className="footer-sep">•</span>
+          <span className="text-secondary">Clínica Odontológica Principal</span>
         </div>
         <div className="footer-right">
           <span className="green-live-dot" />
-          <span>Boxes y agenda en línea · Sincronizado</span>
+          <span>Boxes y citas en línea · Sincronizado</span>
         </div>
       </footer>
     </div>

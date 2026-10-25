@@ -42,6 +42,18 @@ export const DirectoryProfileDrawer: React.FC<DirectoryProfileDrawerProps> = ({
 
   const teamMembers = [
     {
+      id: 's-leon',
+      name: 'Nathalia Leon',
+      initials: 'NL',
+      role: 'Administradora General',
+      dept: 'Administración & Gestión',
+      status: 'En línea · Panel Central',
+      fullTime: true,
+      email: 'administracion@vitadent.com.co',
+      phone: '+57 311 405 2910',
+      isMe: true,
+    },
+    {
       id: 's-valenzuela',
       name: 'Dra. Sofía Valenzuela',
       initials: 'SV',
@@ -50,8 +62,7 @@ export const DirectoryProfileDrawer: React.FC<DirectoryProfileDrawerProps> = ({
       status: 'En consulta · Box 1',
       fullTime: true,
       email: 'sofia.valenzuela@vitadent.com.co',
-      phone: '+57 311 405 2910',
-      isMe: true,
+      phone: '+57 311 405 2911',
     },
     {
       id: 's-soto',
@@ -245,16 +256,16 @@ export const DirectoryProfileDrawer: React.FC<DirectoryProfileDrawerProps> = ({
             {/* Profile Header */}
             <div className="drawer-header-block">
               <div className="relative">
-                <div className="drawer-avatar-circle" style={{ backgroundColor: '#A94384', color: '#ffffff' }}>SV</div>
+                <div className="drawer-avatar-circle" style={{ backgroundColor: '#A94384', color: '#ffffff', fontWeight: 800 }}>NL</div>
                 <span className="drawer-online-status-dot" />
               </div>
 
               <div className="drawer-name-info">
-                <h2 className="drawer-user-name">Dra. Sofía Valenzuela</h2>
-                <div className="drawer-user-role">Directora Médica · Odontología General & Estética</div>
+                <h2 className="drawer-user-name">Nathalia Leon</h2>
+                <div className="drawer-user-role">Administradora General · Dirección VitaDent</div>
                 <div className="drawer-tags-row">
-                  <span className="cadra-tag-pill tag-green">● En consulta · Box 1</span>
-                  <span className="cadra-tag-pill tag-neutral">Comisión 35%</span>
+                  <span className="cadra-tag-pill tag-green">● En línea · Activo</span>
+                  <span className="cadra-tag-pill tag-neutral">Acceso Total Admin</span>
                   <span className="cadra-tag-pill tag-blue">Tú</span>
                 </div>
               </div>
@@ -264,7 +275,7 @@ export const DirectoryProfileDrawer: React.FC<DirectoryProfileDrawerProps> = ({
             <div className="drawer-quick-actions">
               <button
                 className="drawer-action-btn"
-                onClick={() => window.open('mailto:sofia.valenzuela@vitadent.com.co')}
+                onClick={() => window.open('mailto:administracion@vitadent.com.co')}
               >
                 <Mail size={14} />
                 <span>Email</span>
@@ -279,7 +290,7 @@ export const DirectoryProfileDrawer: React.FC<DirectoryProfileDrawerProps> = ({
               <button
                 className="drawer-action-btn"
                 onClick={() => {
-                  navigator.clipboard?.writeText('sofia.valenzuela@vitadent.com.co')
+                  navigator.clipboard?.writeText('administracion@vitadent.com.co')
                   onToast('Email copiado al portapapeles')
                 }}
               >
@@ -292,7 +303,7 @@ export const DirectoryProfileDrawer: React.FC<DirectoryProfileDrawerProps> = ({
             <div className="drawer-details-grid">
               <div className="drawer-field-card">
                 <span className="drawer-field-label">Email</span>
-                <span className="drawer-field-val">sofia.valenzuela@vitadent.com.co</span>
+                <span className="drawer-field-val">administracion@vitadent.com.co</span>
               </div>
 
               <div className="drawer-field-card">
@@ -301,31 +312,31 @@ export const DirectoryProfileDrawer: React.FC<DirectoryProfileDrawerProps> = ({
               </div>
 
               <div className="drawer-field-card">
-                <span className="drawer-field-label">Consultorio Principal</span>
-                <span className="drawer-field-val">Sillón 1 — Sede Principal</span>
+                <span className="drawer-field-label">Ubicación</span>
+                <span className="drawer-field-val">Oficina Administrativa · Sede Principal</span>
               </div>
 
               <div className="drawer-field-card">
-                <span className="drawer-field-label">Especialidad</span>
-                <span className="drawer-field-val">Odontología General & Estética Dental</span>
+                <span className="drawer-field-label">Rol del Sistema</span>
+                <span className="drawer-field-val">Administradora General (Propietaria)</span>
               </div>
 
               <div className="drawer-field-card">
                 <span className="drawer-field-label">En VitaDent</span>
-                <span className="drawer-field-val">Desde Ene 2020</span>
-                <span className="text-xs text-muted">Directora Médica Fundadora</span>
+                <span className="drawer-field-val">Desde Creación</span>
+                <span className="text-xs text-muted">Gestión & Control Clínico</span>
               </div>
 
               <div className="drawer-field-card">
-                <span className="drawer-field-label">Esquema Honorarios</span>
-                <span className="drawer-field-val">35% sobre tratamientos realizados</span>
-                <span className="text-xs text-muted">Liquidación quincenal</span>
+                <span className="drawer-field-label">Permisos</span>
+                <span className="drawer-field-val">Control Total (Caja, Agenda, Doctores, Tarifas)</span>
+                <span className="text-xs text-muted">Superadmin</span>
               </div>
 
               <div className="drawer-field-card">
                 <span className="drawer-field-label">Equipo Clínico</span>
                 <span className="drawer-field-val">Cuerpo Médico VitaDent</span>
-                <span className="text-xs text-muted">6 profesionales en turno</span>
+                <span className="text-xs text-muted">4 doctores + auxiliares y recepción</span>
               </div>
             </div>
 

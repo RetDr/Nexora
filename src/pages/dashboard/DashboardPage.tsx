@@ -43,7 +43,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
         {/* Morning Greeting & Time Scrubber */}
         <div className="cadra-card dashboard-welcome-card">
           <div className="welcome-date-header">MIÉRCOLES, 11 DE NOVIEMBRE</div>
-          <h2 className="welcome-greeting-title">Buenos días, Dra. Sofía.</h2>
+          <h2 className="welcome-greeting-title">Buenos días, Nathalia.</h2>
           <p className="welcome-summary-text">
             <strong><AnimatedCounter value={4} /> sillones</strong> en atención,{' '}
             <strong><AnimatedCounter value={12} /> pacientes</strong> citados hoy y{' '}
