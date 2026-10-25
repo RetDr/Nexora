@@ -124,7 +124,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenP
   return (
     <header className="cadra-header">
       {/* Brand VitaDent + Workspace Switcher 3D */}
-      <div className="flex items-center gap-3">
+      <div className="cadra-header-left">
         <div
           className="cadra-brand"
           onClick={() => onNavigate('/inicio')}
@@ -134,12 +134,12 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenP
           <img
             src="/Logo_Horizontal.png"
             alt="VitaDent Clínica Odontológica"
-            style={{ height: '36px', width: 'auto', maxWidth: '190px', objectFit: 'contain' }}
+            style={{ height: '36px', width: 'auto', maxWidth: '190px', objectFit: 'contain', display: 'block' }}
           />
         </div>
 
         {/* Separador vertical sutil */}
-        <div className="h-6 w-[1px] bg-slate-200 dark:bg-neutral-800 hidden md:block" />
+        <div className="cadra-header-divider" />
 
         {/* Selector de Espacio de Trabajo ("Workspace Switcher") */}
         <WorkspaceSwitcher />
@@ -173,7 +173,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenP
       </nav>
 
       {/* Right Header Status & Controls */}
-      <div className="cadra-header-right flex items-center gap-2.5">
+      <div className="cadra-header-right">
         {/* Notifications */}
         <div className="notification-dropdown-wrapper">
           <button
@@ -217,7 +217,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenP
         {/* User Profile Avatar & Dropdown: Nathalia Leon · Asistente y Coordinadora Clínica */}
         <div className="cadra-user-profile-wrapper" ref={userMenuRef}>
           <button
-            className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full border border-slate-200 dark:border-neutral-800 hover:border-[#A94384] transition-all bg-white/90 dark:bg-neutral-900 shadow-sm"
+            className="cadra-user-profile-btn"
             onClick={() => {
               setShowUserMenu(!showUserMenu)
               setShowNotifications(false)
@@ -225,34 +225,23 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenP
             title="Nathalia Leon · Asistente y Coordinadora Clínica"
           >
             {/* Avatar circular con badge de corona */}
-            <div
-              className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs text-white shadow-sm flex-shrink-0 relative"
-              style={{
-                backgroundColor: '#A94384',
-                boxShadow: '0 2px 8px rgba(169, 67, 132, 0.4)',
-              }}
-            >
+            <div className="cadra-user-avatar-circle">
               <span>{userInitial}</span>
-              <span className="absolute -bottom-0.5 -right-0.5 bg-amber-400 text-amber-950 rounded-full w-3.5 h-3.5 flex items-center justify-center text-[8px] font-bold shadow-xs">
-                👑
-              </span>
+              <span className="cadra-user-crown-badge">👑</span>
             </div>
 
             {/* Etiqueta visible del usuario: Nathalia Leon · Asistente y Coordinadora Clínica */}
-            <div className="hidden lg:flex flex-col text-left leading-tight">
-              <span className="text-[12.5px] font-bold text-main flex items-center gap-1">
-                <span>{userName}</span>
-              </span>
-              <span className="text-[10px] text-[#A94384] font-semibold tracking-tight">
-                {userRoleTitle}
-              </span>
+            <div className="cadra-user-text-col">
+              <span className="cadra-user-name-text">{userName}</span>
+              <span className="cadra-user-role-text">{userRoleTitle}</span>
             </div>
 
             <ChevronDown
               size={13}
-              className={`text-[#8A8A8F] transition-transform duration-200 ${
-                showUserMenu ? 'rotate-180' : ''
-              }`}
+              className="vita-ws-chevron"
+              style={{
+                transform: showUserMenu ? 'rotate(180deg)' : 'none',
+              }}
             />
           </button>
 
@@ -281,17 +270,43 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenP
               </div>
 
               {/* Tarjeta Informativa de Rol & Workspace Actual */}
-              <div className="p-3 bg-slate-50 dark:bg-neutral-900 border-b border-border-light text-xs">
-                <div className="text-[11px] font-bold text-[#8A8A8F] uppercase tracking-wider mb-1 flex items-center gap-1">
-                  <ShieldCheck size={12} className="text-[#A94384]" />
+              <div style={{
+                padding: '10px 12px',
+                backgroundColor: 'var(--bg-card-subtle, #f8fafc)',
+                borderRadius: '10px',
+                border: '1px solid var(--border-light, #e2e8f0)',
+                fontSize: '11.5px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '4px'
+              }}>
+                <div style={{
+                  fontSize: '10px',
+                  fontWeight: 800,
+                  color: '#8A8A8F',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.04em',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}>
+                  <ShieldCheck size={12} style={{ color: '#A94384' }} />
                   <span>Control Institucional Central</span>
                 </div>
-                <div className="text-secondary leading-snug">
+                <div style={{ color: 'var(--text-secondary, #64748b)', lineHeight: 1.3 }}>
                   {userFullRole}
                 </div>
-                <div className="mt-2 pt-2 border-t border-slate-200 dark:border-neutral-800 flex items-center justify-between text-[11px]">
-                  <span className="text-muted font-medium">Espacio activo:</span>
-                  <span className="font-bold text-[#A94384] flex items-center gap-1">
+                <div style={{
+                  marginTop: '6px',
+                  paddingTop: '6px',
+                  borderTop: '1px solid var(--border-light, #e2e8f0)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  fontSize: '11px'
+                }}>
+                  <span style={{ color: 'var(--text-muted, #64748b)' }}>Espacio activo:</span>
+                  <span style={{ fontWeight: 700, color: '#A94384', display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <span>{activeWorkspaceInfo.iconEmoji}</span>
                     <span>{currentWorkspace === 'all' ? 'Toda la Clínica' : activeWorkspaceInfo.name}</span>
                   </span>

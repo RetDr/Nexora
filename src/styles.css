@@ -7821,3 +7821,296 @@ h1, h2, h3, h4, h5, h6 {
   border-color: #dc2626;
   box-shadow: 0 3px 10px rgba(220, 38, 38, 0.3);
 }
+
+/* ==========================================================================
+   HEADER NAVIGATION & WORKSPACE SWITCHER (PURE CSS)
+   ========================================================================== */
+.cadra-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+  height: 100%;
+}
+
+.cadra-header-divider {
+  width: 1px;
+  height: 28px;
+  background-color: var(--border-light, #e2e8f0);
+}
+
+/* User Profile Trigger Button */
+.cadra-user-profile-btn {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 4px 12px 4px 5px;
+  border-radius: 9999px;
+  background-color: var(--bg-card, #ffffff);
+  border: 1px solid var(--border-light, #e2e8f0);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  height: 40px;
+}
+
+.cadra-user-profile-btn:hover {
+  border-color: #A94384;
+  box-shadow: 0 3px 10px rgba(169, 67, 132, 0.15);
+}
+
+.cadra-user-avatar-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #A94384;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(169, 67, 132, 0.35);
+}
+
+.cadra-user-crown-badge {
+  position: absolute;
+  bottom: -2px;
+  right: -3px;
+  font-size: 10px;
+  line-height: 1;
+}
+
+.cadra-user-text-col {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  line-height: 1.15;
+}
+
+.cadra-user-name-text {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-main, #0f172a);
+}
+
+.cadra-user-role-text {
+  font-size: 10px;
+  font-weight: 600;
+  color: #A94384;
+}
+
+/* Workspace Switcher */
+.vita-ws-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.vita-ws-trigger-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 4px 12px 4px 7px;
+  border-radius: 12px;
+  background: var(--bg-card, #ffffff);
+  border: 1.5px solid rgba(169, 67, 132, 0.28);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  height: 40px;
+  text-align: left;
+}
+
+.vita-ws-trigger-btn:hover {
+  border-color: #A94384;
+  box-shadow: 0 4px 12px rgba(169, 67, 132, 0.18);
+  transform: translateY(-1px);
+}
+
+.vita-ws-icon-box {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #ffffff;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.vita-ws-text-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.vita-ws-sub-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.vita-ws-sub-label {
+  font-size: 9px;
+  font-weight: 800;
+  color: #8A8A8F;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.vita-ws-badge-pill {
+  font-size: 8.5px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  color: #ffffff;
+}
+
+.vita-ws-main-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-main, #0f172a);
+  max-width: 170px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vita-ws-chevron {
+  color: #8A8A8F;
+  margin-left: 2px;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.vita-ws-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 320px;
+  background-color: var(--bg-card, #ffffff);
+  border-radius: 16px;
+  border: 1px solid var(--border-light, #e2e8f0);
+  box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.16), 0 4px 14px rgba(169, 67, 132, 0.08);
+  padding: 8px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  animation: fadeIn 0.18s ease-out;
+}
+
+.vita-ws-dropdown-header {
+  padding: 10px 12px 8px;
+  border-bottom: 1px solid var(--border-light, #e2e8f0);
+  margin-bottom: 4px;
+}
+
+.vita-ws-dropdown-header-title {
+  font-size: 10px;
+  font-weight: 800;
+  color: #A94384;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.vita-ws-dropdown-header-desc {
+  font-size: 11px;
+  color: var(--text-muted, #64748b);
+  margin-top: 2px;
+  line-height: 1.3;
+}
+
+.vita-ws-item-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  width: 100%;
+  text-align: left;
+}
+
+.vita-ws-item-btn:hover {
+  background-color: var(--bg-card-subtle, #f8fafc);
+  border-color: var(--border-light, #e2e8f0);
+}
+
+.vita-ws-item-btn.active {
+  background-color: rgba(169, 67, 132, 0.08);
+  border-color: rgba(169, 67, 132, 0.35);
+}
+
+.vita-ws-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.vita-ws-item-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.vita-ws-item-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.vita-ws-item-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-main, #0f172a);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vita-ws-item-spec {
+  font-size: 10px;
+  color: var(--text-muted, #64748b);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 1280px) {
+  .cadra-header {
+    padding: 0 20px;
+  }
+}
+
+@media (max-width: 1080px) {
+  .cadra-user-text-col {
+    display: none;
+  }
+  .cadra-user-profile-btn {
+    padding: 3px 6px 3px 3px;
+  }
+  .vita-ws-sub-row {
+    display: none;
+  }
+}
+
+
