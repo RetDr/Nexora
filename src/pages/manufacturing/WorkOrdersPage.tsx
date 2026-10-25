@@ -55,7 +55,7 @@ export const WorkOrdersPage: React.FC<WorkOrdersPageProps> = ({ onNavigate, onOp
           <h1 className="cadra-page-title">Tratamientos</h1>
           <div className="cadra-sub-tabs">
             <button className="cadra-sub-tab" onClick={() => onNavigate('/agenda')}>
-              Turnos Sillones
+              Citas de Hoy
             </button>
             <button className="cadra-sub-tab active" onClick={() => onNavigate('/manufacturing/orders')}>
               Citas & Tratamientos

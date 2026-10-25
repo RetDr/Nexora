@@ -46,7 +46,7 @@ export const LiveFloorPill: React.FC<LiveFloorPillProps> = ({
   return (
     <div
       className={`cadra-floor-pill ${className}`}
-      title="Estado en vivo de sillones y clínica"
+      title="Estado en vivo de la clínica"
       onClick={() => onNavigate && onNavigate('/agenda')}
     >
       <div className="floor-time">
@@ -56,7 +56,7 @@ export const LiveFloorPill: React.FC<LiveFloorPillProps> = ({
       <div className="floor-metrics">
         <div className="floor-title-line">
           <span className="floor-count">
-            <AnimatedCounter value={count} /> boxes en atención
+            <AnimatedCounter value={count} /> citas en atención
           </span>
         </div>
         <span className="floor-subtext">

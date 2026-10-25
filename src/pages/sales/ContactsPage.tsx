@@ -48,7 +48,7 @@ export const INITIAL_PATIENT_APPOINTMENTS: PatientAppointment[] = [
     treatment: 'Implante de titanio + corona',
     date: '11 Nov 2026',
     time: '10:00 AM',
-    box: 'Sillón 4 (Cirugía)',
+    box: 'Consultorio 4 (Cirugía)',
     price: 2500000,
     status: 'Facturada',
     notes: 'Fase 2 de osteointegración y colocación de corona zirconio'
@@ -61,7 +61,7 @@ export const INITIAL_PATIENT_APPOINTMENTS: PatientAppointment[] = [
     treatment: 'Control post-quirúrgico implante',
     date: '18 Nov 2026',
     time: '09:30 AM',
-    box: 'Sillón 4 (Cirugía)',
+    box: 'Consultorio 4 (Cirugía)',
     price: 0,
     status: 'Programada',
     notes: 'Revisión de cicatrización y torque'
@@ -74,7 +74,7 @@ export const INITIAL_PATIENT_APPOINTMENTS: PatientAppointment[] = [
     treatment: 'Ortodoncia (mensualidad)',
     date: '10 Nov 2026',
     time: '04:00 PM',
-    box: 'Sillón 2 (Ortodoncia)',
+    box: 'Consultorio 2 (Ortodoncia)',
     price: 100000,
     status: 'Pagada',
     notes: 'Cambio de arcos estéticos superior e inferior'
@@ -87,7 +87,7 @@ export const INITIAL_PATIENT_APPOINTMENTS: PatientAppointment[] = [
     treatment: 'Control mensual brackets zafiro',
     date: '10 Dic 2026',
     time: '04:00 PM',
-    box: 'Sillón 2 (Ortodoncia)',
+    box: 'Consultorio 2 (Ortodoncia)',
     price: 100000,
     status: 'Programada',
     notes: 'Ajuste de torque anterior'
@@ -100,7 +100,7 @@ export const INITIAL_PATIENT_APPOINTMENTS: PatientAppointment[] = [
     treatment: 'Extracción quirúrgica (cordal)',
     date: '11 Nov 2026',
     time: '11:30 AM',
-    box: 'Sillón 4 (Cirugía)',
+    box: 'Consultorio 4 (Cirugía)',
     price: 250000,
     status: 'Atendida',
     notes: 'Extracción cordal inferior retenida'
@@ -113,7 +113,7 @@ export const INITIAL_PATIENT_APPOINTMENTS: PatientAppointment[] = [
     treatment: 'Limpieza dental ultrasonido',
     date: 'Hoy',
     time: '04:00 PM',
-    box: 'Sillón 1 (General)',
+    box: 'Consultorio 1 (General)',
     price: 90000,
     status: 'Programada',
     notes: 'Profilaxis dental y fluorización tópica'
@@ -126,7 +126,7 @@ export const INITIAL_PATIENT_APPOINTMENTS: PatientAppointment[] = [
     treatment: 'Endodoncia unirradicular',
     date: '20 Nov 2026',
     time: '03:00 PM',
-    box: 'Sillón 3 (Endodoncia)',
+    box: 'Consultorio 3 (Endodoncia)',
     price: 350000,
     status: 'Programada',
     notes: 'Pieza 26 conductometría rotatoria'
@@ -188,7 +188,7 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({ onNavigate, onOpenCr
   const [scheduleTreatment, setScheduleTreatment] = useState(vitadentConfig.treatments[0]?.name || 'Primera consulta + Diagnóstico')
   const [scheduleDate, setScheduleDate] = useState('12 Nov 2026')
   const [scheduleTime, setScheduleTime] = useState('10:00 AM')
-  const [scheduleBox, setScheduleBox] = useState('Sillón 1 (General)')
+  const [scheduleBox, setScheduleBox] = useState('Consultorio 1 (General)')
   const [scheduleNotes, setScheduleNotes] = useState('')
 
   // Toast handler
@@ -248,19 +248,19 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({ onNavigate, onOpenCr
     const cat = patient.category.toLowerCase()
     if (cat.includes('orto')) {
       setScheduleDoctor('Dr. Alejandro Soto')
-      setScheduleBox('Sillón 2 (Ortodoncia)')
+      setScheduleBox('Consultorio 2 (Ortodoncia)')
       setScheduleTreatment('Ortodoncia (mensualidad)')
     } else if (cat.includes('implante') || cat.includes('cirug')) {
       setScheduleDoctor('Dr. Marcos Pineda')
-      setScheduleBox('Sillón 4 (Cirugía)')
+      setScheduleBox('Consultorio 4 (Cirugía)')
       setScheduleTreatment('Implante de titanio + corona')
     } else if (cat.includes('endo')) {
       setScheduleDoctor('Dra. Claudia Rivas')
-      setScheduleBox('Sillón 3 (Endodoncia)')
+      setScheduleBox('Consultorio 3 (Endodoncia)')
       setScheduleTreatment('Endodoncia unirradicular')
     } else {
       setScheduleDoctor('Dra. Sofía Valenzuela')
-      setScheduleBox('Sillón 1 (General)')
+      setScheduleBox('Consultorio 1 (General)')
       setScheduleTreatment('Limpieza dental ultrasonido')
     }
     setScheduleNotes('')
@@ -643,7 +643,7 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({ onNavigate, onOpenCr
             </button>
             <button className="submodule-pill" onClick={() => onNavigate('/agenda')}>
               <Calendar size={13} />
-              <span>Agenda Sillones</span>
+              <span>Agenda de Citas</span>
             </button>
             <button className="submodule-pill" onClick={() => onNavigate('/pagos')}>
               <CreditCard size={13} />
@@ -691,7 +691,7 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({ onNavigate, onOpenCr
             }
           >
             <span style={{ marginRight: '4px' }}>⭐</span>
-            Favoritos ({starredContacts.length})
+            Favoritos
           </button>
 
           <button
@@ -973,7 +973,7 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({ onNavigate, onOpenCr
                           onClick={(e) => handleOpenSchedule(c, e)}
                         >
                           <Calendar size={13} />
-                          <span>Agendar Cita en Sillón</span>
+                          <span>Agendar Cita</span>
                         </button>
                       )}
                     </div>
@@ -991,7 +991,7 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({ onNavigate, onOpenCr
             <div className="side-card-title-row">
               <div className="flex items-center gap-2">
                 <Star size={16} fill="#f59e0b" color="#d97706" />
-                <h3 style={{ margin: 0, fontWeight: 700 }}>Favoritos ({starredContacts.length})</h3>
+                <h3 style={{ margin: 0, fontWeight: 700 }}>Pacientes Favoritos</h3>
               </div>
               {starredContacts.length > 0 && (
                 <button
@@ -1273,7 +1273,7 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({ onNavigate, onOpenCr
               <div className="flex items-center gap-2">
                 <Calendar size={20} color="#A94384" />
                 <div>
-                  <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 800 }}>Agendar Cita en Sillón</h3>
+                  <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 800 }}>Agendar Cita</h3>
                   <span style={{ fontSize: '11px', color: '#64748b' }}>
                     Paciente: <strong>{selectedPatient.company}</strong> ({selectedPatient.rep})
                   </span>
@@ -1319,10 +1319,10 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({ onNavigate, onOpenCr
                     onChange={(e) => {
                       const docName = e.target.value
                       setScheduleDoctor(docName)
-                      if (docName.includes('Sofía')) setScheduleBox('Sillón 1 (General)')
-                      else if (docName.includes('Alejandro')) setScheduleBox('Sillón 2 (Ortodoncia)')
-                      else if (docName.includes('Claudia')) setScheduleBox('Sillón 3 (Endodoncia)')
-                      else if (docName.includes('Marcos')) setScheduleBox('Sillón 4 (Cirugía)')
+                      if (docName.includes('Sofía')) setScheduleBox('Consultorio 1 (General)')
+                      else if (docName.includes('Alejandro')) setScheduleBox('Consultorio 2 (Ortodoncia)')
+                      else if (docName.includes('Claudia')) setScheduleBox('Consultorio 3 (Endodoncia)')
+                      else if (docName.includes('Marcos')) setScheduleBox('Consultorio 4 (Cirugía)')
                     }}
                   >
                     {vitadentConfig.doctors.map((doc) => (
@@ -1377,14 +1377,14 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({ onNavigate, onOpenCr
                   </div>
                 </div>
 
-                {/* Box / Sillón */}
+                {/* Consultorio Clínico */}
                 <div className="vitadent-field-group">
-                  <label>Sillón Odontológico (Box) *</label>
+                  <label>Consultorio Clínico *</label>
                   <select value={scheduleBox} onChange={(e) => setScheduleBox(e.target.value)}>
-                    <option value="Sillón 1 (General)">Sillón 1 — Dra. Sofía Valenzuela (General & Estética)</option>
-                    <option value="Sillón 2 (Ortodoncia)">Sillón 2 — Dr. Alejandro Soto (Ortodoncia)</option>
-                    <option value="Sillón 3 (Endodoncia)">Sillón 3 — Dra. Claudia Rivas (Endodoncia Rotatoria)</option>
-                    <option value="Sillón 4 (Cirugía)">Sillón 4 — Dr. Marcos Pineda (Cirugía & Implantes)</option>
+                    <option value="Consultorio 1 (General)">Consultorio 1 — Dra. Sofía Valenzuela (General & Estética)</option>
+                    <option value="Consultorio 2 (Ortodoncia)">Consultorio 2 — Dr. Alejandro Soto (Ortodoncia)</option>
+                    <option value="Consultorio 3 (Endodoncia)">Consultorio 3 — Dra. Claudia Rivas (Endodoncia Rotatoria)</option>
+                    <option value="Consultorio 4 (Cirugía)">Consultorio 4 — Dr. Marcos Pineda (Cirugía & Implantes)</option>
                   </select>
                 </div>
 

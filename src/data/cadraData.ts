@@ -15,7 +15,7 @@ import {
   PaymentTransaction
 } from '../types'
 
-// Citas Clínicas / Tratamientos en Sillones
+// Citas Clínicas / Tratamientos en Consultorios
 export const workOrdersData: WorkOrderItem[] = [
   {
     id: 'wo-1',
@@ -129,12 +129,12 @@ export const workOrdersData: WorkOrderItem[] = [
   },
 ]
 
-// Agenda de Sillones Odontológicos (Gantt View)
+// Agenda de Consultorios Odontológicos (Gantt View)
 export const ganttOrdersData: GanttOrder[] = [
   {
     id: 'g-1',
     code: 'BOX-1',
-    name: 'Sillón 1 — Dra. Sofía Valenzuela (General & Estética)',
+    name: 'Consultorio 1 — Dra. Sofía Valenzuela (General & Estética)',
     units: 6,
     color: '#A94384',
     progress: 75,
@@ -177,7 +177,7 @@ export const ganttOrdersData: GanttOrder[] = [
   {
     id: 'g-2',
     code: 'BOX-2',
-    name: 'Sillón 2 — Dr. Alejandro Soto (Ortodoncia)',
+    name: 'Consultorio 2 — Dr. Alejandro Soto (Ortodoncia)',
     units: 8,
     color: '#0284c7',
     progress: 65,
@@ -220,7 +220,7 @@ export const ganttOrdersData: GanttOrder[] = [
   {
     id: 'g-3',
     code: 'BOX-3',
-    name: 'Sillón 3 — Dra. Claudia Rivas (Endodoncia)',
+    name: 'Consultorio 3 — Dra. Claudia Rivas (Endodoncia)',
     units: 5,
     color: '#0d9488',
     progress: 50,
@@ -252,7 +252,7 @@ export const ganttOrdersData: GanttOrder[] = [
   {
     id: 'g-4',
     code: 'BOX-4',
-    name: 'Sillón 4 — Dr. Marcos Pineda (Cirugía & Implantes)',
+    name: 'Consultorio 4 — Dr. Marcos Pineda (Cirugía & Implantes)',
     units: 4,
     color: '#c2410c',
     progress: 70,
@@ -913,12 +913,12 @@ export const ledgerEntriesData: LedgerEntry[] = [
     id: 'le-2',
     date: '11 Nov 2026',
     relativeDate: 'Hoy',
-    entry: 'Pago Honorarios Dra. Sofía Valenzuela (Liquidación 35%)',
-    ref: 'HON-DOC-1',
-    source: 'Payroll',
+    entry: 'Pago Factura Insumos y Laboratorio Dental',
+    ref: 'FAC-LAB-01',
+    source: 'Suppliers',
     amount: 1840000,
     isDebit: false,
-    accountCode: '511010 — Honorarios Médicos',
+    accountCode: '511010 — Insumos & Laboratorio Dental',
   },
   {
     id: 'le-3',
@@ -1040,9 +1040,9 @@ export const paymentTransactionsData: PaymentTransaction[] = [
   },
   {
     id: 'pt-3',
-    party: 'Dra. Sofía Valenzuela',
-    initials: 'SV',
-    docRef: 'HON-VAL-01 · Liquidación Honorarios 35%',
+    party: 'Laboratorio Dental Zircon',
+    initials: 'LZ',
+    docRef: 'FAC-LAB-01 · Insumos y Laboratorio Dental',
     method: 'Wire',
     date: '10 Nov 2026',
     relativeDate: 'Ayer 5:00 PM',
@@ -1051,9 +1051,9 @@ export const paymentTransactionsData: PaymentTransaction[] = [
   },
   {
     id: 'pt-4',
-    party: 'Dr. Alejandro Soto',
-    initials: 'AS',
-    docRef: 'HON-SOT-01 · Liquidación Ortodoncia 40%',
+    party: 'Depósito Dental OdontoStar',
+    initials: 'DO',
+    docRef: 'FAC-PROV-79 · Insumos y Materiales de Ortodoncia',
     method: 'Wire',
     date: '09 Nov 2026',
     relativeDate: '09 Nov',

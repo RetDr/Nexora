@@ -136,7 +136,7 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onOpenCr
       treatment: quickTreatment,
       date: quickDate,
       time: '11:00 AM',
-      box: 'Sillón 1 (General)',
+      box: 'Consultorio 1 (General)',
       price,
       status: 'Programada',
       notes: 'Cita generada para registro de pago directo'
@@ -320,7 +320,7 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onOpenCr
         <span className="crumb-sep">&gt;</span>
         <span>Facturación & Cobros</span>
         <span className="crumb-sep">&gt;</span>
-        <span className="crumb-active">Pagos & Honorarios Médicos</span>
+        <span className="crumb-active">Gestión de Pagos & Cobros</span>
       </div>
 
       {/* Header with two-tier right cluster */}
@@ -335,10 +335,10 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onOpenCr
               Facturas Tratamientos
             </button>
             <button className="cadra-sub-tab active" onClick={() => onNavigate('/pagos')}>
-              Cobros & Honorarios
+              Cobros y Facturación
             </button>
             <button className="cadra-sub-tab" onClick={() => onNavigate('/agenda')}>
-              Agenda Sillones
+              Agenda de Citas
             </button>
             <button className="cadra-sub-tab" onClick={() => onNavigate('/pacientes')}>
               Pacientes
@@ -384,12 +384,12 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onOpenCr
         <div className="cadra-kpi-card kpi-card-blue">
           <div className="kpi-card-top">
             <ArrowUpRight size={16} className="kpi-icon-blue" />
-            <span className="kpi-label">Egresos · Honorarios & Lab</span>
+            <span className="kpi-label">Egresos · Materiales & Laboratorio</span>
           </div>
           <div className="kpi-main-number">
             <AnimatedCounter value="$16,366" duration={750} delay={150} />
           </div>
-          <span style={{ fontSize: '11px', color: '#64748b', marginTop: '4px' }}>Liquidaciones a doctores y compras</span>
+          <span style={{ fontSize: '11px', color: '#64748b', marginTop: '4px' }}>Insumos de laboratorio y compras clínicas</span>
         </div>
 
         {/* Card 3: Net cash flow */}
@@ -449,7 +449,7 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onOpenCr
               <i className="legend-dot dot-green" /> Ingresos Pacientes
             </span>
             <span className="legend-item">
-              <i className="legend-dot dot-terracotta" /> Honorarios & Compras
+              <i className="legend-dot dot-terracotta" /> Materiales & Laboratorio
             </span>
             <span className="text-muted text-xs">Periodo Actual (Oct 13 – Nov 11)</span>
           </div>

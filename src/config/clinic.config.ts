@@ -5,7 +5,7 @@ export interface ClinicDoctor {
   id: string
   name: string
   specialty: string
-  commissionPct: number
+  commissionPct?: number
   color: string
 }
 
@@ -97,10 +97,10 @@ export const vitadentConfig: ClinicConfig = {
     { key: 'informes', label: 'Informes', path: '/informes' },
   ],
   doctors: [
-    { id: 'doc-1', name: 'Dra. Sofía Valenzuela', specialty: 'Odontología General', commissionPct: 35, color: '#A94384' },
-    { id: 'doc-2', name: 'Dr. Alejandro Soto', specialty: 'Ortodoncia', commissionPct: 40, color: '#0284c7' },
-    { id: 'doc-3', name: 'Dra. Claudia Rivas', specialty: 'Endodoncia', commissionPct: 40, color: '#0d9488' },
-    { id: 'doc-4', name: 'Dr. Marcos Pineda', specialty: 'Cirugía e Implantes', commissionPct: 40, color: '#c2410c' },
+    { id: 'doc-1', name: 'Dra. Sofía Valenzuela', specialty: 'Odontología General', color: '#A94384' },
+    { id: 'doc-2', name: 'Dr. Alejandro Soto', specialty: 'Ortodoncia', color: '#0284c7' },
+    { id: 'doc-3', name: 'Dra. Claudia Rivas', specialty: 'Endodoncia', color: '#0d9488' },
+    { id: 'doc-4', name: 'Dr. Marcos Pineda', specialty: 'Cirugía e Implantes', color: '#c2410c' },
   ],
   treatments: [
     { code: 'T-01', name: 'Primera consulta + Diagnóstico', category: 'Diagnóstico', durationMin: 30, priceCop: 50000 },

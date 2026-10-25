@@ -47,7 +47,7 @@ export interface ClinicalAppointment {
   startHour: number // e.g. 8.5 for 8:30 AM
   durationHours: number // e.g. 1.5
   timeFormatted: string
-  box: string // "Sillón 1", "Sillón 2", etc.
+  box: string // "Consultorio 1", "Consultorio 2", etc.
   status: 'Confirmada' | 'En atención' | 'Realizada' | 'Pendiente' | 'Cancelada'
   notes?: string
 }
@@ -81,7 +81,7 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     startHour: 8.0,
     durationHours: 1.5,
     timeFormatted: '8:00 AM – 9:30 AM',
-    box: 'Sillón 1',
+    box: 'Consultorio 1',
     status: 'Realizada',
     notes: 'Sensibilidad dental leve en cuello de molares inferiores. Se aplicó barniz de flúor Duraphat 5%.'
   },
@@ -106,7 +106,7 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     startHour: 10.0,
     durationHours: 1.5,
     timeFormatted: '10:00 AM – 11:30 AM',
-    box: 'Sillón 2',
+    box: 'Consultorio 2',
     status: 'Realizada',
     notes: 'Excelente higiene. Próximo control en 4 semanas para avance a arco de acero rectangular.'
   },
@@ -131,7 +131,7 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     startHour: 14.0,
     durationHours: 2.0,
     timeFormatted: '2:00 PM – 4:00 PM',
-    box: 'Sillón 4',
+    box: 'Consultorio 4',
     status: 'Realizada',
     notes: 'Torque de inserción primario óptimo (35 Ncm). Se prescribió amoxicilina 875mg y ketoprofeno.'
   },
@@ -156,7 +156,7 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     startHour: 16.5,
     durationHours: 1.5,
     timeFormatted: '4:30 PM – 6:00 PM',
-    box: 'Sillón 1',
+    box: 'Consultorio 1',
     status: 'Realizada',
     notes: 'Reconstrucción de cúspide distovestibular pieza 16. Oclusión y puntos de contacto anatómicos verificados.'
   },
@@ -183,7 +183,7 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     startHour: 9.0,
     durationHours: 1.5,
     timeFormatted: '9:00 AM – 10:30 AM',
-    box: 'Sillón 3',
+    box: 'Consultorio 3',
     status: 'Realizada',
     notes: 'Pieza 24 conducto permeable. Longitud de trabajo 21mm. Medicación intraconducto hidróxido de calcio.'
   },
@@ -208,7 +208,7 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     startHour: 11.0,
     durationHours: 1.5,
     timeFormatted: '11:00 AM – 12:30 PM',
-    box: 'Sillón 2',
+    box: 'Consultorio 2',
     status: 'Realizada',
     notes: 'Grabado y adhesión con Transbond XT. Instrucciones detalladas de cepillado interproximal.'
   },
@@ -233,7 +233,7 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     startHour: 15.0,
     durationHours: 1.0,
     timeFormatted: '3:00 PM – 4:00 PM',
-    box: 'Sillón 4',
+    box: 'Consultorio 4',
     status: 'Realizada',
     notes: 'Cicatrización gingival de primera intención. Sin signos de inflamación ni edema.'
   },
@@ -258,7 +258,7 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     startHour: 16.5,
     durationHours: 1.5,
     timeFormatted: '4:30 PM – 6:00 PM',
-    box: 'Sillón 1',
+    box: 'Consultorio 1',
     status: 'Realizada',
     notes: 'Ajuste marginal de carillas 11, 12, 21 y 22. Color BL2 aprobado con satisfacción por la paciente.'
   },
@@ -285,7 +285,7 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     startHour: 8.5,
     durationHours: 1.5,
     timeFormatted: '8:30 AM – 10:00 AM',
-    box: 'Sillón 4',
+    box: 'Consultorio 4',
     status: 'Realizada',
     notes: 'Odontosección limpia cordal 48 retenida. Sutura seda 3-0. Hemostasia y recuperación inmediata.'
   },
@@ -310,9 +310,9 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     startHour: 10.5,
     durationHours: 1.5,
     timeFormatted: '10:30 AM – 12:00 PM',
-    box: 'Sillón 1',
+    box: 'Consultorio 1',
     status: 'En atención',
-    notes: 'Estratificación de esmalte y dentina opalescente. Paciente en sillón con aislamiento absoluto dique de goma.'
+    notes: 'Estratificación de esmalte y dentina opalescente. Paciente en atención con aislamiento absoluto dique de goma.'
   },
   {
     id: 'apt-11',
@@ -335,7 +335,7 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     startHour: 13.0,
     durationHours: 1.0,
     timeFormatted: '1:00 PM – 2:00 PM',
-    box: 'Sillón 1',
+    box: 'Consultorio 1',
     status: 'Confirmada',
     notes: 'Sondeo periodontal con bolsas de 4mm en sextante 5. Requiere profilaxis de mantenimiento con ultrasonido.'
   },
@@ -360,7 +360,7 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     startHour: 14.5,
     durationHours: 1.5,
     timeFormatted: '2:30 PM – 4:00 PM',
-    box: 'Sillón 1',
+    box: 'Consultorio 1',
     status: 'Confirmada',
     notes: 'Peróxido de hidrógeno al 35%. Aplicación de barrera gingival fotopolimerizable OpalDam.'
   },
@@ -385,7 +385,7 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     startHour: 16.5,
     durationHours: 1.5,
     timeFormatted: '4:30 PM – 6:00 PM',
-    box: 'Sillón 2',
+    box: 'Consultorio 2',
     status: 'Confirmada',
     notes: 'Entrega alineadores serie #12 al #16. Stripping interproximal en 32 y 42 según planificación digital.'
   },
@@ -412,7 +412,7 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     startHour: 8.5,
     durationHours: 1.5,
     timeFormatted: '8:30 AM – 10:00 AM',
-    box: 'Sillón 3',
+    box: 'Consultorio 3',
     status: 'Confirmada',
     notes: 'Sellado tridimensional conducto distal molar 46 con cemento biocerámico AH Plus.'
   },
@@ -437,7 +437,7 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     startHour: 10.5,
     durationHours: 1.5,
     timeFormatted: '10:30 AM – 12:00 PM',
-    box: 'Sillón 2',
+    box: 'Consultorio 2',
     status: 'Confirmada',
     notes: 'Escaneo de arcadas completas para diseño de ortodoncia lingual y set-up virtual 3D.'
   },
@@ -462,7 +462,7 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     startHour: 14.0,
     durationHours: 1.5,
     timeFormatted: '2:00 PM – 3:30 PM',
-    box: 'Sillón 1',
+    box: 'Consultorio 1',
     status: 'Confirmada',
     notes: 'Poste de fibra de vidrio cementado en conducto palatino. Reconstrucción con resina Core.'
   },
@@ -487,7 +487,7 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     startHour: 16.0,
     durationHours: 1.5,
     timeFormatted: '4:00 PM – 5:30 PM',
-    box: 'Sillón 4',
+    box: 'Consultorio 4',
     status: 'Pendiente',
     notes: 'Férula quirúrgica esterilizada lista. Kit quirúrgico guiado Straumann BLX preparado.'
   },
@@ -514,7 +514,7 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     startHour: 9.0,
     durationHours: 1.5,
     timeFormatted: '9:00 AM – 10:30 AM',
-    box: 'Sillón 1',
+    box: 'Consultorio 1',
     status: 'Confirmada',
     notes: 'Mantenimiento semestral programado. Refuerzo de técnica de cepillado Bass modificada.'
   },
@@ -539,7 +539,7 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     startHour: 11.0,
     durationHours: 1.5,
     timeFormatted: '11:00 AM – 12:30 PM',
-    box: 'Sillón 3',
+    box: 'Consultorio 3',
     status: 'Pendiente',
     notes: 'Desobturación con solvente de gutapercha y magnificación microscópica.'
   },
@@ -564,7 +564,7 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     startHour: 14.5,
     durationHours: 1.5,
     timeFormatted: '2:30 PM – 4:00 PM',
-    box: 'Sillón 2',
+    box: 'Consultorio 2',
     status: 'Confirmada',
     notes: 'Adaptación bandas molares 16 y 26 cementadas con ionómero de vidrio GC Fuji I.'
   },
@@ -589,7 +589,7 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     startHour: 16.5,
     durationHours: 1.5,
     timeFormatted: '4:30 PM – 6:00 PM',
-    box: 'Sillón 4',
+    box: 'Consultorio 4',
     status: 'Pendiente',
     notes: 'Bio-Oss 0.5g y membrana de colágeno Bio-Gide preparados en quirófano ambulatorio.'
   },
@@ -616,7 +616,7 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     startHour: 8.5,
     durationHours: 1.5,
     timeFormatted: '8:30 AM – 10:00 AM',
-    box: 'Sillón 1',
+    box: 'Consultorio 1',
     status: 'Confirmada',
     notes: 'Fotografía clínica digital intra y extraoral, encerado digital y mock-up.'
   },
@@ -641,7 +641,7 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     startHour: 10.5,
     durationHours: 1.5,
     timeFormatted: '10:30 AM – 12:00 PM',
-    box: 'Sillón 2',
+    box: 'Consultorio 2',
     status: 'Confirmada',
     notes: 'Anclaje esquelético interradicular entre 15 y 16 para intrusión de molar superior.'
   },
@@ -666,7 +666,7 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     startHour: 12.5,
     durationHours: 1.0,
     timeFormatted: '12:30 PM – 1:30 PM',
-    box: 'Sillón 1',
+    box: 'Consultorio 1',
     status: 'Pendiente',
     notes: 'Discos Sof-Lex abrasivos y pasta diamantada de alto brillo Prisma Gloss.'
   },
@@ -693,7 +693,7 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     startHour: 10.0,
     durationHours: 1.5,
     timeFormatted: '10:00 AM – 11:30 AM',
-    box: 'Sillón 3',
+    box: 'Consultorio 3',
     status: 'Realizada',
     notes: 'Guardia dominical de urgencias odontológicas. Biopulpectomía de emergencia pieza 36.'
   }
@@ -807,7 +807,7 @@ export const SchedulingPage: React.FC<SchedulingPageProps> = ({ onNavigate, onOp
   const [tempNotes, setTempNotes] = useState('')
   const [isReassignModalOpen, setIsReassignModalOpen] = useState(false)
   const [reassignTargetApt, setReassignTargetApt] = useState<ClinicalAppointment | null>(null)
-  const [reassignBox, setReassignBox] = useState('Sillón 1')
+  const [reassignBox, setReassignBox] = useState('Consultorio 1')
   const [reassignDoctor, setReassignDoctor] = useState('doc-1')
   const [toastMessage, setToastMessage] = useState<string | null>(null)
 
@@ -997,7 +997,7 @@ export const SchedulingPage: React.FC<SchedulingPageProps> = ({ onNavigate, onOp
               Citas Odontológicas
             </button>
             <button className="cadra-sub-tab" onClick={() => onNavigate('/manufacturing/orders')}>
-              Procedimientos & Sillones
+              Procedimientos & Citas
             </button>
           </div>
         </div>
@@ -1085,9 +1085,9 @@ export const SchedulingPage: React.FC<SchedulingPageProps> = ({ onNavigate, onOp
       <div className="cadra-alert-banner">
         <span className="green-live-dot" />
         <p className="alert-banner-text">
-          <strong><AnimatedCounter value={5} /> citas activas hoy</strong> en 4 sillones clínicos ·{' '}
+          <strong><AnimatedCounter value={5} /> citas activas hoy</strong> en 4 consultorios clínicos ·{' '}
           <strong><AnimatedCounter value={filteredAppointments.length} /> citas registradas</strong> en la agenda ·{' '}
-          En atención actual: <span style={{ color: '#A94384', fontWeight: 700 }}>Mariana Torres (Sillón 1 - Carillas)</span>
+          En atención actual: <span style={{ color: '#A94384', fontWeight: 700 }}>Mariana Torres (Consultorio 1 - Carillas)</span>
         </p>
       </div>
 
@@ -1312,7 +1312,7 @@ export const SchedulingPage: React.FC<SchedulingPageProps> = ({ onNavigate, onOp
                 </div>
 
                 <div className="quarter-kpi-card">
-                  <span className="quarter-kpi-label">Tasa de Ocupación Sillones</span>
+                  <span className="quarter-kpi-label">Disponibilidad de Citas</span>
                   <span className="quarter-kpi-val">84.6%</span>
                   <span className="quarter-kpi-trend">
                     <CheckCircle2 size={13} /> Óptima capacidad clínica
@@ -1527,7 +1527,7 @@ export const SchedulingPage: React.FC<SchedulingPageProps> = ({ onNavigate, onOp
                   </span>
                   <div className="doc-texts">
                     <span className="doc-name">Todos los Doctores</span>
-                    <span className="doc-spec">Vista consolidada de sillones</span>
+                    <span className="doc-spec">Vista consolidada de consultorios</span>
                   </div>
                 </div>
                 <span className="doc-count-badge">{appointments.length}</span>
@@ -1640,7 +1640,7 @@ export const SchedulingPage: React.FC<SchedulingPageProps> = ({ onNavigate, onOp
               <div className="drawer-section-card">
                 <div className="drawer-section-card-title">
                   <Stethoscope size={13} color="#A94384" />
-                  <span>Especialista & Sillón Asignado</span>
+                  <span>Especialista & Consultorio Asignado</span>
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -1832,7 +1832,7 @@ export const SchedulingPage: React.FC<SchedulingPageProps> = ({ onNavigate, onOp
       )}
 
       {/* =========================================================================
-          MODAL DE REASIGNACIÓN DE TURNOS / SILLONES
+          MODAL DE REASIGNACIÓN DE TURNOS / CONSULTORIOS
           ========================================================================= */}
       {isReassignModalOpen && reassignTargetApt && (
         <div className="cadra-modal-overlay" onClick={() => setIsReassignModalOpen(false)}>
@@ -1872,16 +1872,16 @@ export const SchedulingPage: React.FC<SchedulingPageProps> = ({ onNavigate, onOp
               </div>
 
               <div className="form-group">
-                <label>Nuevo Sillón Odontológico *</label>
+                <label>Nuevo Consultorio Clínico *</label>
                 <select
                   value={reassignBox}
                   onChange={(e) => setReassignBox(e.target.value)}
                   required
                 >
-                  <option value="Sillón 1">Sillón 1 — Odontología General & Estética</option>
-                  <option value="Sillón 2">Sillón 2 — Ortodoncia & Escáner 3D</option>
-                  <option value="Sillón 3">Sillón 3 — Endodoncia & Microscopía</option>
-                  <option value="Sillón 4">Sillón 4 — Cirugía & Quirófano Implantes</option>
+                  <option value="Consultorio 1">Consultorio 1 — Odontología General & Estética</option>
+                  <option value="Consultorio 2">Consultorio 2 — Ortodoncia & Escáner 3D</option>
+                  <option value="Consultorio 3">Consultorio 3 — Endodoncia & Microscopía</option>
+                  <option value="Consultorio 4">Consultorio 4 — Cirugía & Quirófano Implantes</option>
                 </select>
               </div>
 

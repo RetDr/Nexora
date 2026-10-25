@@ -135,7 +135,7 @@ export function App() {
       return <SettingsPage onToast={showToast} />
     }
 
-    // Default fallback: Agenda de sillones
+    // Default fallback: Agenda de citas
     return <SchedulingPage onNavigate={navigate} onOpenCreate={() => setIsCreateOpen(true)} />
   }
 

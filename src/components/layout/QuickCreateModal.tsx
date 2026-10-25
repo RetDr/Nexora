@@ -43,7 +43,7 @@ export const QuickCreateModal: React.FC<QuickCreateModalProps> = ({ isOpen, onCl
           <div className="form-group">
             <label>Tipo de Registro</label>
             <select value={recordType} onChange={(e) => setRecordType(e.target.value)}>
-              <option value="work_order">Cita en Sillón / Turno</option>
+              <option value="work_order">Cita Odontológica</option>
               <option value="sales_quote">Presupuesto / Tratamiento</option>
               <option value="purchase_order">Pedido a Depósito Dental</option>
               <option value="contact">Paciente / Convenio</option>
