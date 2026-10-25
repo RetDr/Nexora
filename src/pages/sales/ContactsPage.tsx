@@ -624,32 +624,13 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({ onNavigate, onOpenCr
         <span className="crumb-active">Directorio de Pacientes & Convenios</span>
       </div>
 
-      {/* Header with Submodule Pills */}
+      {/* Header */}
       <div className="cadra-page-header">
-        <div className="title-with-submodules">
+        <div className="page-header-left flex items-center gap-2">
           <h1 className="cadra-page-title">Pacientes</h1>
-          <div className="cadra-submodule-pills">
-            <button className="submodule-pill" onClick={() => onNavigate('/presupuestos')}>
-              <span>Presupuestos</span>
-              <span className="cadra-badge badge-orange">6</span>
-            </button>
-            <button className="submodule-pill" onClick={() => onNavigate('/precios')}>
-              <ShoppingBag size={13} />
-              <span>Precios & Caja</span>
-            </button>
-            <button className="submodule-pill active" onClick={() => onNavigate('/pacientes')}>
-              <Users size={13} />
-              <span>Pacientes ({contacts.length})</span>
-            </button>
-            <button className="submodule-pill" onClick={() => onNavigate('/agenda')}>
-              <Calendar size={13} />
-              <span>Agenda de Citas</span>
-            </button>
-            <button className="submodule-pill" onClick={() => onNavigate('/pagos')}>
-              <CreditCard size={13} />
-              <span>Cobros</span>
-            </button>
-          </div>
+          <span className="cadra-tag-pill tag-neutral" style={{ fontSize: '11px', fontWeight: 600 }}>
+            {contacts.length} registros
+          </span>
         </div>
 
         <div className="cadra-header-actions">

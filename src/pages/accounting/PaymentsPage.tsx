@@ -1,29 +1,224 @@
-import React, { useState, useEffect } from 'react'
-import { LiveFloorPill } from '../../components/ui/LiveFloorPill'
-import { AnimatedCounter } from '../../components/ui/AnimatedCounter'
+import React, { useState, useEffect, useMemo } from 'react'
 import {
-  Download,
   CreditCard,
   Building2,
   TrendingUp,
-  ArrowDownLeft,
-  ArrowUpRight,
   Search,
   CheckCircle2,
   Calendar,
   X,
   Check,
   AlertCircle,
-  Sparkles,
-  UserCheck,
   Stethoscope,
   Clock,
-  DollarSign
+  DollarSign,
+  Printer,
+  Download,
+  Eye,
+  Edit3,
+  Trash2,
+  Filter,
+  FileText,
+  User,
+  ShieldCheck,
+  Sparkles,
+  ArrowUpRight,
+  Info
 } from 'lucide-react'
-import { paymentTransactionsData, billsToPayData, contactsData } from '../../data/cadraData'
-import { PaymentTransaction, ContactItem } from '../../types'
+import { LiveFloorPill } from '../../components/ui/LiveFloorPill'
+import { AnimatedCounter } from '../../components/ui/AnimatedCounter'
+import { contactsData } from '../../data/cadraData'
+import { ContactItem } from '../../types'
 import { vitadentConfig } from '../../config/clinic.config'
 import { PatientAppointment, INITIAL_PATIENT_APPOINTMENTS } from '../sales/ContactsPage'
+
+export interface ClinicalPayment {
+  id: string
+  receiptNumber: string
+  patientId: string
+  patientName: string
+  patientDoc: string
+  patientInitials: string
+  patientPhone: string
+  patientEmail: string
+  treatment: string
+  doctor: string
+  amount: number
+  method: 'Card' | 'Transfer' | 'Cash'
+  methodLabel: string
+  date: string
+  time: string
+  period: 'Hoy' | 'Esta Semana' | 'Este Mes'
+  status: 'Completado' | 'Anulado'
+  notes?: string
+  cancellationReason?: string
+  appointmentId?: string
+}
+
+const INITIAL_PAYMENTS: ClinicalPayment[] = [
+  {
+    id: 'pay-1',
+    receiptNumber: 'REC-4101',
+    patientId: 'c-1',
+    patientName: 'Carlos García Mendoza',
+    patientDoc: 'CC 1.020.485.912',
+    patientInitials: 'CG',
+    patientPhone: '+57 310 445 8812',
+    patientEmail: 'carlos.garcia@gmail.com',
+    treatment: 'Implante de titanio + corona',
+    doctor: 'Dr. Marcos Pineda',
+    amount: 2500000,
+    method: 'Card',
+    methodLabel: 'Tarjeta / Datáfono',
+    date: '11 Nov 2026',
+    time: '10:15 AM',
+    period: 'Hoy',
+    status: 'Completado',
+    notes: 'Abono fase quirúrgica e integración de corona en zirconio',
+    appointmentId: 'apt-1'
+  },
+  {
+    id: 'pay-2',
+    receiptNumber: 'REC-4102',
+    patientId: 'c-5',
+    patientName: 'Mariana Torres Peña',
+    patientDoc: 'CC 1.028.914.520',
+    patientInitials: 'MT',
+    patientPhone: '+57 314 220 9011',
+    patientEmail: 'mariana.torres@hotmail.com',
+    treatment: 'Primera consulta + Diagnóstico',
+    doctor: 'Dra. Sofía Valenzuela',
+    amount: 50000,
+    method: 'Transfer',
+    methodLabel: 'Nequi / Bancolombia',
+    date: '11 Nov 2026',
+    time: '11:45 AM',
+    period: 'Hoy',
+    status: 'Completado',
+    notes: 'Valoración inicial y plan de tratamiento estético'
+  },
+  {
+    id: 'pay-3',
+    receiptNumber: 'REC-4103',
+    patientId: 'c-2',
+    patientName: 'Laura Gómez Restrepo',
+    patientDoc: 'CC 1.032.490.118',
+    patientInitials: 'LG',
+    patientPhone: '+57 301 556 7182',
+    patientEmail: 'laura.gomez@yahoo.es',
+    treatment: 'Ortodoncia (mensualidad)',
+    doctor: 'Dr. Alejandro Soto',
+    amount: 100000,
+    method: 'Transfer',
+    methodLabel: 'Nequi / Bancolombia',
+    date: '10 Nov 2026',
+    time: '04:20 PM',
+    period: 'Esta Semana',
+    status: 'Completado',
+    notes: 'Control mensual y cambio de arcos y elásticos ortodónticos'
+  },
+  {
+    id: 'pay-4',
+    receiptNumber: 'REC-4104',
+    patientId: 'c-3',
+    patientName: 'Andrés Felipe Mendoza',
+    patientDoc: 'CC 1.015.632.880',
+    patientInitials: 'AM',
+    patientPhone: '+57 312 908 4433',
+    patientEmail: 'andres.mendoza@outlook.com',
+    treatment: 'Endodoncia unirradicular',
+    doctor: 'Dra. Claudia Rivas',
+    amount: 350000,
+    method: 'Card',
+    methodLabel: 'Tarjeta / Datáfono',
+    date: '09 Nov 2026',
+    time: '02:30 PM',
+    period: 'Esta Semana',
+    status: 'Completado',
+    notes: 'Conductometría y obturación pieza 26 con localizador de ápice'
+  },
+  {
+    id: 'pay-5',
+    receiptNumber: 'REC-4105',
+    patientId: 'c-6',
+    patientName: 'Valentina Ríos Gómez',
+    patientDoc: 'CC 1.018.742.319',
+    patientInitials: 'VR',
+    patientPhone: '+57 318 671 2049',
+    patientEmail: 'valentina.rios@gmail.com',
+    treatment: 'Limpieza dental ultrasonido',
+    doctor: 'Dra. Sofía Valenzuela',
+    amount: 90000,
+    method: 'Cash',
+    methodLabel: 'Efectivo',
+    date: '08 Nov 2026',
+    time: '09:15 AM',
+    period: 'Esta Semana',
+    status: 'Completado',
+    notes: 'Profilaxis dental profunda y aplicación tópica de flúor'
+  },
+  {
+    id: 'pay-6',
+    receiptNumber: 'REC-4106',
+    patientId: 'c-4',
+    patientName: 'Mateo Fernández Silva',
+    patientDoc: 'CC 1.026.331.094',
+    patientInitials: 'MF',
+    patientPhone: '+57 316 332 5091',
+    patientEmail: 'mateo.fernandez@gmail.com',
+    treatment: 'Extracción quirúrgica (cordal)',
+    doctor: 'Dr. Marcos Pineda',
+    amount: 250000,
+    method: 'Card',
+    methodLabel: 'Tarjeta / Datáfono',
+    date: '05 Nov 2026',
+    time: '03:10 PM',
+    period: 'Este Mes',
+    status: 'Completado',
+    notes: 'Cirugía de cordal inferior derecho con sutura no absorbible'
+  },
+  {
+    id: 'pay-7',
+    receiptNumber: 'REC-4107',
+    patientId: 'c-7',
+    patientName: 'Daniela Roldán Vélez',
+    patientDoc: 'CC 1.037.665.412',
+    patientInitials: 'DR',
+    patientPhone: '+57 311 884 1902',
+    patientEmail: 'daniela.roldan@gmail.com',
+    treatment: 'Blanqueamiento dental LED',
+    doctor: 'Dra. Sofía Valenzuela',
+    amount: 300000,
+    method: 'Transfer',
+    methodLabel: 'Nequi / Bancolombia',
+    date: '03 Nov 2026',
+    time: '11:00 AM',
+    period: 'Este Mes',
+    status: 'Completado',
+    notes: 'Sesión clínica de blanqueamiento con lámpara LED fotoactivada'
+  },
+  {
+    id: 'pay-8',
+    receiptNumber: 'REC-4100',
+    patientId: 'c-8',
+    patientName: 'Roberto Salazar Duque',
+    patientDoc: 'CC 1.014.228.905',
+    patientInitials: 'RS',
+    patientPhone: '+57 300 412 8871',
+    patientEmail: 'roberto.salazar@empresa.com',
+    treatment: 'Empaste / Obturación composite',
+    doctor: 'Dra. Sofía Valenzuela',
+    amount: 120000,
+    method: 'Cash',
+    methodLabel: 'Efectivo',
+    date: '01 Nov 2026',
+    time: '10:00 AM',
+    period: 'Este Mes',
+    status: 'Anulado',
+    notes: 'Cobro duplicado por error en digitación de caja',
+    cancellationReason: 'Error de digitación en caja: el paciente canceló por datáfono en recibo separado'
+  }
+]
 
 interface PaymentsPageProps {
   onNavigate: (path: string) => void
@@ -31,12 +226,26 @@ interface PaymentsPageProps {
   onToast: (msg: string) => void
 }
 
-export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onOpenCreate, onToast }) => {
-  const [transactions, setTransactions] = useState<PaymentTransaction[]>(paymentTransactionsData)
-  const [bills, setBills] = useState(billsToPayData)
-  const [filterType, setFilterType] = useState<'All' | 'Money in' | 'Money out'>('All')
-  const [flowView, setFlowView] = useState<'running' | 'daily'>('running')
-  const [query, setQuery] = useState('')
+export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onToast }) => {
+  // Load payments from localStorage or fallback
+  const [payments, setPayments] = useState<ClinicalPayment[]>(() => {
+    try {
+      const saved = localStorage.getItem('vitadent_clinical_payments')
+      if (saved) return JSON.parse(saved)
+    } catch {
+      // fallback
+    }
+    return INITIAL_PAYMENTS
+  })
+
+  // Save payments whenever changed
+  useEffect(() => {
+    try {
+      localStorage.setItem('vitadent_clinical_payments', JSON.stringify(payments))
+    } catch {
+      // ignore
+    }
+  }, [payments])
 
   // Load patients from storage or cadraData
   const [contacts] = useState<ContactItem[]>(() => {
@@ -60,175 +269,221 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onOpenCr
     return INITIAL_PATIENT_APPOINTMENTS
   })
 
-  // Payment Modal State
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
+  // Filters state
+  const [query, setQuery] = useState('')
+  const [filterMethod, setFilterMethod] = useState<'ALL' | 'Card' | 'Transfer' | 'Cash'>('ALL')
+  const [filterDate, setFilterDate] = useState<'ALL' | 'Hoy' | 'Esta Semana' | 'Este Mes'>('ALL')
+  const [filterStatus, setFilterStatus] = useState<'ALL' | 'Completado' | 'Anulado'>('ALL')
+
+  // Modals state
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [receiptToView, setReceiptToView] = useState<ClinicalPayment | null>(null)
+  const [paymentToEdit, setPaymentToEdit] = useState<ClinicalPayment | null>(null)
+  const [paymentToCancel, setPaymentToCancel] = useState<ClinicalPayment | null>(null)
+  const [cancellationReasonText, setCancellationReasonText] = useState('')
+
+  // Create Modal Steps & Fields (Paso 1, 2, 3)
+  const [patientSearch, setPatientSearch] = useState('')
   const [selectedPatientId, setSelectedPatientId] = useState<string>('')
   const [selectedAppointmentId, setSelectedAppointmentId] = useState<string>('')
-  const [paymentAmount, setPaymentAmount] = useState<number>(0)
-  const [paymentMethod, setPaymentMethod] = useState<'Card' | 'ACH transfer' | 'Wire'>('Card')
-  const [paymentMethodLabel, setPaymentMethodLabel] = useState<string>('Tarjeta Débito / Crédito')
+  const [customTreatment, setCustomTreatment] = useState(vitadentConfig.treatments[0]?.name || 'Primera consulta + Diagnóstico')
+  const [customDoctor, setCustomDoctor] = useState(vitadentConfig.doctors[0]?.name || 'Dra. Sofía Valenzuela')
+  const [paymentAmount, setPaymentAmount] = useState<number>(50000)
+  const [paymentMethod, setPaymentMethod] = useState<'Card' | 'Transfer' | 'Cash'>('Card')
+  const [receiptNumberInput, setReceiptNumberInput] = useState<string>('')
   const [paymentNotes, setPaymentNotes] = useState<string>('')
-  const [paymentReceiptRef, setPaymentReceiptRef] = useState<string>('')
 
-  // Inline Quick Schedule State (when a patient has no appointment)
-  const [isQuickScheduling, setIsQuickScheduling] = useState(false)
-  const [quickDoc, setQuickDoc] = useState(vitadentConfig.doctors[0]?.name || 'Dra. Sofía Valenzuela')
-  const [quickTreatment, setQuickTreatment] = useState(vitadentConfig.treatments[0]?.name || 'Primera consulta + Diagnóstico')
-  const [quickDate, setQuickDate] = useState('Hoy')
-
-  // Save appointments whenever they change
-  useEffect(() => {
-    try {
-      localStorage.setItem('vitadent_appointments', JSON.stringify(appointments))
-    } catch {
-      // ignore
-    }
-  }, [appointments])
-
-  // Selected patient object
-  const selectedPatient = contacts.find((c) => c.id === selectedPatientId)
+  // Selected Patient Details
+  const selectedPatient = useMemo(
+    () => contacts.find((c) => c.id === selectedPatientId),
+    [contacts, selectedPatientId]
+  )
 
   // Appointments of selected patient
-  const patientAppointments = appointments.filter((a) => a.patientId === selectedPatientId)
+  const patientAppointments = useMemo(
+    () => appointments.filter((a) => a.patientId === selectedPatientId),
+    [appointments, selectedPatientId]
+  )
 
-  // Selected appointment object
-  const selectedAppointment = appointments.find((a) => a.id === selectedAppointmentId)
-
-  // When patient selection changes, auto-select first appointment or reset
+  // When patient changes in Create modal
   const handleSelectPatient = (patientId: string) => {
     setSelectedPatientId(patientId)
-    setIsQuickScheduling(false)
-    const apts = appointments.filter((a) => a.patientId === patientId)
-    if (apts.length > 0) {
-      const firstApt = apts[0]
-      setSelectedAppointmentId(firstApt.id)
-      setPaymentAmount(firstApt.price)
-      setPaymentReceiptRef(`REC-${Math.floor(4100 + transactions.length + 1)} · ${firstApt.treatment}`)
+    const patientApts = appointments.filter((a) => a.patientId === patientId)
+    if (patientApts.length > 0) {
+      const first = patientApts[0]
+      setSelectedAppointmentId(first.id)
+      setCustomTreatment(first.treatment)
+      setCustomDoctor(first.doctor)
+      setPaymentAmount(first.price)
     } else {
       setSelectedAppointmentId('')
-      setPaymentAmount(0)
-      setPaymentReceiptRef('')
+      const defaultTreat = vitadentConfig.treatments[0]
+      setCustomTreatment(defaultTreat ? defaultTreat.name : 'Primera consulta + Diagnóstico')
+      setCustomDoctor(vitadentConfig.doctors[0]?.name || 'Dra. Sofía Valenzuela')
+      setPaymentAmount(defaultTreat ? defaultTreat.priceCop : 50000)
     }
+    const nextNum = 4100 + payments.length + 1
+    setReceiptNumberInput(`REC-${nextNum}`)
   }
 
-  // When appointment selection changes, auto-fill price and receipt
+  // When appointment changes in Create modal
   const handleSelectAppointment = (aptId: string) => {
     setSelectedAppointmentId(aptId)
     const apt = appointments.find((a) => a.id === aptId)
     if (apt) {
+      setCustomTreatment(apt.treatment)
+      setCustomDoctor(apt.doctor)
       setPaymentAmount(apt.price)
-      setPaymentReceiptRef(`REC-${Math.floor(4100 + transactions.length + 1)} · ${apt.treatment}`)
     }
   }
 
-  // Quick schedule for patient with no appointment
-  const handleQuickCreateAppointment = () => {
-    if (!selectedPatient) return
-
-    const treat = vitadentConfig.treatments.find((t) => t.name === quickTreatment)
-    const price = treat ? treat.priceCop : 100000
-
-    const newApt: PatientAppointment = {
-      id: `apt-${Date.now()}`,
-      patientId: selectedPatient.id,
-      patientName: selectedPatient.company,
-      doctor: quickDoc,
-      treatment: quickTreatment,
-      date: quickDate,
-      time: '11:00 AM',
-      box: 'Consultorio 1 (General)',
-      price,
-      status: 'Programada',
-      notes: 'Cita generada para registro de pago directo'
+  // Open Create Modal & initialize defaults
+  const handleOpenCreateModal = () => {
+    const firstPatient = contacts.find((c) => c.type === 'Customer') || contacts[0]
+    if (firstPatient) {
+      handleSelectPatient(firstPatient.id)
     }
-
-    const updated = [newApt, ...appointments]
-    setAppointments(updated)
-    setSelectedAppointmentId(newApt.id)
-    setPaymentAmount(price)
-    setPaymentReceiptRef(`REC-${Math.floor(4100 + transactions.length + 1)} · ${quickTreatment}`)
-    setIsQuickScheduling(false)
-    onToast(`Cita creada para ${selectedPatient.company} (${quickTreatment})`)
+    setPaymentMethod('Card')
+    setPaymentNotes('')
+    const nextNum = 4100 + payments.length + 1
+    setReceiptNumberInput(`REC-${nextNum}`)
+    setIsCreateModalOpen(true)
   }
 
-  // Submit Payment
-  const handleSubmitPayment = (e: React.FormEvent) => {
+  // Submit Create Payment
+  const handleConfirmCreatePayment = (e: React.FormEvent) => {
     e.preventDefault()
-
-    // Regla estricta: para que haya pago debe haber cita y paciente
     if (!selectedPatient) {
-      alert('Debe seleccionar un paciente para registrar el pago.')
-      return
-    }
-    if (!selectedAppointment) {
-      alert('Regla Clínica VitaDent: Debe asociar una cita previa o agendar una para registrar el cobro.')
+      onToast('Seleccione un paciente para procesar el cobro.')
       return
     }
     if (paymentAmount <= 0) {
-      alert('El monto del pago debe ser mayor a cero.')
+      onToast('El valor a cobrar debe ser mayor a cero.')
       return
     }
 
-    const newTx: PaymentTransaction = {
-      id: `pt-${Date.now()}`,
-      party: selectedPatient.company,
-      initials: selectedPatient.initials,
-      docRef: paymentReceiptRef || `FAC-${Math.floor(4100 + transactions.length + 1)} · ${selectedAppointment.treatment}`,
-      method: paymentMethod,
-      date: '11 Nov 2026',
-      relativeDate: 'Hoy, hace un momento',
-      amount: paymentAmount,
-      type: 'in'
+    const methodLabelMap = {
+      Card: 'Tarjeta / Datáfono',
+      Transfer: 'Nequi / Bancolombia',
+      Cash: 'Efectivo'
     }
 
-    // Prepend to transactions
-    setTransactions((prev) => [newTx, ...prev])
+    const newPayment: ClinicalPayment = {
+      id: `pay-${Date.now()}`,
+      receiptNumber: receiptNumberInput.trim() || `REC-${4100 + payments.length + 1}`,
+      patientId: selectedPatient.id,
+      patientName: selectedPatient.company,
+      patientDoc: `CC 1.0${Math.floor(100 + Math.random() * 900)}.${Math.floor(100 + Math.random() * 900)}`,
+      patientInitials: selectedPatient.initials,
+      patientPhone: selectedPatient.phone || '+57 310 000 0000',
+      patientEmail: selectedPatient.email || 'paciente@vitadent.com.co',
+      treatment: customTreatment,
+      doctor: customDoctor,
+      amount: paymentAmount,
+      method: paymentMethod,
+      methodLabel: methodLabelMap[paymentMethod],
+      date: '11 Nov 2026',
+      time: new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }),
+      period: 'Hoy',
+      status: 'Completado',
+      notes: paymentNotes.trim() || 'Cobro clínico registrado en recepción',
+      appointmentId: selectedAppointmentId || undefined
+    }
 
-    // Update appointment status to 'Pagada'
-    setAppointments((prev) =>
-      prev.map((a) => (a.id === selectedAppointment.id ? { ...a, status: 'Pagada' } : a))
-    )
+    // Add payment
+    setPayments((prev) => [newPayment, ...prev])
 
-    onToast(
-      `¡Pago de $${paymentAmount.toLocaleString('es-CO')} COP registrado para ${selectedPatient.company} (${selectedAppointment.treatment})!`
-    )
+    // Update appointment status to 'Pagada' if linked
+    if (selectedAppointmentId) {
+      setAppointments((prev) =>
+        prev.map((a) => (a.id === selectedAppointmentId ? { ...a, status: 'Pagada' } : a))
+      )
+    }
 
-    // Reset & close
-    setIsPaymentModalOpen(false)
-    setSelectedPatientId('')
-    setSelectedAppointmentId('')
-    setPaymentAmount(0)
-    setPaymentNotes('')
+    setIsCreateModalOpen(false)
+    onToast(`¡Cobro ${newPayment.receiptNumber} por $${newPayment.amount.toLocaleString('es-CO')} COP registrado con éxito!`)
+    // Optionally open the digital receipt
+    setReceiptToView(newPayment)
   }
 
-  const handlePayBill = (billId: string, vendor: string, amt: number) => {
-    setBills((prev) => prev.filter((b) => b.id !== billId))
-    onToast(`Pago de $${amt.toLocaleString('es-CO')} COP a ${vendor} programado exitosamente.`)
+  // Handle Edit Payment Save
+  const handleSaveEditPayment = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!paymentToEdit) return
+
+    setPayments((prev) =>
+      prev.map((p) => (p.id === paymentToEdit.id ? paymentToEdit : p))
+    )
+    onToast(`Recibo ${paymentToEdit.receiptNumber} actualizado correctamente.`)
+    setPaymentToEdit(null)
   }
 
-  const filteredTransactions = transactions.filter((t) => {
-    const matchesType =
-      filterType === 'All' ? true : filterType === 'Money in' ? t.type === 'in' : t.type === 'out'
-    const matchesQuery =
-      t.party.toLowerCase().includes(query.toLowerCase()) ||
-      t.docRef.toLowerCase().includes(query.toLowerCase()) ||
-      t.method.toLowerCase().includes(query.toLowerCase())
-    return matchesType && matchesQuery
-  })
+  // Handle Cancel Payment
+  const handleConfirmCancellation = () => {
+    if (!paymentToCancel) return
+    if (!cancellationReasonText.trim()) {
+      onToast('Debe ingresar el motivo de la anulación para mantener trazabilidad contable.')
+      return
+    }
 
-  // Group by relativeDate
-  const grouped: Record<string, PaymentTransaction[]> = {}
-  filteredTransactions.forEach((t) => {
-    if (!grouped[t.relativeDate]) grouped[t.relativeDate] = []
-    grouped[t.relativeDate].push(t)
-  })
+    setPayments((prev) =>
+      prev.map((p) =>
+        p.id === paymentToCancel.id
+          ? {
+              ...p,
+              status: 'Anulado',
+              cancellationReason: cancellationReasonText.trim()
+            }
+          : p
+      )
+    )
+    onToast(`Cobro ${paymentToCancel.receiptNumber} marcado como Anulado.`)
+    setPaymentToCancel(null)
+    setCancellationReasonText('')
+  }
 
-  // Calculate totals
-  const totalMoneyIn = transactions.filter((t) => t.type === 'in').reduce((acc, t) => acc + t.amount, 0)
+  // Handle Permanent Delete
+  const handleDeletePermanent = (id: string, ref: string) => {
+    if (window.confirm(`¿Desea eliminar definitivamente el registro ${ref}? Esta acción no se puede deshacer.`)) {
+      setPayments((prev) => prev.filter((p) => p.id !== id))
+      setPaymentToCancel(null)
+      onToast(`Registro ${ref} eliminado definitivamente del sistema.`)
+    }
+  }
+
+  // Filtered Payments
+  const filteredPayments = useMemo(() => {
+    return payments.filter((p) => {
+      // Query filter
+      const matchesQuery =
+        !query ||
+        p.patientName.toLowerCase().includes(query.toLowerCase()) ||
+        p.receiptNumber.toLowerCase().includes(query.toLowerCase()) ||
+        p.patientDoc.toLowerCase().includes(query.toLowerCase()) ||
+        p.treatment.toLowerCase().includes(query.toLowerCase()) ||
+        p.doctor.toLowerCase().includes(query.toLowerCase())
+
+      // Method filter
+      const matchesMethod = filterMethod === 'ALL' || p.method === filterMethod
+
+      // Date filter
+      const matchesDate = filterDate === 'ALL' || p.period === filterDate
+
+      // Status filter
+      const matchesStatus = filterStatus === 'ALL' || p.status === filterStatus
+
+      return matchesQuery && matchesMethod && matchesDate && matchesStatus
+    })
+  }, [payments, query, filterMethod, filterDate, filterStatus])
+
+  // KPI Calculations
+  const todayCompletedPayments = payments.filter((p) => p.period === 'Hoy' && p.status === 'Completado')
+  const totalCobradoHoy = todayCompletedPayments.reduce((acc, p) => acc + p.amount, 0)
+  const countCobradoHoy = todayCompletedPayments.length
 
   return (
     <div className="cadra-page-container">
-      {/* 3D Tactile & Modal CSS */}
+      {/* 3D Tactile Styling & Component Scoped CSS */}
       <style>{`
         .btn-3d-magenta {
           background: linear-gradient(180deg, #b84b90 0%, #A94384 60%, #8e356e 100%);
@@ -255,62 +510,184 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onOpenCr
           box-shadow: 0 1px 2px rgba(169, 67, 132, 0.3);
         }
 
-        .payment-rule-badge {
-          display: flex;
+        .btn-3d-metallic {
+          background: linear-gradient(180deg, #9ca3af 0%, #8A8A8F 60%, #6b7280 100%);
+          color: #ffffff;
+          border: 1px solid #4b5563;
+          border-radius: 8px;
+          padding: 7px 14px;
+          font-weight: 600;
+          font-size: 12.5px;
+          display: inline-flex;
           align-items: center;
           gap: 6px;
-          padding: 8px 12px;
-          background: #fdf2f8;
-          border: 1px solid #fbcfe8;
-          border-radius: 8px;
-          color: #831843;
-          font-size: 11.5px;
-          font-weight: 600;
-          margin-bottom: 12px;
-        }
-
-        .appointment-selection-card {
-          padding: 10px 14px;
-          border: 1.5px solid #e2e8f0;
-          border-radius: 10px;
-          background: #ffffff;
           cursor: pointer;
-          transition: all 0.16s ease;
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+          transition: all 0.15s ease;
         }
-        .appointment-selection-card:hover {
-          border-color: #cbd5e1;
-          background: #f8fafc;
-        }
-        .appointment-selection-card.selected {
-          border-color: #A94384;
-          background: #fdf2f8;
-          box-shadow: 0 0 0 1px #A94384;
+        .btn-3d-metallic:hover {
+          background: linear-gradient(180deg, #a8afba 0%, #94949a 60%, #767d8c 100%);
+          transform: translateY(-1px);
         }
 
-        .method-choice-pill {
-          flex: 1;
-          padding: 8px 10px;
-          border: 1px solid #cbd5e1;
+        .action-icon-btn {
+          width: 30px;
+          height: 30px;
+          border-radius: 7px;
+          border: 1px solid #e2e8f0;
+          background: #ffffff;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          color: #64748b;
+          transition: all 0.15s ease;
+        }
+        .action-icon-btn:hover {
+          background: #f8fafc;
+          border-color: #cbd5e1;
+          color: #0f172a;
+          transform: translateY(-1px);
+        }
+        .action-icon-btn.view:hover {
+          color: #A94384;
+          border-color: #fbcfe8;
+          background: #fdf2f8;
+        }
+        .action-icon-btn.edit:hover {
+          color: #0284c7;
+          border-color: #bae6fd;
+          background: #f0f9ff;
+        }
+        .action-icon-btn.cancel:hover {
+          color: #dc2626;
+          border-color: #fecaca;
+          background: #fef2f2;
+        }
+
+        .clean-filter-tab {
+          padding: 6px 13px;
           border-radius: 8px;
+          border: 1px solid #e2e8f0;
           background: #ffffff;
           font-size: 12px;
           font-weight: 600;
-          color: #334155;
+          color: #475569;
           cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 6px;
           transition: all 0.15s ease;
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
         }
-        .method-choice-pill.active {
+        .clean-filter-tab:hover {
+          background: #f8fafc;
+          color: #1e293b;
+        }
+        .clean-filter-tab.active {
           background: #A94384;
           color: #ffffff;
           border-color: #A94384;
-          box-shadow: 0 2px 6px rgba(169, 67, 132, 0.3);
+          box-shadow: 0 2px 6px rgba(169, 67, 132, 0.28);
+        }
+
+        .method-badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          padding: 4px 9px;
+          border-radius: 6px;
+          font-size: 11.5px;
+          font-weight: 600;
+        }
+        .method-badge.card {
+          background: #fdf2f8;
+          color: #9d174d;
+          border: 1px solid #fbcfe8;
+        }
+        .method-badge.transfer {
+          background: #f0f9ff;
+          color: #0369a1;
+          border: 1px solid #bae6fd;
+        }
+        .method-badge.cash {
+          background: #f0fdf4;
+          color: #15803d;
+          border: 1px solid #bbf7d0;
+        }
+
+        .status-pill-clean {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          padding: 3px 8px;
+          border-radius: 9999px;
+          font-size: 11px;
+          font-weight: 700;
+        }
+        .status-pill-clean.success {
+          background: #dcfce7;
+          color: #15803d;
+        }
+        .status-pill-clean.void {
+          background: #fee2e2;
+          color: #b91c1c;
+          text-decoration: line-through;
+        }
+
+        .step-pill-indicator {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          padding: 5px 10px;
+          border-radius: 6px;
+          font-size: 11.5px;
+          font-weight: 600;
+          background: #f1f5f9;
+          color: #64748b;
+        }
+        .step-pill-indicator.active {
+          background: #fdf2f8;
+          color: #A94384;
+          border: 1px solid #fbcfe8;
+        }
+
+        .receipt-watermark-card {
+          background: #ffffff;
+          border: 1px solid #e2e8f0;
+          border-radius: 14px;
+          box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+          position: relative;
+          overflow: hidden;
+        }
+        .receipt-watermark-card::before {
+          content: 'VITADENT';
+          position: absolute;
+          top: 45%;
+          left: 50%;
+          transform: translate(-50%, -50%) rotate(-25deg);
+          font-size: 82px;
+          font-weight: 900;
+          color: rgba(169, 67, 132, 0.035);
+          pointer-events: none;
+          letter-spacing: 12px;
+        }
+
+        .patient-card-quick {
+          padding: 10px 14px;
+          border-radius: 10px;
+          border: 1.5px solid #e2e8f0;
+          background: #ffffff;
+          cursor: pointer;
+          transition: all 0.15s ease;
+        }
+        .patient-card-quick:hover {
+          border-color: #cbd5e1;
+          background: #f8fafc;
+        }
+        .patient-card-quick.selected {
+          border-color: #A94384;
+          background: #fdf2f8;
+          box-shadow: 0 0 0 1px #A94384;
         }
       `}</style>
 
@@ -320,44 +697,47 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onOpenCr
         <span className="crumb-sep">&gt;</span>
         <span>Facturación & Cobros</span>
         <span className="crumb-sep">&gt;</span>
-        <span className="crumb-active">Gestión de Pagos & Cobros</span>
+        <span className="crumb-active">Pagos & Facturación Clínica</span>
       </div>
 
-      {/* Header with two-tier right cluster */}
-      <div className="cadra-page-header">
+      {/* Header Principal sin submenús repetidos */}
+      <div className="cadra-page-header" style={{ marginBottom: '18px' }}>
         <div className="page-header-left">
-          <h1 className="cadra-page-title">Pagos & Cobros</h1>
-          <div className="cadra-sub-tabs">
-            <button className="cadra-sub-tab" onClick={() => onNavigate('/accounting/ledger')}>
-              Libro Mayor
-            </button>
-            <button className="cadra-sub-tab" onClick={() => onNavigate('/accounting/invoices')}>
-              Facturas Tratamientos
-            </button>
-            <button className="cadra-sub-tab active" onClick={() => onNavigate('/pagos')}>
-              Cobros y Facturación
-            </button>
-            <button className="cadra-sub-tab" onClick={() => onNavigate('/agenda')}>
-              Agenda de Citas
-            </button>
-            <button className="cadra-sub-tab" onClick={() => onNavigate('/pacientes')}>
-              Pacientes
-            </button>
+          <div className="flex items-center gap-2">
+            <h1 className="cadra-page-title" style={{ fontSize: '22px', fontWeight: 800 }}>
+              Pagos & Facturación Clínica
+            </h1>
+            <span
+              style={{
+                fontSize: '11px',
+                fontWeight: 700,
+                padding: '3px 9px',
+                borderRadius: '6px',
+                backgroundColor: '#fdf2f8',
+                color: '#A94384',
+                border: '1px solid #fbcfe8'
+              }}
+            >
+              Recepción & Caja
+            </span>
           </div>
+          <p style={{ margin: '3px 0 0 0', fontSize: '12.5px', color: '#64748b' }}>
+            Registro de cobros, emisión de recibos clínicos digitales y control de pagos de tratamientos.
+          </p>
         </div>
 
         <div className="page-header-right-cluster">
           <LiveFloorPill onNavigate={onNavigate} />
           <div className="cadra-header-actions">
-            {/* Botón principal Registrar Pago abre el modal integrado */}
-            <button className="btn-3d-magenta" onClick={() => setIsPaymentModalOpen(true)}>
+            {/* Botón Principal: + Registrar Cobro / Pago */}
+            <button className="btn-3d-magenta" onClick={handleOpenCreateModal}>
               <CreditCard size={16} />
-              <span>Registrar Pago</span>
+              <span>+ Registrar Cobro / Pago</span>
             </button>
 
             <button
-              className="cadra-btn-secondary"
-              onClick={() => onToast('Exportando reporte contable de recaudos en Excel...')}
+              className="btn-3d-metallic"
+              onClick={() => onToast('Generando reporte contable en Excel de cobros clínicos...')}
             >
               <Download size={14} />
               <span>Exportar</span>
@@ -366,371 +746,511 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onOpenCr
         </div>
       </div>
 
-      {/* 4 KPI Cards */}
-      <div className="cadra-kpi-grid-4">
-        {/* Card 1: Money in */}
+      {/* 4 Tarjetas KPI Ordenadas en la Parte Superior */}
+      <div className="cadra-kpi-grid-4" style={{ marginBottom: '22px' }}>
+        {/* KPI 1: Total Cobrado Hoy */}
         <div className="cadra-kpi-card kpi-card-dark">
           <div className="kpi-card-top">
-            <ArrowDownLeft size={16} className="kpi-icon-dim" />
-            <span className="kpi-label">Ingresos · 30 días</span>
+            <DollarSign size={16} style={{ color: '#10b981' }} />
+            <span className="kpi-label">Total Cobrado Hoy</span>
           </div>
           <div className="kpi-main-number">
-            <AnimatedCounter value={`$${(totalMoneyIn / 1000).toFixed(0)}k`} duration={750} delay={100} />
+            <AnimatedCounter value={`$${(totalCobradoHoy || 2550000).toLocaleString('es-CO')}`} duration={750} delay={100} />
           </div>
-          <span style={{ fontSize: '11px', color: '#94a3b8', marginTop: '4px' }}>Recaudos de pacientes & convenios</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
+            <span
+              style={{
+                fontSize: '10.5px',
+                fontWeight: 700,
+                color: '#10b981',
+                background: 'rgba(16, 185, 129, 0.15)',
+                padding: '2px 6px',
+                borderRadius: '4px'
+              }}
+            >
+              ● {countCobradoHoy || 2} cobros hoy
+            </span>
+            <span style={{ fontSize: '11px', color: '#94a3b8' }}>Ingresados a caja</span>
+          </div>
         </div>
 
-        {/* Card 2: Money out */}
+        {/* KPI 2: Facturación del Mes */}
         <div className="cadra-kpi-card kpi-card-blue">
           <div className="kpi-card-top">
-            <ArrowUpRight size={16} className="kpi-icon-blue" />
-            <span className="kpi-label">Egresos · Materiales & Laboratorio</span>
+            <TrendingUp size={16} style={{ color: '#A94384' }} />
+            <span className="kpi-label">Facturación del Mes</span>
           </div>
           <div className="kpi-main-number">
-            <AnimatedCounter value="$16,366" duration={750} delay={150} />
+            <AnimatedCounter value="$48.500.000" duration={750} delay={150} />
           </div>
-          <span style={{ fontSize: '11px', color: '#64748b', marginTop: '4px' }}>Insumos de laboratorio y compras clínicas</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
+            <span
+              style={{
+                fontSize: '10.5px',
+                fontWeight: 700,
+                color: '#A94384',
+                background: 'rgba(169, 67, 132, 0.12)',
+                padding: '2px 6px',
+                borderRadius: '4px'
+              }}
+            >
+              +12.4% vs mes anterior
+            </span>
+            <span style={{ fontSize: '11px', color: '#64748b' }}>Meta: $50M COP</span>
+          </div>
         </div>
 
-        {/* Card 3: Net cash flow */}
+        {/* KPI 3: Saldos Pendientes de Cobro */}
         <div className="cadra-kpi-card kpi-card-light">
           <div className="kpi-card-top">
-            <TrendingUp size={16} className="kpi-icon-dim" />
-            <span className="kpi-label">Flujo de Caja Neto</span>
+            <Clock size={16} style={{ color: '#d97706' }} />
+            <span className="kpi-label">Saldos Pendientes de Cobro</span>
           </div>
           <div className="kpi-number-row">
             <span className="kpi-main-number">
-              <AnimatedCounter value="$80,350" duration={750} delay={200} />
+              <AnimatedCounter value="$4.820.000" duration={750} delay={200} />
             </span>
-            <span className="cadra-tag-pill tag-green">Superávit</span>
+            <span className="cadra-tag-pill tag-orange" style={{ fontSize: '10.5px' }}>
+              En Gestión
+            </span>
           </div>
+          <span style={{ fontSize: '11px', color: '#64748b', marginTop: '4px' }}>
+            Convenios EPS Sura y tratamientos en curso
+          </span>
         </div>
 
-        {/* Card 4: Cash on hand */}
+        {/* KPI 4: Método de Pago Predilecto */}
         <div className="cadra-kpi-card kpi-card-light">
           <div className="kpi-card-top">
-            <Building2 size={16} className="kpi-icon-dim" />
-            <span className="kpi-label">Disponible en Bancos & Caja</span>
+            <CreditCard size={16} style={{ color: '#0284c7' }} />
+            <span className="kpi-label">Método de Pago Predilecto</span>
           </div>
-          <div className="kpi-main-number">
-            <AnimatedCounter value="$221,553" duration={750} delay={250} />
-          </div>
-        </div>
-      </div>
-
-      {/* Row 2: Cash Flow Chart (Left) + How money moved (Right) */}
-      <div className="payments-split-layout mt-4">
-        {/* Cash Flow Chart */}
-        <div className="cadra-card cash-flow-chart-card">
-          <div className="chart-card-header">
-            <div className="flex items-center gap-2">
-              <TrendingUp size={16} className="text-secondary" />
-              <h3>Flujo de Caja de la Clínica</h3>
+          <div style={{ marginTop: '2px' }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+              <strong style={{ fontSize: '16px', color: '#0f172a' }}>Tarjetas / Datáfono</strong>
+              <span style={{ fontSize: '15px', fontWeight: 800, color: '#A94384' }}>48%</span>
             </div>
-
-            <div className="cadra-pill-group">
-              <button
-                className={`pill-switch-btn ${flowView === 'running' ? 'active' : ''}`}
-                onClick={() => setFlowView('running')}
-              >
-                Acumulado
-              </button>
-              <button
-                className={`pill-switch-btn ${flowView === 'daily' ? 'active' : ''}`}
-                onClick={() => setFlowView('daily')}
-              >
-                Diario
-              </button>
+            {/* Progress breakdown */}
+            <div
+              style={{
+                height: '7px',
+                borderRadius: '999px',
+                display: 'flex',
+                overflow: 'hidden',
+                marginTop: '8px',
+                backgroundColor: '#e2e8f0'
+              }}
+            >
+              <div style={{ width: '48%', backgroundColor: '#A94384' }} title="Datáfono 48%" />
+              <div style={{ width: '32%', backgroundColor: '#0284c7' }} title="Nequi/Bancolombia 32%" />
+              <div style={{ width: '20%', backgroundColor: '#10b981' }} title="Efectivo 20%" />
             </div>
-          </div>
-
-          <div className="cash-flow-legend">
-            <span className="legend-item">
-              <i className="legend-dot dot-green" /> Ingresos Pacientes
-            </span>
-            <span className="legend-item">
-              <i className="legend-dot dot-terracotta" /> Materiales & Laboratorio
-            </span>
-            <span className="text-muted text-xs">Periodo Actual (Oct 13 – Nov 11)</span>
-          </div>
-
-          {/* SVG Smooth Cash Flow Curve */}
-          <div className="year-chart-wrapper">
-            <div className="chart-y-axis">
-              <span>$200k</span>
-              <span>$100k</span>
-              <span>$0</span>
-            </div>
-            <div className="chart-plot-area">
-              <svg viewBox="0 0 600 135" preserveAspectRatio="none" className="smooth-curve-svg">
-                <defs>
-                  <linearGradient id="moneyInFill" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#10b981" stopOpacity="0.22" />
-                    <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
-                  </linearGradient>
-                </defs>
-                <line x1="0" y1="10" x2="600" y2="10" stroke="currentColor" strokeOpacity="0.06" strokeDasharray="3 3" />
-                <line x1="0" y1="67" x2="600" y2="67" stroke="currentColor" strokeOpacity="0.06" strokeDasharray="3 3" />
-                <line x1="0" y1="125" x2="600" y2="125" stroke="currentColor" strokeOpacity="0.08" />
-
-                <path
-                  d="M 0 128 L 50 125 L 100 122 L 160 110 L 230 108 L 320 105 L 400 100 L 500 95 L 540 65 L 600 60"
-                  fill="none"
-                  stroke="#10b981"
-                  strokeWidth="2.5"
-                />
-                <path
-                  d="M 0 128 L 50 125 L 100 122 L 160 110 L 230 108 L 320 105 L 400 100 L 500 95 L 540 65 L 600 60 L 600 135 L 0 135 Z"
-                  fill="url(#moneyInFill)"
-                />
-                <path
-                  d="M 0 130 L 100 126 L 200 122 L 300 120 L 400 116 L 500 114 L 600 110"
-                  fill="none"
-                  stroke="#c2410c"
-                  strokeWidth="2"
-                  strokeDasharray="4 4"
-                />
-              </svg>
-              <div className="chart-x-axis">
-                <span>13 Oct</span>
-                <span>19 Oct</span>
-                <span>25 Oct</span>
-                <span>31 Oct</span>
-                <span>06 Nov</span>
-                <span>11 Nov</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right: Canales de Pago */}
-        <div className="cadra-card money-moved-card">
-          <div className="chart-card-header">
-            <div className="flex items-center gap-2">
-              <CreditCard size={16} className="text-secondary" />
-              <h3>Canales de Pago Recibidos</h3>
-            </div>
-            <span className="text-xs text-muted">Últimos 30 días</span>
-          </div>
-
-          <div className="money-moved-methods">
-            <div className="moved-method-row">
-              <div className="method-left">
-                <Building2 size={16} className="text-secondary" />
-                <div>
-                  <strong>Transferencias (Nequi / Bancolombia)</strong>
-                  <div className="text-xs text-muted">
-                    <AnimatedCounter value={8} /> recaudos
-                  </div>
-                </div>
-              </div>
-              <div className="method-right">
-                <strong><AnimatedCounter value="$72,209" /></strong>
-                <span className="text-xs text-muted">64%</span>
-              </div>
-            </div>
-            <div className="method-bar-bg">
-              <div className="method-bar-fill" style={{ width: '64%', backgroundColor: '#A94384' }} />
-            </div>
-
-            <div className="moved-method-row mt-2">
-              <div className="method-left">
-                <CreditCard size={16} className="text-secondary" />
-                <div>
-                  <strong>Datáfono (Tarjetas Débito / Crédito)</strong>
-                  <div className="text-xs text-muted">
-                    <AnimatedCounter value={14} /> pagos
-                  </div>
-                </div>
-              </div>
-              <div className="method-right">
-                <strong><AnimatedCounter value="$24,650" /></strong>
-                <span className="text-xs text-muted">22%</span>
-              </div>
-            </div>
-            <div className="method-bar-bg">
-              <div className="method-bar-fill" style={{ width: '22%', backgroundColor: '#0284c7' }} />
-            </div>
-
-            <div className="moved-method-row mt-2">
-              <div className="method-left">
-                <DollarSign size={16} className="text-secondary" />
-                <div>
-                  <strong>Efectivo (Caja General Recepción)</strong>
-                  <div className="text-xs text-muted">
-                    <AnimatedCounter value={6} /> recibos
-                  </div>
-                </div>
-              </div>
-              <div className="method-right">
-                <strong><AnimatedCounter value="$14,600" /></strong>
-                <span className="text-xs text-muted">14%</span>
-              </div>
-            </div>
-            <div className="method-bar-bg">
-              <div className="method-bar-fill" style={{ width: '14%', backgroundColor: '#10b981' }} />
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                fontSize: '10.5px',
+                color: '#64748b',
+                marginTop: '5px'
+              }}
+            >
+              <span>Nequi (32%)</span>
+              <span>Efectivo (20%)</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Row 3: Payments Transactions List (Left) + Bills to pay (Right) */}
-      <div className="payments-split-layout mt-4">
-        {/* Left: Payments List */}
-        <div className="cadra-card transactions-card">
-          <div className="table-header-toolbar">
-            <div className="flex items-center gap-2">
-              <span className="text-secondary">📋</span>
-              <h3>Registro de Transacciones & Cobros</h3>
-            </div>
-
-            <div className="cadra-pill-group">
+      {/* Contenedor Principal: Tabla y Controles de Pagos */}
+      <div className="cadra-card" style={{ padding: '20px', borderRadius: '14px', background: '#ffffff' }}>
+        {/* Barra Superior de Herramientas & Filtros Claros */}
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '12px',
+            marginBottom: '16px'
+          }}
+        >
+          {/* Barra de Búsqueda Interactiva */}
+          <div
+            style={{
+              position: 'relative',
+              flex: '1 1 280px',
+              maxWidth: '380px'
+            }}
+          >
+            <Search
+              size={15}
+              style={{
+                position: 'absolute',
+                left: '11px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                color: '#8A8A8F'
+              }}
+            />
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Buscar por paciente, recibo, cédula o tratamiento..."
+              style={{
+                width: '100%',
+                padding: '8px 12px 8px 34px',
+                fontSize: '12.5px',
+                borderRadius: '8px',
+                border: '1px solid #cbd5e1',
+                background: '#f8fafc',
+                color: '#0f172a',
+                outline: 'none',
+                boxSizing: 'border-box'
+              }}
+            />
+            {query && (
               <button
-                className={`pill-switch-btn ${filterType === 'All' ? 'active' : ''}`}
-                onClick={() => setFilterType('All')}
+                onClick={() => setQuery('')}
+                style={{
+                  position: 'absolute',
+                  right: '9px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: '#94a3b8'
+                }}
+              >
+                <X size={14} />
+              </button>
+            )}
+          </div>
+
+          {/* Filtros de Método de Pago y Rango de Fecha */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px' }}>
+            {/* Filtro Rango de Fecha */}
+            <div style={{ display: 'inline-flex', background: '#f1f5f9', padding: '3px', borderRadius: '9px' }}>
+              <button
+                className={`clean-filter-tab ${filterDate === 'ALL' ? 'active' : ''}`}
+                onClick={() => setFilterDate('ALL')}
+                style={{ padding: '4px 10px', fontSize: '11.5px', border: 'none' }}
               >
                 Todos
               </button>
               <button
-                className={`pill-switch-btn ${filterType === 'Money in' ? 'active' : ''}`}
-                onClick={() => setFilterType('Money in')}
+                className={`clean-filter-tab ${filterDate === 'Hoy' ? 'active' : ''}`}
+                onClick={() => setFilterDate('Hoy')}
+                style={{ padding: '4px 10px', fontSize: '11.5px', border: 'none' }}
               >
-                Ingresos (+)
+                Hoy
               </button>
               <button
-                className={`pill-switch-btn ${filterType === 'Money out' ? 'active' : ''}`}
-                onClick={() => setFilterType('Money out')}
+                className={`clean-filter-tab ${filterDate === 'Esta Semana' ? 'active' : ''}`}
+                onClick={() => setFilterDate('Esta Semana')}
+                style={{ padding: '4px 10px', fontSize: '11.5px', border: 'none' }}
               >
-                Egresos (-)
+                Esta Semana
+              </button>
+              <button
+                className={`clean-filter-tab ${filterDate === 'Este Mes' ? 'active' : ''}`}
+                onClick={() => setFilterDate('Este Mes')}
+                style={{ padding: '4px 10px', fontSize: '11.5px', border: 'none' }}
+              >
+                Este Mes
               </button>
             </div>
-          </div>
 
-          <div className="pos-search-input-box mb-3">
-            <Search size={14} className="text-secondary" />
-            <input
-              type="text"
-              placeholder="Buscar por paciente, documento, tratamiento o método..."
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-            />
-          </div>
+            {/* Filtro Método de Pago */}
+            <select
+              value={filterMethod}
+              onChange={(e) => setFilterMethod(e.target.value as any)}
+              style={{
+                padding: '6px 10px',
+                fontSize: '12px',
+                borderRadius: '8px',
+                border: '1px solid #cbd5e1',
+                background: '#ffffff',
+                color: '#334155',
+                fontWeight: 600,
+                cursor: 'pointer'
+              }}
+            >
+              <option value="ALL">💳 Todos los Métodos</option>
+              <option value="Card">💳 Tarjetas / Datáfono</option>
+              <option value="Transfer">🏛️ Nequi / Bancolombia</option>
+              <option value="Cash">💵 Efectivo (Caja)</option>
+            </select>
 
-          {/* Grouped Day Lists */}
-          <div className="transactions-grouped-stack">
-            {Object.keys(grouped).length === 0 ? (
-              <div style={{ padding: '24px', textAlign: 'center', color: '#64748b' }}>
-                No se encontraron transacciones con los filtros actuales.
-              </div>
-            ) : (
-              Object.keys(grouped).map((groupTitle) => (
-                <div key={groupTitle} className="trans-group-block">
-                  <div className="trans-group-header">
-                    <span>{groupTitle}</span>
-                  </div>
-
-                  <div className="trans-items-list">
-                    {grouped[groupTitle].map((t) => (
-                      <div key={t.id} className="trans-row-item">
-                        <div className={`trans-icon-indicator ${t.type === 'in' ? 'in' : 'out'}`}>
-                          {t.type === 'in' ? <ArrowDownLeft size={14} /> : <ArrowUpRight size={14} />}
-                        </div>
-
-                        <span
-                          className="customer-initials-circle"
-                          style={{
-                            backgroundColor: t.type === 'in' ? '#fdf2f8' : '#f1f5f9',
-                            color: t.type === 'in' ? '#A94384' : '#475569'
-                          }}
-                        >
-                          {t.initials}
-                        </span>
-
-                        <div className="trans-party-details">
-                          <strong>{t.party}</strong>
-                          <div className="text-xs text-muted">{t.docRef}</div>
-                        </div>
-
-                        <div className="trans-method-box">
-                          <span className="text-xs text-secondary">
-                            {t.method === 'ACH transfer' ? '🏛️ Transferencia' : t.method === 'Wire' ? '🏦 Giro' : '💳 Tarjeta/Caja'}
-                          </span>
-                        </div>
-
-                        <div className="trans-doc-box">
-                          <span className="text-xs text-blue-600 underline cursor-pointer">
-                            {t.docRef.split('·')[0].trim()}
-                          </span>
-                        </div>
-
-                        <div className="trans-amount-box">
-                          <span
-                            className="font-semibold"
-                            style={{ color: t.type === 'in' ? '#047857' : '#b91c1c' }}
-                          >
-                            {t.type === 'in' ? '+' : '-'}${t.amount.toLocaleString('es-CO')}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))
-            )}
+            {/* Filtro Estado */}
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value as any)}
+              style={{
+                padding: '6px 10px',
+                fontSize: '12px',
+                borderRadius: '8px',
+                border: '1px solid #cbd5e1',
+                background: '#ffffff',
+                color: '#334155',
+                fontWeight: 600,
+                cursor: 'pointer'
+              }}
+            >
+              <option value="ALL">📋 Todos los Estados</option>
+              <option value="Completado">✓ Completados</option>
+              <option value="Anulado">✕ Anulados</option>
+            </select>
           </div>
         </div>
 
-        {/* Right: Bills to pay */}
-        <aside className="cadra-card bills-to-pay-card">
-          <div className="chart-card-header">
-            <div className="flex items-center gap-2">
-              <span className="text-secondary">🛒</span>
-              <h3>Cuentas por Pagar (Proveedores)</h3>
-            </div>
-            <strong>
-              <AnimatedCounter value="$33,380" />
-            </strong>
-          </div>
-          <div className="text-xs text-muted mb-3">
-            <AnimatedCounter value={bills.length} /> facturas pendientes de pago a depósitos dentales
-          </div>
+        {/* Tabla Moderna y Pulcra de Pagos */}
+        <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '12.5px' }}>
+            <thead>
+              <tr style={{ borderBottom: '2px solid #f1f5f9', color: '#64748b', fontSize: '11.5px', textTransform: 'uppercase' }}>
+                <th style={{ padding: '10px 12px', fontWeight: 700 }}># Recibo / Ref</th>
+                <th style={{ padding: '10px 12px', fontWeight: 700 }}>Paciente</th>
+                <th style={{ padding: '10px 12px', fontWeight: 700 }}>Tratamiento Dental</th>
+                <th style={{ padding: '10px 12px', fontWeight: 700 }}>Método de Pago</th>
+                <th style={{ padding: '10px 12px', fontWeight: 700 }}>Fecha & Hora</th>
+                <th style={{ padding: '10px 12px', fontWeight: 700, textAlign: 'right' }}>Monto (COP)</th>
+                <th style={{ padding: '10px 12px', fontWeight: 700, textAlign: 'center' }}>Estado</th>
+                <th style={{ padding: '10px 12px', fontWeight: 700, textAlign: 'center' }}>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredPayments.length === 0 ? (
+                <tr>
+                  <td colSpan={8} style={{ padding: '36px', textAlign: 'center', color: '#64748b' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                      <AlertCircle size={28} color="#94a3b8" />
+                      <span style={{ fontSize: '13.5px', fontWeight: 600 }}>No se encontraron cobros registrados</span>
+                      <span style={{ fontSize: '12px', color: '#94a3b8' }}>
+                        Ajuste los filtros o registre un nuevo cobro con el botón superior.
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                filteredPayments.map((p) => {
+                  const isVoid = p.status === 'Anulado'
+                  return (
+                    <tr
+                      key={p.id}
+                      style={{
+                        borderBottom: '1px solid #f1f5f9',
+                        transition: 'background-color 0.12s ease',
+                        backgroundColor: isVoid ? '#fafafa' : '#ffffff',
+                        opacity: isVoid ? 0.75 : 1
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = isVoid ? '#f4f4f5' : '#fdf8fa'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = isVoid ? '#fafafa' : '#ffffff'
+                      }}
+                    >
+                      {/* Recibo # */}
+                      <td style={{ padding: '12px' }}>
+                        <button
+                          onClick={() => setReceiptToView(p)}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            padding: 0,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            fontWeight: 700,
+                            color: '#A94384',
+                            textDecoration: 'underline'
+                          }}
+                          title="Haga clic para ver el recibo digital"
+                        >
+                          <FileText size={13} />
+                          <span>{p.receiptNumber}</span>
+                        </button>
+                      </td>
 
-          <div className="bills-to-pay-list">
-            {bills.map((b) => (
-              <div key={b.id} className="bill-row-item">
-                <span className="customer-initials-circle">{b.initials}</span>
-                <div className="bill-info">
-                  <span className="bill-vendor-name">{b.vendor}</span>
-                  <span className="bill-ref-desc">{b.desc}</span>
-                  <span className="text-xs text-secondary mt-1">{b.due}</span>
-                </div>
-                <div className="bill-amount-actions">
-                  <span className="bill-amount-text">${b.amount.toLocaleString('es-CO')}</span>
-                  <button
-                    className="bill-pay-btn"
-                    onClick={() => handlePayBill(b.id, b.vendor, b.amount)}
-                  >
-                    Pagar
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </aside>
+                      {/* Paciente */}
+                      <td style={{ padding: '12px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span
+                            style={{
+                              width: '28px',
+                              height: '28px',
+                              borderRadius: '50%',
+                              backgroundColor: '#fdf2f8',
+                              color: '#A94384',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              fontSize: '11px',
+                              fontWeight: 800,
+                              flexShrink: 0
+                            }}
+                          >
+                            {p.patientInitials}
+                          </span>
+                          <div>
+                            <strong style={{ color: '#0f172a', display: 'block', fontSize: '12.5px' }}>
+                              {p.patientName}
+                            </strong>
+                            <span style={{ fontSize: '11px', color: '#64748b' }}>{p.patientDoc}</span>
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* Tratamiento Dental */}
+                      <td style={{ padding: '12px' }}>
+                        <div>
+                          <span style={{ fontWeight: 600, color: '#1e293b', display: 'block' }}>
+                            {p.treatment}
+                          </span>
+                          <span style={{ fontSize: '11px', color: '#8A8A8F' }}>
+                            {p.doctor}
+                          </span>
+                        </div>
+                      </td>
+
+                      {/* Método de Pago */}
+                      <td style={{ padding: '12px' }}>
+                        {p.method === 'Card' && (
+                          <span className="method-badge card">
+                            <CreditCard size={12} />
+                            <span>Tarjeta / Datáfono</span>
+                          </span>
+                        )}
+                        {p.method === 'Transfer' && (
+                          <span className="method-badge transfer">
+                            <Building2 size={12} />
+                            <span>Nequi / Bancolombia</span>
+                          </span>
+                        )}
+                        {p.method === 'Cash' && (
+                          <span className="method-badge cash">
+                            <DollarSign size={12} />
+                            <span>Efectivo (Caja)</span>
+                          </span>
+                        )}
+                      </td>
+
+                      {/* Fecha y Hora */}
+                      <td style={{ padding: '12px', whiteSpace: 'nowrap' }}>
+                        <div style={{ fontSize: '12px', color: '#334155', fontWeight: 500 }}>{p.date}</div>
+                        <div style={{ fontSize: '11px', color: '#8A8A8F' }}>{p.time}</div>
+                      </td>
+
+                      {/* Monto COP */}
+                      <td style={{ padding: '12px', textAlign: 'right', whiteSpace: 'nowrap' }}>
+                        <span
+                          style={{
+                            fontWeight: 800,
+                            fontSize: '13px',
+                            color: isVoid ? '#94a3b8' : '#047857',
+                            textDecoration: isVoid ? 'line-through' : 'none'
+                          }}
+                        >
+                          $ {p.amount.toLocaleString('es-CO')}
+                        </span>
+                        <div style={{ fontSize: '10px', color: '#94a3b8' }}>COP</div>
+                      </td>
+
+                      {/* Estado */}
+                      <td style={{ padding: '12px', textAlign: 'center' }}>
+                        {p.status === 'Completado' ? (
+                          <span className="status-pill-clean success">
+                            <CheckCircle2 size={11} />
+                            <span>Completado</span>
+                          </span>
+                        ) : (
+                          <span className="status-pill-clean void" title={p.cancellationReason || 'Anulado'}>
+                            <X size={11} />
+                            <span>Anulado</span>
+                          </span>
+                        )}
+                      </td>
+
+                      {/* Acciones */}
+                      <td style={{ padding: '12px', textAlign: 'center' }}>
+                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                          <button
+                            className="action-icon-btn view"
+                            onClick={() => setReceiptToView(p)}
+                            title="Ver Recibo Digital"
+                          >
+                            <Eye size={14} />
+                          </button>
+
+                          <button
+                            className="action-icon-btn edit"
+                            onClick={() => setPaymentToEdit({ ...p })}
+                            title="Editar Pago"
+                          >
+                            <Edit3 size={14} />
+                          </button>
+
+                          <button
+                            className="action-icon-btn cancel"
+                            onClick={() => {
+                              setPaymentToCancel(p)
+                              setCancellationReasonText('')
+                            }}
+                            title="Anular o Cancelar Cobro"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Footer info de la tabla */}
+        <div
+          style={{
+            marginTop: '14px',
+            paddingTop: '12px',
+            borderTop: '1px solid #f1f5f9',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            fontSize: '11.5px',
+            color: '#64748b'
+          }}
+        >
+          <span>
+            Mostrando <strong>{filteredPayments.length}</strong> de <strong>{payments.length}</strong> transacciones clínicas
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <ShieldCheck size={14} color="#A94384" />
+            Recibos avalados para fines contables y tributarios (RUT Régimen Especial Salud)
+          </span>
+        </div>
       </div>
 
       {/* =========================================================================
-          MODAL: REGISTRAR PAGO CLÍNICO
-          Cumple la regla: "Para que haya cita debe haber paciente, y si hay pago debe haber cita y paciente"
+          MODAL 1: CREATE (REGISTRAR COBRO / PAGO)
+          3 Pasos Claros:
+          1. Seleccionar Paciente
+          2. Seleccionar Cita / Tratamiento
+          3. Datos del Pago (Monto con atajos 100% y 50%, método, recibo, notas)
           ========================================================================= */}
-      {isPaymentModalOpen && (
+      {isCreateModalOpen && (
         <div
           className="cadra-modal-overlay"
-          onClick={() => setIsPaymentModalOpen(false)}
+          onClick={() => setIsCreateModalOpen(false)}
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(15, 23, 42, 0.55)',
+            background: 'rgba(15, 23, 42, 0.6)',
             backdropFilter: 'blur(4px)',
             display: 'flex',
             alignItems: 'center',
@@ -741,7 +1261,690 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onOpenCr
         >
           <div
             className="cadra-action-modal"
-            style={{ maxWidth: '560px', width: '100%', background: '#ffffff', borderRadius: '16px', overflow: 'hidden' }}
+            style={{
+              maxWidth: '580px',
+              width: '100%',
+              background: '#ffffff',
+              borderRadius: '16px',
+              overflow: 'hidden',
+              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div
+              style={{
+                padding: '18px 24px',
+                borderBottom: '1px solid #f1f5f9',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                background: 'linear-gradient(180deg, #ffffff 0%, #fafafa 100%)'
+              }}
+            >
+              <div className="flex items-center gap-2">
+                <CreditCard size={20} color="#A94384" />
+                <div>
+                  <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: '#0f172a' }}>
+                    Registrar Cobro / Pago Clínico
+                  </h3>
+                  <span style={{ fontSize: '11px', color: '#64748b' }}>
+                    Cobro en recepción VitaDent — Procedimiento en 3 pasos
+                  </span>
+                </div>
+              </div>
+              <button
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748b' }}
+                onClick={() => setIsCreateModalOpen(false)}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Stepper Header Visual */}
+            <div
+              style={{
+                padding: '10px 24px',
+                background: '#f8fafc',
+                borderBottom: '1px solid #e2e8f0',
+                display: 'flex',
+                gap: '8px'
+              }}
+            >
+              <div className={`step-pill-indicator ${selectedPatientId ? 'active' : ''}`}>
+                <span>1. Paciente</span>
+                {selectedPatientId && <Check size={12} />}
+              </div>
+              <div className={`step-pill-indicator ${customTreatment ? 'active' : ''}`}>
+                <span>2. Tratamiento</span>
+                {customTreatment && <Check size={12} />}
+              </div>
+              <div className={`step-pill-indicator ${paymentAmount > 0 ? 'active' : ''}`}>
+                <span>3. Datos Pago</span>
+              </div>
+            </div>
+
+            <form onSubmit={handleConfirmCreatePayment}>
+              <div
+                style={{
+                  padding: '22px 24px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '16px',
+                  maxHeight: '72vh',
+                  overflowY: 'auto'
+                }}
+              >
+                {/* PASO 1: SELECCIONAR PACIENTE */}
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: 700, color: '#334155', display: 'block', marginBottom: '5px' }}>
+                    1. Paciente Clínico *
+                  </label>
+                  <select
+                    value={selectedPatientId}
+                    onChange={(e) => handleSelectPatient(e.target.value)}
+                    required
+                    style={{
+                      width: '100%',
+                      border: '1.5px solid #cbd5e1',
+                      borderRadius: '8px',
+                      padding: '8px 12px',
+                      fontSize: '13px',
+                      color: '#0f172a',
+                      background: '#ffffff',
+                      outline: 'none'
+                    }}
+                  >
+                    <option value="">-- Seleccionar paciente registrado --</option>
+                    {contacts
+                      .filter((c) => c.type === 'Customer')
+                      .map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.company} ({p.rep}) — {p.category}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+
+                {/* PASO 2: TRATAMIENTO ASOCIADO O CITA PREVIA */}
+                {selectedPatient && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <label style={{ fontSize: '12px', fontWeight: 700, color: '#334155' }}>
+                        2. Cita o Tratamiento a Cobrar *
+                      </label>
+                      <span style={{ fontSize: '11px', color: '#A94384', fontWeight: 600 }}>
+                        {patientAppointments.length} cita(s) registrada(s)
+                      </span>
+                    </div>
+
+                    {/* Si tiene citas pendientes, mostramos para asociar */}
+                    {patientAppointments.length > 0 ? (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                        {patientAppointments.map((apt) => (
+                          <div
+                            key={apt.id}
+                            className={`patient-card-quick ${selectedAppointmentId === apt.id ? 'selected' : ''}`}
+                            onClick={() => handleSelectAppointment(apt.id)}
+                          >
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <strong style={{ fontSize: '13px', color: '#0f172a' }}>{apt.treatment}</strong>
+                              <span
+                                style={{
+                                  fontSize: '10.5px',
+                                  fontWeight: 700,
+                                  color: apt.status === 'Pagada' ? '#15803d' : '#A94384',
+                                  background: apt.status === 'Pagada' ? '#dcfce7' : '#fdf2f8',
+                                  padding: '2px 8px',
+                                  borderRadius: '999px'
+                                }}
+                              >
+                                {apt.status}
+                              </span>
+                            </div>
+                            <div style={{ fontSize: '11.5px', color: '#64748b', marginTop: '3px', display: 'flex', gap: '8px' }}>
+                              <span>👨‍⚕️ {apt.doctor}</span>
+                              <span>•</span>
+                              <span>📅 {apt.date}</span>
+                              <span>•</span>
+                              <strong style={{ color: '#047857' }}>${apt.price.toLocaleString('es-CO')} COP</strong>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      /* Cita rápida de mostrador si no tiene citas programadas */
+                      <div
+                        style={{
+                          padding: '12px',
+                          borderRadius: '10px',
+                          backgroundColor: '#f8fafc',
+                          border: '1px solid #e2e8f0',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '8px'
+                        }}
+                      >
+                        <span style={{ fontSize: '11.5px', fontWeight: 700, color: '#475569' }}>
+                          Cobro directo de mostrador (Cita / Tratamiento en consulta):
+                        </span>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                          <select
+                            value={customTreatment}
+                            onChange={(e) => {
+                              const treatName = e.target.value
+                              setCustomTreatment(treatName)
+                              const tObj = vitadentConfig.treatments.find((t) => t.name === treatName)
+                              if (tObj) setPaymentAmount(tObj.priceCop)
+                            }}
+                            style={{
+                              border: '1px solid #cbd5e1',
+                              borderRadius: '6px',
+                              padding: '6px',
+                              fontSize: '12px',
+                              color: '#0f172a'
+                            }}
+                          >
+                            {vitadentConfig.treatments.map((t) => (
+                              <option key={t.code} value={t.name}>
+                                {t.name} (${t.priceCop.toLocaleString('es-CO')})
+                              </option>
+                            ))}
+                          </select>
+
+                          <select
+                            value={customDoctor}
+                            onChange={(e) => setCustomDoctor(e.target.value)}
+                            style={{
+                              border: '1px solid #cbd5e1',
+                              borderRadius: '6px',
+                              padding: '6px',
+                              fontSize: '12px',
+                              color: '#0f172a'
+                            }}
+                          >
+                            {vitadentConfig.doctors.map((d) => (
+                              <option key={d.id} value={d.name}>
+                                {d.name} ({d.specialty})
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* PASO 3: DATOS DEL PAGO */}
+                {selectedPatient && (
+                  <>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '12px' }}>
+                      {/* Monto */}
+                      <div>
+                        <label style={{ fontSize: '12px', fontWeight: 700, color: '#334155', display: 'block', marginBottom: '4px' }}>
+                          3. Monto a Cobrar (COP) *
+                        </label>
+                        <input
+                          type="number"
+                          required
+                          min={1000}
+                          value={paymentAmount}
+                          onChange={(e) => setPaymentAmount(Number(e.target.value))}
+                          style={{
+                            width: '100%',
+                            border: '1.5px solid #cbd5e1',
+                            borderRadius: '8px',
+                            padding: '8px 12px',
+                            fontSize: '15px',
+                            fontWeight: 800,
+                            color: '#047857',
+                            outline: 'none',
+                            boxSizing: 'border-box'
+                          }}
+                        />
+                      </div>
+
+                      {/* # Recibo / Ref */}
+                      <div>
+                        <label style={{ fontSize: '12px', fontWeight: 700, color: '#334155', display: 'block', marginBottom: '4px' }}>
+                          # Recibo Clínico
+                        </label>
+                        <input
+                          type="text"
+                          value={receiptNumberInput}
+                          onChange={(e) => setReceiptNumberInput(e.target.value)}
+                          placeholder="REC-4109"
+                          style={{
+                            width: '100%',
+                            border: '1.5px solid #cbd5e1',
+                            borderRadius: '8px',
+                            padding: '8px 12px',
+                            fontSize: '13px',
+                            fontWeight: 600,
+                            color: '#334155',
+                            outline: 'none',
+                            boxSizing: 'border-box'
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Atajos de Monto: 100% y 50% */}
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const apt = appointments.find((a) => a.id === selectedAppointmentId)
+                          const base = apt ? apt.price : 100000
+                          setPaymentAmount(base)
+                        }}
+                        style={{
+                          padding: '5px 10px',
+                          fontSize: '11px',
+                          fontWeight: 600,
+                          borderRadius: '6px',
+                          border: '1px solid #cbd5e1',
+                          background: '#f8fafc',
+                          color: '#334155',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Pago Total 100%
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const apt = appointments.find((a) => a.id === selectedAppointmentId)
+                          const base = apt ? apt.price : 100000
+                          setPaymentAmount(Math.round(base * 0.5))
+                        }}
+                        style={{
+                          padding: '5px 10px',
+                          fontSize: '11px',
+                          fontWeight: 600,
+                          borderRadius: '6px',
+                          border: '1px solid #cbd5e1',
+                          background: '#f8fafc',
+                          color: '#334155',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Abono 50%
+                      </button>
+                    </div>
+
+                    {/* Método de Pago */}
+                    <div>
+                      <label style={{ fontSize: '12px', fontWeight: 700, color: '#334155', display: 'block', marginBottom: '6px' }}>
+                        Método de Pago *
+                      </label>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
+                        <button
+                          type="button"
+                          className={`clean-filter-tab ${paymentMethod === 'Card' ? 'active' : ''}`}
+                          onClick={() => setPaymentMethod('Card')}
+                          style={{ justifyContent: 'center', padding: '8px 4px' }}
+                        >
+                          <CreditCard size={14} />
+                          <span>Tarjeta / Datáfono</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          className={`clean-filter-tab ${paymentMethod === 'Transfer' ? 'active' : ''}`}
+                          onClick={() => setPaymentMethod('Transfer')}
+                          style={{ justifyContent: 'center', padding: '8px 4px' }}
+                        >
+                          <Building2 size={14} />
+                          <span>Nequi / Bancolombia</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          className={`clean-filter-tab ${paymentMethod === 'Cash' ? 'active' : ''}`}
+                          onClick={() => setPaymentMethod('Cash')}
+                          style={{ justifyContent: 'center', padding: '8px 4px' }}
+                        >
+                          <DollarSign size={14} />
+                          <span>Efectivo (Caja)</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Observaciones */}
+                    <div>
+                      <label style={{ fontSize: '12px', fontWeight: 700, color: '#334155', display: 'block', marginBottom: '4px' }}>
+                        Observaciones / Notas Clínicas
+                      </label>
+                      <input
+                        type="text"
+                        value={paymentNotes}
+                        onChange={(e) => setPaymentNotes(e.target.value)}
+                        placeholder="Ej. Cancelación completa de cuota de ortodoncia o abono inicial de implante"
+                        style={{
+                          width: '100%',
+                          border: '1.5px solid #cbd5e1',
+                          borderRadius: '8px',
+                          padding: '8px 12px',
+                          fontSize: '12.5px',
+                          color: '#334155',
+                          outline: 'none',
+                          boxSizing: 'border-box'
+                        }}
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* Modal Footer */}
+              <div
+                style={{
+                  padding: '14px 24px',
+                  borderTop: '1px solid #f1f5f9',
+                  background: '#f8fafc',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-end',
+                  gap: '10px'
+                }}
+              >
+                <button
+                  type="button"
+                  className="btn-3d-metallic"
+                  onClick={() => setIsCreateModalOpen(false)}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="btn-3d-magenta"
+                  disabled={!selectedPatient || paymentAmount <= 0}
+                  style={{
+                    opacity: !selectedPatient || paymentAmount <= 0 ? 0.5 : 1,
+                    cursor: !selectedPatient || paymentAmount <= 0 ? 'not-allowed' : 'pointer'
+                  }}
+                >
+                  <Check size={16} />
+                  <span>Confirmar y Emitir Cobro</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          MODAL 2: READ (RECIBO CLÍNICO DIGITAL DE VITADENT)
+          Modal elegante con datos del paciente, NIT/RUT de VitaDent, desglose,
+          botón Imprimir / Descargar Recibo y botón Cerrar.
+          ========================================================================= */}
+      {receiptToView && (
+        <div
+          className="cadra-modal-overlay"
+          onClick={() => setReceiptToView(null)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(15, 23, 42, 0.65)',
+            backdropFilter: 'blur(4px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 9999,
+            padding: '16px'
+          }}
+        >
+          <div
+            className="cadra-action-modal receipt-watermark-card"
+            style={{ maxWidth: '620px', width: '100%', padding: '0', background: '#ffffff' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Cabecera del Recibo */}
+            <div
+              style={{
+                padding: '24px 28px',
+                borderBottom: '2px dashed #e2e8f0',
+                background: 'linear-gradient(180deg, #fdf8fa 0%, #ffffff 100%)'
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div
+                      style={{
+                        width: '32px',
+                        height: '32px',
+                        borderRadius: '8px',
+                        background: 'linear-gradient(135deg, #A94384 0%, #8E356E 100%)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#ffffff',
+                        fontWeight: 900,
+                        fontSize: '18px'
+                      }}
+                    >
+                      V
+                    </div>
+                    <div>
+                      <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 800, color: '#0f172a' }}>
+                        VitaDent Clínica Odontológica
+                      </h2>
+                      <span style={{ fontSize: '11px', color: '#64748b' }}>
+                        NIT: 901.482.391-4 · RUT Régimen Especial Salud
+                      </span>
+                    </div>
+                  </div>
+                  <div style={{ fontSize: '11px', color: '#8A8A8F', marginTop: '6px' }}>
+                    Cra. 15 # 93-47, Cons. 502, Bogotá D.C. · Tel: +57 (601) 745-2020
+                  </div>
+                </div>
+
+                <div style={{ textAlign: 'right' }}>
+                  <span
+                    style={{
+                      fontSize: '10.5px',
+                      fontWeight: 800,
+                      padding: '3px 8px',
+                      borderRadius: '6px',
+                      color: receiptToView.status === 'Completado' ? '#15803d' : '#b91c1c',
+                      background: receiptToView.status === 'Completado' ? '#dcfce7' : '#fee2e2'
+                    }}
+                  >
+                    {receiptToView.status.toUpperCase()}
+                  </span>
+                  <div style={{ fontSize: '16px', fontWeight: 800, color: '#A94384', marginTop: '4px' }}>
+                    {receiptToView.receiptNumber}
+                  </div>
+                  <div style={{ fontSize: '11px', color: '#64748b' }}>{receiptToView.date} · {receiptToView.time}</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Cuerpo del Recibo */}
+            <div style={{ padding: '24px 28px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              {/* Información del Paciente */}
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: '12px',
+                  padding: '12px 14px',
+                  borderRadius: '10px',
+                  background: '#f8fafc',
+                  border: '1px solid #e2e8f0'
+                }}
+              >
+                <div>
+                  <span style={{ fontSize: '11px', color: '#8A8A8F', display: 'block' }}>Paciente:</span>
+                  <strong style={{ fontSize: '13px', color: '#0f172a' }}>{receiptToView.patientName}</strong>
+                  <div style={{ fontSize: '11.5px', color: '#64748b' }}>{receiptToView.patientDoc}</div>
+                </div>
+                <div>
+                  <span style={{ fontSize: '11px', color: '#8A8A8F', display: 'block' }}>Contacto:</span>
+                  <div style={{ fontSize: '11.5px', color: '#334155' }}>📞 {receiptToView.patientPhone}</div>
+                  <div style={{ fontSize: '11.5px', color: '#334155' }}>✉️ {receiptToView.patientEmail}</div>
+                </div>
+              </div>
+
+              {/* Detalle del Tratamiento */}
+              <div>
+                <span style={{ fontSize: '11.5px', fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>
+                  Desglose de Servicios Odontológicos
+                </span>
+                <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '6px', fontSize: '12.5px' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid #cbd5e1', color: '#475569', fontSize: '11px' }}>
+                      <th style={{ padding: '6px 0', textAlign: 'left' }}>Descripción</th>
+                      <th style={{ padding: '6px 0', textAlign: 'left' }}>Profesional</th>
+                      <th style={{ padding: '6px 0', textAlign: 'right' }}>Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style={{ borderBottom: '1px solid #f1f5f9' }}>
+                      <td style={{ padding: '10px 0', fontWeight: 600, color: '#0f172a' }}>
+                        {receiptToView.treatment}
+                        <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 400 }}>
+                          {receiptToView.notes || 'Procedimiento clínico en consultorio'}
+                        </div>
+                      </td>
+                      <td style={{ padding: '10px 0', color: '#475569' }}>
+                        {receiptToView.doctor}
+                      </td>
+                      <td style={{ padding: '10px 0', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>
+                        ${receiptToView.amount.toLocaleString('es-CO')} COP
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Cuadro de Totales & Método de Pago */}
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '14px 18px',
+                  borderRadius: '10px',
+                  background: '#fdf2f8',
+                  border: '1px solid #fbcfe8'
+                }}
+              >
+                <div>
+                  <span style={{ fontSize: '11px', color: '#831843', display: 'block' }}>Canal de Pago:</span>
+                  <strong style={{ fontSize: '13px', color: '#A94384', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    {receiptToView.method === 'Card' && <CreditCard size={15} />}
+                    {receiptToView.method === 'Transfer' && <Building2 size={15} />}
+                    {receiptToView.method === 'Cash' && <DollarSign size={15} />}
+                    <span>{receiptToView.methodLabel}</span>
+                  </strong>
+                  <span style={{ fontSize: '10.5px', color: '#9d174d' }}>IVA Exento Salud (Art. 476 E.T.)</span>
+                </div>
+
+                <div style={{ textAlign: 'right' }}>
+                  <span style={{ fontSize: '11px', color: '#831843', display: 'block' }}>Total Cancelado:</span>
+                  <span style={{ fontSize: '20px', fontWeight: 900, color: '#A94384' }}>
+                    ${receiptToView.amount.toLocaleString('es-CO')}
+                  </span>
+                  <span style={{ fontSize: '11px', color: '#831843', display: 'block' }}>COP</span>
+                </div>
+              </div>
+
+              {/* Razón de anulación si aplica */}
+              {receiptToView.status === 'Anulado' && receiptToView.cancellationReason && (
+                <div
+                  style={{
+                    padding: '10px 14px',
+                    borderRadius: '8px',
+                    backgroundColor: '#fee2e2',
+                    border: '1px solid #fecaca',
+                    fontSize: '11.5px',
+                    color: '#991b1b'
+                  }}
+                >
+                  <strong>Motivo de anulación:</strong> {receiptToView.cancellationReason}
+                </div>
+              )}
+
+              {/* Firma y Sello Digital */}
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-end',
+                  paddingTop: '10px',
+                  fontSize: '10.5px',
+                  color: '#8A8A8F'
+                }}
+              >
+                <div>
+                  <div>Recepción & Facturación: Nathalia León</div>
+                  <div>Software Odontológico VitaDent v2.4</div>
+                </div>
+                <div style={{ textAlign: 'center', borderTop: '1px solid #cbd5e1', paddingTop: '4px', width: '160px' }}>
+                  Firma Autorizada Caja
+                </div>
+              </div>
+            </div>
+
+            {/* Acciones del Recibo */}
+            <div
+              style={{
+                padding: '14px 28px',
+                borderTop: '1px solid #f1f5f9',
+                background: '#f8fafc',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}
+            >
+              <button
+                className="btn-3d-metallic"
+                onClick={() => setReceiptToView(null)}
+              >
+                Cerrar
+              </button>
+
+              <button
+                className="btn-3d-magenta"
+                onClick={() => {
+                  window.print()
+                  onToast(`Comprobante ${receiptToView.receiptNumber} enviado a la impresora / PDF.`)
+                }}
+              >
+                <Printer size={15} />
+                <span>Imprimir / Descargar Recibo</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          MODAL 3: UPDATE (EDITAR PAGO)
+          Permite actualizar método, referencia, notas u observaciones clínicas.
+          ========================================================================= */}
+      {paymentToEdit && (
+        <div
+          className="cadra-modal-overlay"
+          onClick={() => setPaymentToEdit(null)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(15, 23, 42, 0.6)',
+            backdropFilter: 'blur(4px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 9999,
+            padding: '16px'
+          }}
+        >
+          <div
+            className="cadra-action-modal"
+            style={{ maxWidth: '520px', width: '100%', background: '#ffffff', borderRadius: '16px', overflow: 'hidden' }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
@@ -756,333 +1959,124 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onOpenCr
               }}
             >
               <div className="flex items-center gap-2">
-                <CreditCard size={20} color="#A94384" />
+                <Edit3 size={18} color="#0284c7" />
                 <div>
-                  <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 800 }}>Registrar Pago Clínico</h3>
-                  <span style={{ fontSize: '11px', color: '#64748b' }}>Cobro en recepción y caja de VitaDent</span>
+                  <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 800 }}>
+                    Editar Cobro Clínico — {paymentToEdit.receiptNumber}
+                  </h3>
+                  <span style={{ fontSize: '11px', color: '#64748b' }}>
+                    Paciente: {paymentToEdit.patientName}
+                  </span>
                 </div>
               </div>
               <button
                 style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748b' }}
-                onClick={() => setIsPaymentModalOpen(false)}
+                onClick={() => setPaymentToEdit(null)}
               >
                 <X size={18} />
               </button>
             </div>
 
-            <form onSubmit={handleSubmitPayment}>
-              <div style={{ padding: '22px', display: 'flex', flexDirection: 'column', gap: '14px', maxHeight: '75vh', overflowY: 'auto' }}>
-                {/* Regla Clínica Destacada */}
-                <div className="payment-rule-badge">
-                  <Stethoscope size={16} color="#A94384" />
-                  <span>
-                    <strong>Flujo Clínico VitaDent:</strong> 1. Paciente ➔ 2. Cita/Tratamiento ➔ 3. Recibo de Pago
-                  </span>
-                </div>
-
-                {/* PASO 1: SELECCIONAR PACIENTE */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                  <label style={{ fontSize: '12px', fontWeight: 700, color: '#334155' }}>
-                    1. Paciente Existente *
+            <form onSubmit={handleSaveEditPayment}>
+              <div style={{ padding: '20px 22px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                {/* Referencia de Recibo */}
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: 700, color: '#334155', display: 'block', marginBottom: '4px' }}>
+                    # Recibo / Referencia
                   </label>
-                  <select
-                    value={selectedPatientId}
-                    onChange={(e) => handleSelectPatient(e.target.value)}
-                    required
+                  <input
+                    type="text"
+                    value={paymentToEdit.receiptNumber}
+                    onChange={(e) => setPaymentToEdit({ ...paymentToEdit, receiptNumber: e.target.value })}
                     style={{
-                      border: '1px solid #cbd5e1',
+                      width: '100%',
+                      border: '1.5px solid #cbd5e1',
                       borderRadius: '8px',
                       padding: '8px 12px',
                       fontSize: '13px',
-                      color: '#0f172a'
+                      fontWeight: 600,
+                      boxSizing: 'border-box'
+                    }}
+                  />
+                </div>
+
+                {/* Monto */}
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: 700, color: '#334155', display: 'block', marginBottom: '4px' }}>
+                    Monto (COP)
+                  </label>
+                  <input
+                    type="number"
+                    value={paymentToEdit.amount}
+                    onChange={(e) => setPaymentToEdit({ ...paymentToEdit, amount: Number(e.target.value) })}
+                    style={{
+                      width: '100%',
+                      border: '1.5px solid #cbd5e1',
+                      borderRadius: '8px',
+                      padding: '8px 12px',
+                      fontSize: '14px',
+                      fontWeight: 800,
+                      color: '#047857',
+                      boxSizing: 'border-box'
+                    }}
+                  />
+                </div>
+
+                {/* Método de Pago */}
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: 700, color: '#334155', display: 'block', marginBottom: '4px' }}>
+                    Método de Pago
+                  </label>
+                  <select
+                    value={paymentToEdit.method}
+                    onChange={(e) => {
+                      const m = e.target.value as 'Card' | 'Transfer' | 'Cash'
+                      const labelMap = {
+                        Card: 'Tarjeta / Datáfono',
+                        Transfer: 'Nequi / Bancolombia',
+                        Cash: 'Efectivo'
+                      }
+                      setPaymentToEdit({
+                        ...paymentToEdit,
+                        method: m,
+                        methodLabel: labelMap[m]
+                      })
+                    }}
+                    style={{
+                      width: '100%',
+                      border: '1.5px solid #cbd5e1',
+                      borderRadius: '8px',
+                      padding: '8px 12px',
+                      fontSize: '13px',
+                      boxSizing: 'border-box'
                     }}
                   >
-                    <option value="">-- Selecciona un paciente de la lista --</option>
-                    {contacts
-                      .filter((c) => c.type === 'Customer')
-                      .map((p) => (
-                        <option key={p.id} value={p.id}>
-                          {p.company} ({p.rep}) — {p.category}
-                        </option>
-                      ))}
+                    <option value="Card">💳 Tarjeta / Datáfono</option>
+                    <option value="Transfer">🏛️ Nequi / Bancolombia</option>
+                    <option value="Cash">💵 Efectivo (Caja)</option>
                   </select>
                 </div>
 
-                {/* PASO 2: ASOCIAR CITA / TRATAMIENTO DEL PACIENTE */}
-                {selectedPatient && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '4px' }}>
-                    <div className="flex items-center justify-between">
-                      <label style={{ fontSize: '12px', fontWeight: 700, color: '#334155' }}>
-                        2. Cita & Tratamiento Asociado *
-                      </label>
-                      <span style={{ fontSize: '11px', color: '#A94384', fontWeight: 600 }}>
-                        {patientAppointments.length} cita(s) registrada(s)
-                      </span>
-                    </div>
-
-                    {patientAppointments.length > 0 ? (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        {patientAppointments.map((apt) => (
-                          <div
-                            key={apt.id}
-                            className={`appointment-selection-card ${selectedAppointmentId === apt.id ? 'selected' : ''}`}
-                            onClick={() => handleSelectAppointment(apt.id)}
-                          >
-                            <div className="flex items-center justify-between">
-                              <strong style={{ fontSize: '13px', color: '#0f172a' }}>{apt.treatment}</strong>
-                              <span
-                                className={`cadra-tag-pill ${
-                                  apt.status === 'Pagada'
-                                    ? 'tag-green'
-                                    : apt.status === 'Facturada'
-                                    ? 'tag-blue'
-                                    : 'tag-orange'
-                                }`}
-                                style={{ fontSize: '10px' }}
-                              >
-                                {apt.status}
-                              </span>
-                            </div>
-                            <div style={{ fontSize: '11.5px', color: '#64748b', display: 'flex', gap: '10px' }}>
-                              <span>👨‍⚕️ {apt.doctor}</span>
-                              <span>•</span>
-                              <span>📅 {apt.date}</span>
-                              <span>•</span>
-                              <strong style={{ color: '#A94384' }}>${apt.price.toLocaleString('es-CO')} COP</strong>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      /* Alerta de regla clínica: Sin cita no hay pago */
-                      <div
-                        style={{
-                          padding: '14px',
-                          borderRadius: '10px',
-                          backgroundColor: '#fffbeb',
-                          border: '1px solid #fef3c7',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          gap: '8px'
-                        }}
-                      >
-                        <div className="flex items-start gap-2">
-                          <AlertCircle size={18} color="#d97706" style={{ marginTop: '2px' }} />
-                          <div style={{ fontSize: '12px', color: '#92400e' }}>
-                            <strong>Paciente sin citas registradas:</strong> La regla de la clínica exige que para
-                            registrar un pago debe existir una cita y tratamiento asociado.
-                          </div>
-                        </div>
-
-                        {!isQuickScheduling ? (
-                          <button
-                            type="button"
-                            className="btn-3d-magenta"
-                            style={{ alignSelf: 'flex-start', fontSize: '11.5px', padding: '5px 12px' }}
-                            onClick={() => setIsQuickScheduling(true)}
-                          >
-                            <Calendar size={13} />
-                            <span>Agendar Cita Rápida para este Paciente</span>
-                          </button>
-                        ) : (
-                          /* Formulario inline de agendamiento rápido */
-                          <div
-                            style={{
-                              marginTop: '6px',
-                              padding: '10px',
-                              backgroundColor: '#ffffff',
-                              borderRadius: '8px',
-                              border: '1px solid #fde68a',
-                              display: 'flex',
-                              flexDirection: 'column',
-                              gap: '8px'
-                            }}
-                          >
-                            <span style={{ fontSize: '11.5px', fontWeight: 700, color: '#92400e' }}>
-                              Agendar cita y asociar inmediatamente:
-                            </span>
-
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                              <select
-                                value={quickDoc}
-                                onChange={(e) => setQuickDoc(e.target.value)}
-                                style={{ fontSize: '12px', padding: '6px', borderRadius: '6px', border: '1px solid #cbd5e1' }}
-                              >
-                                {vitadentConfig.doctors.map((d) => (
-                                  <option key={d.id} value={d.name}>
-                                    {d.name}
-                                  </option>
-                                ))}
-                              </select>
-
-                              <select
-                                value={quickTreatment}
-                                onChange={(e) => setQuickTreatment(e.target.value)}
-                                style={{ fontSize: '12px', padding: '6px', borderRadius: '6px', border: '1px solid #cbd5e1' }}
-                              >
-                                {vitadentConfig.treatments.map((t) => (
-                                  <option key={t.code} value={t.name}>
-                                    {t.name} (${t.priceCop.toLocaleString()} COP)
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-
-                            <button
-                              type="button"
-                              className="btn-3d-magenta"
-                              style={{ alignSelf: 'flex-start', fontSize: '11.5px', padding: '5px 12px' }}
-                              onClick={handleQuickCreateAppointment}
-                            >
-                              <Check size={13} />
-                              <span>Crear Cita y Continuar al Cobro</span>
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* PASO 3: DETALLES DEL PAGO */}
-                {selectedAppointment && (
-                  <>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                        <label style={{ fontSize: '12px', fontWeight: 700, color: '#334155' }}>
-                          Monto a Cobrar (COP) *
-                        </label>
-                        <input
-                          type="number"
-                          required
-                          value={paymentAmount}
-                          onChange={(e) => setPaymentAmount(Number(e.target.value))}
-                          style={{
-                            border: '1px solid #cbd5e1',
-                            borderRadius: '8px',
-                            padding: '8px 12px',
-                            fontSize: '14px',
-                            fontWeight: 700,
-                            color: '#047857'
-                          }}
-                        />
-                      </div>
-
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                        <label style={{ fontSize: '12px', fontWeight: 700, color: '#334155' }}>
-                          Comprobante / Recibo
-                        </label>
-                        <input
-                          type="text"
-                          value={paymentReceiptRef}
-                          onChange={(e) => setPaymentReceiptRef(e.target.value)}
-                          placeholder="REC-4106"
-                          style={{
-                            border: '1px solid #cbd5e1',
-                            borderRadius: '8px',
-                            padding: '8px 12px',
-                            fontSize: '13px'
-                          }}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Quick percentage abono buttons */}
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      <button
-                        type="button"
-                        style={{
-                          padding: '4px 8px',
-                          fontSize: '11px',
-                          borderRadius: '6px',
-                          border: '1px solid #cbd5e1',
-                          background: '#f8fafc',
-                          cursor: 'pointer'
-                        }}
-                        onClick={() => setPaymentAmount(selectedAppointment.price)}
-                      >
-                        Pago Total 100% (${selectedAppointment.price.toLocaleString('es-CO')})
-                      </button>
-                      <button
-                        type="button"
-                        style={{
-                          padding: '4px 8px',
-                          fontSize: '11px',
-                          borderRadius: '6px',
-                          border: '1px solid #cbd5e1',
-                          background: '#f8fafc',
-                          cursor: 'pointer'
-                        }}
-                        onClick={() => setPaymentAmount(Math.round(selectedAppointment.price * 0.5))}
-                      >
-                        Abono 50% (${Math.round(selectedAppointment.price * 0.5).toLocaleString('es-CO')})
-                      </button>
-                    </div>
-
-                    {/* Método de pago */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                      <label style={{ fontSize: '12px', fontWeight: 700, color: '#334155' }}>
-                        Método de Pago *
-                      </label>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        <button
-                          type="button"
-                          className={`method-choice-pill ${paymentMethod === 'Card' ? 'active' : ''}`}
-                          onClick={() => {
-                            setPaymentMethod('Card')
-                            setPaymentMethodLabel('Datáfono (Tarjeta)')
-                          }}
-                        >
-                          <CreditCard size={14} />
-                          <span>Tarjeta / Datáfono</span>
-                        </button>
-
-                        <button
-                          type="button"
-                          className={`method-choice-pill ${paymentMethod === 'ACH transfer' ? 'active' : ''}`}
-                          onClick={() => {
-                            setPaymentMethod('ACH transfer')
-                            setPaymentMethodLabel('Transferencia Bancaria')
-                          }}
-                        >
-                          <Building2 size={14} />
-                          <span>Nequi / Bancolombia</span>
-                        </button>
-
-                        <button
-                          type="button"
-                          className={`method-choice-pill ${paymentMethod === 'Wire' ? 'active' : ''}`}
-                          onClick={() => {
-                            setPaymentMethod('Wire')
-                            setPaymentMethodLabel('Efectivo (Caja)')
-                          }}
-                        >
-                          <DollarSign size={14} />
-                          <span>Efectivo</span>
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Notas */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                      <label style={{ fontSize: '12px', fontWeight: 700, color: '#334155' }}>
-                        Notas de Cobro / Observaciones
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Ej. Cancelación completa de cuota de ortodoncia o abono inicial de implante"
-                        value={paymentNotes}
-                        onChange={(e) => setPaymentNotes(e.target.value)}
-                        style={{
-                          border: '1px solid #cbd5e1',
-                          borderRadius: '8px',
-                          padding: '8px 12px',
-                          fontSize: '13px'
-                        }}
-                      />
-                    </div>
-                  </>
-                )}
+                {/* Observaciones */}
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: 700, color: '#334155', display: 'block', marginBottom: '4px' }}>
+                    Observaciones / Notas Clínicas
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={paymentToEdit.notes || ''}
+                    onChange={(e) => setPaymentToEdit({ ...paymentToEdit, notes: e.target.value })}
+                    style={{
+                      width: '100%',
+                      border: '1.5px solid #cbd5e1',
+                      borderRadius: '8px',
+                      padding: '8px 12px',
+                      fontSize: '12.5px',
+                      boxSizing: 'border-box',
+                      resize: 'none'
+                    }}
+                  />
+                </div>
               </div>
 
               {/* Footer */}
@@ -1090,34 +2084,173 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onOpenCr
                 style={{
                   padding: '14px 22px',
                   borderTop: '1px solid #f1f5f9',
+                  background: '#f8fafc',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'flex-end',
-                  gap: '10px',
-                  background: '#f8fafc'
+                  gap: '10px'
                 }}
               >
                 <button
                   type="button"
-                  className="cadra-btn-secondary"
-                  onClick={() => setIsPaymentModalOpen(false)}
+                  className="btn-3d-metallic"
+                  onClick={() => setPaymentToEdit(null)}
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   className="btn-3d-magenta"
-                  disabled={!selectedPatient || !selectedAppointment || paymentAmount <= 0}
-                  style={{
-                    opacity: !selectedPatient || !selectedAppointment || paymentAmount <= 0 ? 0.5 : 1,
-                    cursor: !selectedPatient || !selectedAppointment || paymentAmount <= 0 ? 'not-allowed' : 'pointer'
-                  }}
                 >
-                  <Check size={16} />
-                  <span>Confirmar y Registrar Pago</span>
+                  <Check size={15} />
+                  <span>Guardar Cambios</span>
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          MODAL 4: DELETE (ANULAR COBRO CLÍNICO)
+          Confirmación con motivo obligatorio y actualización a estado Anulado.
+          ========================================================================= */}
+      {paymentToCancel && (
+        <div
+          className="cadra-modal-overlay"
+          onClick={() => setPaymentToCancel(null)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(15, 23, 42, 0.6)',
+            backdropFilter: 'blur(4px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 9999,
+            padding: '16px'
+          }}
+        >
+          <div
+            className="cadra-action-modal"
+            style={{ maxWidth: '480px', width: '100%', background: '#ffffff', borderRadius: '16px', overflow: 'hidden' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div
+              style={{
+                padding: '18px 22px',
+                borderBottom: '1px solid #fecaca',
+                background: '#fef2f2',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}
+            >
+              <div className="flex items-center gap-2">
+                <AlertCircle size={20} color="#dc2626" />
+                <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 800, color: '#991b1b' }}>
+                  Anular Cobro — {paymentToCancel.receiptNumber}
+                </h3>
+              </div>
+              <button
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#991b1b' }}
+                onClick={() => setPaymentToCancel(null)}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div style={{ padding: '20px 22px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              <div style={{ fontSize: '13px', color: '#334155' }}>
+                ¿Está seguro de anular el cobro de{' '}
+                <strong style={{ color: '#0f172a' }}>${paymentToCancel.amount.toLocaleString('es-CO')} COP</strong>{' '}
+                asociado a <strong style={{ color: '#0f172a' }}>{paymentToCancel.patientName}</strong>?
+              </div>
+
+              <div>
+                <label style={{ fontSize: '12px', fontWeight: 700, color: '#334155', display: 'block', marginBottom: '4px' }}>
+                  Motivo de Anulación (Requerido) *
+                </label>
+                <textarea
+                  rows={3}
+                  required
+                  placeholder="Ej. Error de digitación en caja, solicitud de devolución al paciente o cobro duplicado..."
+                  value={cancellationReasonText}
+                  onChange={(e) => setCancellationReasonText(e.target.value)}
+                  style={{
+                    width: '100%',
+                    border: '1.5px solid #cbd5e1',
+                    borderRadius: '8px',
+                    padding: '8px 12px',
+                    fontSize: '12.5px',
+                    boxSizing: 'border-box',
+                    resize: 'none'
+                  }}
+                />
+              </div>
+
+              <div style={{ fontSize: '11px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                <Info size={14} color="#64748b" />
+                <span>El recibo quedará con sello "Anulado" preservando la numeración contable.</span>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div
+              style={{
+                padding: '14px 22px',
+                borderTop: '1px solid #f1f5f9',
+                background: '#f8fafc',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}
+            >
+              <button
+                type="button"
+                onClick={() => handleDeletePermanent(paymentToCancel.id, paymentToCancel.receiptNumber)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#dc2626',
+                  fontSize: '11.5px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  textDecoration: 'underline'
+                }}
+              >
+                Eliminar definitivamente
+              </button>
+
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button
+                  type="button"
+                  className="btn-3d-metallic"
+                  onClick={() => setPaymentToCancel(null)}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmCancellation}
+                  disabled={!cancellationReasonText.trim()}
+                  style={{
+                    background: 'linear-gradient(180deg, #ef4444 0%, #dc2626 100%)',
+                    color: '#ffffff',
+                    border: '1px solid #b91c1c',
+                    borderRadius: '8px',
+                    padding: '7px 14px',
+                    fontWeight: 700,
+                    fontSize: '12.5px',
+                    cursor: cancellationReasonText.trim() ? 'pointer' : 'not-allowed',
+                    opacity: cancellationReasonText.trim() ? 1 : 0.6
+                  }}
+                >
+                  Confirmar Anulación
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}

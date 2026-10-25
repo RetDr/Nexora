@@ -8,7 +8,7 @@ interface HeaderProps {
   onOpenProfile: () => void
 }
 
-type NavKey = 'agenda' | 'pacientes' | 'pagos' | 'inicio' | 'presupuestos' | 'stock' | 'precios' | 'informes'
+type NavKey = 'inicio' | 'agenda' | 'pacientes' | 'pagos' | 'stock' | 'precios' | 'informes'
 
 export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenProfile }) => {
   const [showNotifications, setShowNotifications] = useState(false)
@@ -17,11 +17,10 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenP
   // Sliding pill state
   const navBarRef = useRef<HTMLElement | null>(null)
   const itemRefs = useRef<Record<NavKey, HTMLButtonElement | null>>({
+    inicio: null,
     agenda: null,
     pacientes: null,
     pagos: null,
-    inicio: null,
-    presupuestos: null,
     stock: null,
     precios: null,
     informes: null,
@@ -34,15 +33,14 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenP
   })
 
   const getActiveModuleKey = useCallback((): NavKey => {
+    if (currentPath === '/inicio' || currentPath === '/dashboard' || currentPath === '/' || currentPath === '') return 'inicio'
     if (currentPath === '/agenda' || currentPath.startsWith('/manufacturing')) return 'agenda'
     if (currentPath === '/pacientes' || currentPath.startsWith('/hr') || currentPath === '/contacts') return 'pacientes'
     if (currentPath === '/pagos' || currentPath.startsWith('/accounting')) return 'pagos'
-    if (currentPath === '/inicio' || currentPath === '/dashboard') return 'inicio'
-    if (currentPath === '/presupuestos' || currentPath.startsWith('/sales')) return 'presupuestos'
     if (currentPath === '/stock' || currentPath.startsWith('/inventory') || currentPath.startsWith('/purchasing') || currentPath.startsWith('/logistics')) return 'stock'
     if (currentPath === '/precios' || currentPath === '/pos') return 'precios'
     if (currentPath === '/informes' || currentPath.startsWith('/reporting')) return 'informes'
-    return 'agenda'
+    return 'inicio'
   }, [currentPath])
 
   const isModuleActive = (key: NavKey) => getActiveModuleKey() === key
