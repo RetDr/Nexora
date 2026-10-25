@@ -7,6 +7,9 @@ export interface ClinicDoctor {
   specialty: string
   commissionPct?: number
   color: string
+  consultorio?: string
+  permitsAllPatients?: boolean
+  initials?: string
 }
 
 export interface ClinicTreatment {
@@ -89,7 +92,7 @@ export const vitadentConfig: ClinicConfig = {
   },
   admin: {
     name: 'Nathalia Leon',
-    role: 'Administradora General',
+    role: 'Asistente de Dirección y Coordinadora de Agendas Clínicas',
     initials: 'NL',
     email: 'administracion@vitadent.com.co',
     phone: '+57 311 405 2910',
@@ -104,10 +107,42 @@ export const vitadentConfig: ClinicConfig = {
     { key: 'informes', label: 'Informes', path: '/informes' },
   ],
   doctors: [
-    { id: 'doc-1', name: 'Dra. Sofía Valenzuela', specialty: 'Odontología General', color: '#A94384' },
-    { id: 'doc-2', name: 'Dr. Alejandro Soto', specialty: 'Ortodoncia', color: '#0284c7' },
-    { id: 'doc-3', name: 'Dra. Claudia Rivas', specialty: 'Endodoncia', color: '#0d9488' },
-    { id: 'doc-4', name: 'Dr. Marcos Pineda', specialty: 'Cirugía e Implantes', color: '#c2410c' },
+    {
+      id: 'doc-1',
+      name: 'Dra. Sofía Valenzuela',
+      specialty: 'Odontología General',
+      color: '#A94384',
+      consultorio: 'Consultorio 1',
+      permitsAllPatients: true,
+      initials: 'SV',
+    },
+    {
+      id: 'doc-2',
+      name: 'Dr. Alejandro Soto',
+      specialty: 'Ortodoncia 1',
+      color: '#0284c7',
+      consultorio: 'Consultorio 2',
+      permitsAllPatients: false,
+      initials: 'AS',
+    },
+    {
+      id: 'doc-3',
+      name: 'Dra. Claudia Rivas',
+      specialty: 'Ortodoncia 2',
+      color: '#0d9488',
+      consultorio: 'Consultorio 3',
+      permitsAllPatients: false,
+      initials: 'CR',
+    },
+    {
+      id: 'doc-4',
+      name: 'Dr. Marcos Pineda',
+      specialty: 'Diseño de Sonrisa',
+      color: '#c2410c',
+      consultorio: 'Consultorio 4',
+      permitsAllPatients: false,
+      initials: 'MP',
+    },
   ],
   treatments: [
     { code: 'T-01', name: 'Primera consulta + Diagnóstico', category: 'Diagnóstico', durationMin: 30, priceCop: 50000 },

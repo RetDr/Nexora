@@ -30,6 +30,109 @@ type ReportType = 'pagos' | 'citas' | 'tratamientos' | 'especialistas'
 type PeriodKey = 'este_mes' | 'mes_anterior' | 'q4' | 'ano'
 type DoctorKey = 'todos' | 'doc-1' | 'doc-2' | 'doc-3' | 'doc-4'
 
+export const DOCTORS_REPORT_CATALOG = [
+  {
+    id: 'doc-1' as const,
+    name: 'Dra. Sofía Valenzuela',
+    specialty: 'Odontología General',
+    consultorio: 'Consultorio 1',
+    color: '#A94384',
+    bg: '#fdf2f8',
+    borderColor: '#fbcfe8',
+    iconEmoji: '🦷',
+    totalNov: '$14.200.000 COP',
+    totalQ4: '$41.800.000 COP',
+    totalOct: '$13.100.000 COP',
+    totalAno: '$152.000.000 COP',
+    pending: '$1.250.000 COP',
+    ticket: '$126.800 COP',
+    citasCount: 112,
+    citasDone: 108,
+    satisfaccion: '98.4%',
+    puntualidad: '93.0%',
+    ocupacion: '92.0%',
+    horas: '128.8 hrs / 140 hrs',
+    tratamientosClave: 'Limpiezas ultrasónicas, resinas estéticas, blanqueamientos LED',
+    subMeta: 'General · Meta: $15M (94.7%)',
+    pendingSub: '4 tratamientos en curso / EPS Sura'
+  },
+  {
+    id: 'doc-2' as const,
+    name: 'Dr. Alejandro Soto',
+    specialty: 'Ortodoncia 1',
+    consultorio: 'Consultorio 2',
+    color: '#0284c7',
+    bg: '#eff6ff',
+    borderColor: '#bfdbfe',
+    iconEmoji: '🦷',
+    totalNov: '$13.800.000 COP',
+    totalQ4: '$40.500.000 COP',
+    totalOct: '$12.600.000 COP',
+    totalAno: '$148.500.000 COP',
+    pending: '$1.420.000 COP',
+    ticket: '$132.700 COP',
+    citasCount: 104,
+    citasDone: 98,
+    satisfaccion: '97.8%',
+    puntualidad: '91.2%',
+    ocupacion: '88.0%',
+    horas: '123.2 hrs / 140 hrs',
+    tratamientosClave: 'Controles ortodoncia 1, arcos y brackets, 12 nuevos cementados',
+    subMeta: 'Ortodoncia 1 · Meta: $14M (98.6%)',
+    pendingSub: '5 controles activos con saldo'
+  },
+  {
+    id: 'doc-3' as const,
+    name: 'Dra. Claudia Rivas',
+    specialty: 'Ortodoncia 2',
+    consultorio: 'Consultorio 3',
+    color: '#0d9488',
+    bg: '#f0fdfa',
+    borderColor: '#99f6e4',
+    iconEmoji: '🦷',
+    totalNov: '$9.100.000 COP',
+    totalQ4: '$26.800.000 COP',
+    totalOct: '$8.400.000 COP',
+    totalAno: '$98.200.000 COP',
+    pending: '$850.000 COP',
+    ticket: '$197.800 COP',
+    citasCount: 46,
+    citasDone: 44,
+    satisfaccion: '96.5%',
+    puntualidad: '89.4%',
+    ocupacion: '78.0%',
+    horas: '109.2 hrs / 140 hrs',
+    tratamientosClave: 'Controles ortodoncia 2, alineadores invisibles, ortopedia maxilar',
+    subMeta: 'Ortodoncia 2 · Meta: $9.5M (95.8%)',
+    pendingSub: '3 planes alineadores activos'
+  },
+  {
+    id: 'doc-4' as const,
+    name: 'Dr. Marcos Pineda',
+    specialty: 'Diseño de Sonrisa',
+    consultorio: 'Consultorio 4',
+    color: '#c2410c',
+    bg: '#fff7ed',
+    borderColor: '#fed7aa',
+    iconEmoji: '✨',
+    totalNov: '$11.400.000 COP',
+    totalQ4: '$33.700.000 COP',
+    totalOct: '$10.100.000 COP',
+    totalAno: '$125.600.000 COP',
+    pending: '$1.300.000 COP',
+    ticket: '$247.800 COP',
+    citasCount: 46,
+    citasDone: 45,
+    satisfaccion: '99.1%',
+    puntualidad: '92.1%',
+    ocupacion: '85.0%',
+    horas: '119.0 hrs / 140 hrs',
+    tratamientosClave: 'Diseño de sonrisa digital, carillas cerámicas, implantes de titanio',
+    subMeta: 'Diseño de Sonrisa · Meta: $12M (95.0%)',
+    pendingSub: '2 planes carillas e implantes'
+  }
+]
+
 export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ onNavigate }) => {
   const [activeReportType, setActiveReportType] = useState<ReportType>('pagos')
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodKey>('este_mes')
@@ -53,28 +156,103 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
   const getDoctorLabel = (d: DoctorKey) => {
     switch (d) {
       case 'todos':
-        return 'Todos los Especialistas'
+        return 'Todos los Especialistas (Total Clínica)'
       case 'doc-1':
-        return 'Dra. Sofía Valenzuela (General & Estética)'
+        return 'Dra. Sofía Valenzuela (Odontología General)'
       case 'doc-2':
-        return 'Dr. Alejandro Soto (Ortodoncia)'
+        return 'Dr. Alejandro Soto (Ortodoncia 1)'
       case 'doc-3':
-        return 'Dra. Claudia Rivas (Endodoncia)'
+        return 'Dra. Claudia Rivas (Ortodoncia 2)'
       case 'doc-4':
-        return 'Dr. Marcos Pineda (Cirugía & Implantes)'
+        return 'Dr. Marcos Pineda (Diseño de Sonrisa)'
     }
   }
 
   // Dynamic KPI calculations based on selectedPeriod and selectedDoctor
   const getKPIs = () => {
+    // If a specific doctor is selected, recalculate KPIs dynamically
+    if (selectedDoctor !== 'todos') {
+      const doc = DOCTORS_REPORT_CATALOG.find((d) => d.id === selectedDoctor)
+      if (doc) {
+        if (activeReportType === 'citas') {
+          return {
+            total: `${doc.citasCount} Citas`,
+            totalLabel: `Citas Asignadas · ${doc.name}`,
+            subLabel: `Ocupación: ${doc.ocupacion} en ${doc.consultorio}`,
+            pending: `${doc.citasDone} Atendidas`,
+            pendingLabel: 'Citas Realizadas',
+            pendingSub: `${doc.citasCount - doc.citasDone} cancelaciones / reprogramadas`,
+            ticket: doc.puntualidad,
+            ticketLabel: `Puntualidad ${doc.consultorio}`,
+            collectionRate: doc.satisfaccion,
+            collectionSub: 'Índice de satisfacción paciente'
+          }
+        }
+
+        if (activeReportType === 'tratamientos') {
+          return {
+            total: `${Math.round(doc.citasCount * 0.7)} Pacientes`,
+            totalLabel: `Pacientes de ${doc.name.split(' ')[1]}`,
+            subLabel: `${doc.specialty} · ${doc.consultorio}`,
+            pending: `${doc.citasDone} Procedimientos`,
+            pendingLabel: 'Tratamientos Ejecutados',
+            pendingSub: doc.tratamientosClave,
+            ticket: doc.ticket,
+            ticketLabel: 'Ticket Promedio Paciente',
+            collectionRate: doc.satisfaccion,
+            collectionSub: 'Satisfacción en procedimientos'
+          }
+        }
+
+        if (activeReportType === 'especialistas') {
+          return {
+            total: doc.totalNov,
+            totalLabel: `Producción · ${doc.name}`,
+            subLabel: `${doc.specialty} · ${doc.consultorio}`,
+            pending: `${doc.citasCount} Atenciones`,
+            pendingLabel: 'Citas Asistidas',
+            pendingSub: doc.tratamientosClave,
+            ticket: doc.satisfaccion,
+            ticketLabel: 'Satisfacción Global',
+            collectionRate: doc.puntualidad,
+            collectionSub: 'Puntualidad en agenda'
+          }
+        }
+
+        // default: 'pagos'
+        const totalByPeriod =
+          selectedPeriod === 'q4'
+            ? doc.totalQ4
+            : selectedPeriod === 'mes_anterior'
+            ? doc.totalOct
+            : selectedPeriod === 'ano'
+            ? doc.totalAno
+            : doc.totalNov
+
+        return {
+          total: totalByPeriod,
+          totalLabel: `Recaudo · ${doc.name}`,
+          subLabel: doc.subMeta,
+          pending: doc.pending,
+          pendingLabel: `Saldos Pendientes · ${doc.name.split(' ')[1]}`,
+          pendingSub: doc.pendingSub,
+          ticket: doc.ticket,
+          ticketLabel: 'Ticket Promedio Paciente',
+          collectionRate: doc.satisfaccion,
+          collectionSub: `${doc.citasCount} citas atendidas · Satisfacción`
+        }
+      }
+    }
+
+    // Default: Total Clínica (Todos los 4 Doctores Consolidados)
     if (activeReportType === 'pagos') {
       if (selectedPeriod === 'q4') {
         return {
           total: '$142.800.000 COP',
-          totalLabel: 'Recaudo Total Q4',
+          totalLabel: 'Recaudo Total Q4 (Clínica)',
           subLabel: 'Meta Trimestral: $150M (95.2%)',
           pending: '$12.400.000 COP',
-          pendingLabel: 'Saldos Pendientes',
+          pendingLabel: 'Saldos Pendientes Totales',
           pendingSub: '24 planes de tratamiento',
           ticket: '$410.000 COP',
           ticketLabel: 'Ticket Promedio Paciente',
@@ -85,10 +263,10 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
       if (selectedPeriod === 'mes_anterior') {
         return {
           total: '$44.200.000 COP',
-          totalLabel: 'Recaudo Total Octubre',
+          totalLabel: 'Recaudo Total Octubre (Clínica)',
           subLabel: 'Cierre Contable Certificado',
           pending: '$3.900.000 COP',
-          pendingLabel: 'Saldos Pendientes',
+          pendingLabel: 'Saldos Pendientes Totales',
           pendingSub: '9 pacientes en cobro',
           ticket: '$370.000 COP',
           ticketLabel: 'Ticket Promedio Paciente',
@@ -99,7 +277,7 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
       if (selectedPeriod === 'ano') {
         return {
           total: '$524.300.000 COP',
-          totalLabel: 'Recaudo Acumulado Anual',
+          totalLabel: 'Recaudo Acumulado Anual (Clínica)',
           subLabel: 'Mejor Mes: Jun ($54.2M)',
           pending: '$18.600.000 COP',
           pendingLabel: 'Cartera en Seguimiento',
@@ -113,7 +291,7 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
       // default: 'este_mes'
       return {
         total: '$48.500.000 COP',
-        totalLabel: 'Recaudo Total Noviembre',
+        totalLabel: 'Recaudo Total Noviembre (Clínica)',
         subLabel: 'Hoy: $3.850.000 · Sem: $12.450.000',
         pending: '$4.820.000 COP',
         pendingLabel: 'Saldos Pendientes de Cobro',
@@ -128,7 +306,7 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
     if (activeReportType === 'citas') {
       return {
         total: '342 Citas',
-        totalLabel: 'Citas Programadas',
+        totalLabel: 'Citas Programadas (Clínica)',
         subLabel: '90.1% efectividad clínica',
         pending: '308 Atendidas',
         pendingLabel: 'Citas Realizadas',
@@ -136,7 +314,7 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
         ticket: '91.4%',
         ticketLabel: 'Puntualidad en Consultorios',
         collectionRate: '85.8%',
-        collectionSub: 'Ocupación media de consultorios'
+        collectionSub: 'Ocupación media de 4 consultorios'
       }
     }
 
@@ -147,7 +325,7 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
         subLabel: '68 Nuevos · 146 Recurrentes',
         pending: '385 Procedimientos',
         pendingLabel: 'Tratamientos Ejecutados',
-        pendingSub: 'Líder: Implantes de Titanio',
+        pendingSub: 'Líder: Implantes & Carillas',
         ticket: '$2.500.000 COP',
         ticketLabel: 'Tratamiento de Mayor Valor',
         collectionRate: '18.9%',
@@ -159,7 +337,7 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
     return {
       total: '$48.500.000 COP',
       totalLabel: 'Producción Total Especialistas',
-      subLabel: '4 Doctores en Actividad',
+      subLabel: '4 Doctores en Actividad Clínica',
       pending: '308 Atenciones',
       pendingLabel: 'Citas Asistidas por Doctores',
       pendingSub: '100% de cobertura de agenda',
@@ -205,10 +383,10 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
         ['Fecha de Generación:', new Date().toLocaleString('es-CO')],
         [''],
         ['Consultorio', 'Especialista a Cargo', 'Ocupación (%)', 'Citas Atendidas', 'Horas Asignadas', 'Puntualidad'],
-        ['Consultorio 1 (General & Estética)', 'Dra. Sofía Valenzuela', '92%', 112, '120 hrs', '93.0%'],
-        ['Consultorio 2 (Ortodoncia)', 'Dr. Alejandro Soto', '88%', 104, '115 hrs', '91.2%'],
-        ['Consultorio 3 (Endodoncia)', 'Dra. Claudia Rivas', '78%', 46, '80 hrs', '89.4%'],
-        ['Consultorio 4 (Cirugía & Quirófano)', 'Dr. Marcos Pineda', '85%', 46, '85 hrs', '92.1%'],
+        ['Consultorio 1 (Odontología General)', 'Dra. Sofía Valenzuela', '92%', 112, '120 hrs', '93.0%'],
+        ['Consultorio 2 (Ortodoncia 1)', 'Dr. Alejandro Soto', '88%', 104, '115 hrs', '91.2%'],
+        ['Consultorio 3 (Ortodoncia 2)', 'Dra. Claudia Rivas', '78%', 46, '80 hrs', '89.4%'],
+        ['Consultorio 4 (Diseño de Sonrisa)', 'Dr. Marcos Pineda', '85%', 46, '85 hrs', '92.1%'],
         [''],
         ['Métrica de Citas', 'Cantidad', 'Porcentaje'],
         ['Citas Programadas Totales', 342, '100%'],
@@ -242,10 +420,10 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
         ['Fecha de Generación:', new Date().toLocaleString('es-CO')],
         [''],
         ['Doctor(a)', 'Especialidad', 'Consultorio', 'Citas Atendidas', 'Tratamientos Clave', 'Satisfacción', 'Facturación COP'],
-        ['Dra. Sofía Valenzuela', 'Odontología General & Estética', 'Consultorio 1', 112, '86 profilaxis y resinas', '98.4%', '$14.200.000 COP'],
-        ['Dr. Alejandro Soto', 'Ortodoncia', 'Consultorio 2', 104, '128 controles activos / 12 brackets', '97.8%', '$13.800.000 COP'],
-        ['Dra. Claudia Rivas', 'Endodoncia', 'Consultorio 3', 46, '26 conductos completados', '96.5%', '$9.100.000 COP'],
-        ['Dr. Marcos Pineda', 'Cirugía e Implantes', 'Consultorio 4', 46, '11 implantes / 18 cordales', '99.1%', '$11.400.000 COP'],
+        ['Dra. Sofía Valenzuela', 'Odontología General', 'Consultorio 1', 112, '86 profilaxis y resinas', '98.4%', '$14.200.000 COP'],
+        ['Dr. Alejandro Soto', 'Ortodoncia 1', 'Consultorio 2', 104, '128 controles activos / arcos', '97.8%', '$13.800.000 COP'],
+        ['Dra. Claudia Rivas', 'Ortodoncia 2', 'Consultorio 3', 46, 'Alineadores invisibles y placas', '96.5%', '$9.100.000 COP'],
+        ['Dr. Marcos Pineda', 'Diseño de Sonrisa', 'Consultorio 4', 46, '11 implantes / carillas estéticas', '99.1%', '$11.400.000 COP'],
         ['TOTAL EQUIPO CLÍNICO', 'Odontología Integral', '4 Consultorios', 308, 'Tratamientos auditados', '98.2%', '$48.500.000 COP']
       ]
     }
@@ -420,13 +598,112 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
               value={selectedDoctor}
               onChange={(e) => setSelectedDoctor(e.target.value as DoctorKey)}
             >
-              <option value="todos">Todos los Especialistas</option>
-              <option value="doc-1">Dra. Sofía Valenzuela (General & Estética)</option>
-              <option value="doc-2">Dr. Alejandro Soto (Ortodoncia)</option>
-              <option value="doc-3">Dra. Claudia Rivas (Endodoncia)</option>
-              <option value="doc-4">Dr. Marcos Pineda (Cirugía & Implantes)</option>
+              <option value="todos">Todos los Especialistas (Total Clínica)</option>
+              <option value="doc-1">Dra. Sofía Valenzuela (Odontología General)</option>
+              <option value="doc-2">Dr. Alejandro Soto (Ortodoncia 1)</option>
+              <option value="doc-3">Dra. Claudia Rivas (Ortodoncia 2)</option>
+              <option value="doc-4">Dr. Marcos Pineda (Diseño de Sonrisa)</option>
             </select>
           </div>
+        </div>
+      </div>
+
+      {/* =========================================================================
+          BARRA DE ACCESO DIRECTO: FILTRAR POR DOCTOR O TOTALES CLÍNICA
+          Permite conmutar con un solo clic los informes y métricas en tiempo real
+          ========================================================================= */}
+      <div
+        style={{
+          marginTop: '10px',
+          marginBottom: '16px',
+          padding: '12px 16px',
+          background: '#ffffff',
+          borderRadius: '12px',
+          border: '1px solid #e2e8f0',
+          boxShadow: '0 1px 4px rgba(0,0,0,0.03)',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '8px'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ fontSize: '13px' }}>🎯</span>
+            <strong style={{ fontSize: '12.5px', color: '#0f172a' }}>
+              Filtrar informe por:
+            </strong>
+            <span style={{ fontSize: '11px', color: '#64748b' }}>
+              {selectedDoctor === 'todos'
+                ? 'Visualizando recaudos y citas globales consolidadas'
+                : `Mostrando recaudos, citas y métricas exclusivas de ${getDoctorLabel(selectedDoctor)}`}
+            </span>
+          </div>
+          {selectedDoctor !== 'todos' && (
+            <button
+              onClick={() => setSelectedDoctor('todos')}
+              style={{
+                background: 'none',
+                border: 'none',
+                fontSize: '11px',
+                color: '#A94384',
+                fontWeight: 700,
+                cursor: 'pointer',
+                textDecoration: 'underline'
+              }}
+            >
+              ← Ver Totales Consolidados de la Clínica
+            </button>
+          )}
+        </div>
+
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+          <button
+            onClick={() => setSelectedDoctor('todos')}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '6px 12px',
+              borderRadius: '8px',
+              fontSize: '12px',
+              fontWeight: 700,
+              cursor: 'pointer',
+              border: selectedDoctor === 'todos' ? '2px solid #0f172a' : '1px solid #cbd5e1',
+              backgroundColor: selectedDoctor === 'todos' ? '#0f172a' : '#ffffff',
+              color: selectedDoctor === 'todos' ? '#ffffff' : '#334155',
+              boxShadow: selectedDoctor === 'todos' ? '0 2px 6px rgba(15,23,42,0.2)' : 'none'
+            }}
+          >
+            <span>🏢</span>
+            <span>Totales de Clínica (Consolidado)</span>
+          </button>
+
+          {DOCTORS_REPORT_CATALOG.map((doc) => {
+            const isSel = selectedDoctor === doc.id
+            return (
+              <button
+                key={doc.id}
+                onClick={() => setSelectedDoctor(doc.id)}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '6px 12px',
+                  borderRadius: '8px',
+                  fontSize: '12px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  border: isSel ? `2px solid ${doc.color}` : '1px solid #cbd5e1',
+                  backgroundColor: isSel ? doc.bg : '#ffffff',
+                  color: isSel ? doc.color : '#334155',
+                  boxShadow: isSel ? `0 2px 8px ${doc.color}25` : 'none'
+                }}
+              >
+                <span>{doc.iconEmoji}</span>
+                <span>{doc.name} · {doc.specialty}</span>
+              </button>
+            )
+          })}
         </div>
       </div>
 
@@ -798,7 +1075,7 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
                 >
                   <div className="flex items-center justify-between mb-1.5">
                     <div>
-                      <strong style={{ fontSize: '13px' }}>Consultorio 1 · Odontología General & Estética</strong>
+                      <strong style={{ fontSize: '13px' }}>Consultorio 1 · Odontología General</strong>
                       <div className="text-xs text-muted">Dra. Sofía Valenzuela · 112 citas atendidas</div>
                     </div>
                     <div className="text-right">
@@ -824,7 +1101,7 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
                 >
                   <div className="flex items-center justify-between mb-1.5">
                     <div>
-                      <strong style={{ fontSize: '13px' }}>Consultorio 2 · Ortodoncia y Ortopedia</strong>
+                      <strong style={{ fontSize: '13px' }}>Consultorio 2 · Ortodoncia 1</strong>
                       <div className="text-xs text-muted">Dr. Alejandro Soto · 104 citas atendidas</div>
                     </div>
                     <div className="text-right">
@@ -850,7 +1127,7 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
                 >
                   <div className="flex items-center justify-between mb-1.5">
                     <div>
-                      <strong style={{ fontSize: '13px' }}>Consultorio 3 · Endodoncia Microscópica</strong>
+                      <strong style={{ fontSize: '13px' }}>Consultorio 3 · Ortodoncia 2</strong>
                       <div className="text-xs text-muted">Dra. Claudia Rivas · 46 citas atendidas</div>
                     </div>
                     <div className="text-right">
@@ -876,8 +1153,8 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
                 >
                   <div className="flex items-center justify-between mb-1.5">
                     <div>
-                      <strong style={{ fontSize: '13px' }}>Consultorio 4 · Cirugía Oral & Implantes</strong>
-                      <div className="text-xs text-muted">Dr. Marcos Pineda · 46 citas quirúrgicas</div>
+                      <strong style={{ fontSize: '13px' }}>Consultorio 4 · Diseño de Sonrisa</strong>
+                      <div className="text-xs text-muted">Dr. Marcos Pineda · 46 citas atendidas</div>
                     </div>
                     <div className="text-right">
                       <span className="font-mono font-extrabold text-sm" style={{ color: '#c2410c' }}>
@@ -1050,8 +1327,8 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
                   <tbody>
                     <tr className="table-row-hoverable">
                       <td>
-                        <strong>1. Implantes de Titanio + Corona</strong>
-                        <div className="text-xs text-muted">Dr. Marcos Pineda · Cirugía</div>
+                        <strong>1. Implantes de Titanio + Carillas Estéticas</strong>
+                        <div className="text-xs text-muted">Dr. Marcos Pineda · Diseño de Sonrisa</div>
                       </td>
                       <td className="font-mono">$2.500.000 COP</td>
                       <td className="font-mono font-bold">9 casos</td>
@@ -1064,8 +1341,8 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
 
                     <tr className="table-row-hoverable">
                       <td>
-                        <strong>2. Ortodoncia (Mensualidades)</strong>
-                        <div className="text-xs text-muted">Dr. Alejandro Soto · Ortodoncia</div>
+                        <strong>2. Ortodoncia 1 (Mensualidades & Arcos)</strong>
+                        <div className="text-xs text-muted">Dr. Alejandro Soto · Ortodoncia 1</div>
                       </td>
                       <td className="font-mono">$100.000 COP</td>
                       <td className="font-mono font-bold">114 controles</td>
@@ -1077,7 +1354,7 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
                     <tr className="table-row-hoverable">
                       <td>
                         <strong>3. Limpiezas Ultrasonido & Profilaxis</strong>
-                        <div className="text-xs text-muted">Dra. Sofía Valenzuela · Higiene</div>
+                        <div className="text-xs text-muted">Dra. Sofía Valenzuela · Odontología General</div>
                       </td>
                       <td className="font-mono">$90.000 COP</td>
                       <td className="font-mono font-bold">62 pacientes</td>
@@ -1088,11 +1365,11 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
 
                     <tr className="table-row-hoverable">
                       <td>
-                        <strong>4. Endodoncias Unirradicular/Multi</strong>
-                        <div className="text-xs text-muted">Dra. Claudia Rivas · Endodoncia</div>
+                        <strong>4. Ortodoncia 2 (Alineadores & Placas)</strong>
+                        <div className="text-xs text-muted">Dra. Claudia Rivas · Ortodoncia 2</div>
                       </td>
                       <td className="font-mono">$350.000 COP</td>
-                      <td className="font-mono font-bold">14 piezas</td>
+                      <td className="font-mono font-bold">14 casos</td>
                       <td>
                         <strong className="font-mono">$4.900.000 COP</strong>
                       </td>
@@ -1101,7 +1378,7 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
                     <tr className="table-row-hoverable">
                       <td>
                         <strong>5. Blanqueamiento Dental LED</strong>
-                        <div className="text-xs text-muted">Dra. Sofía Valenzuela · Estética</div>
+                        <div className="text-xs text-muted">Dra. Sofía Valenzuela · Odontología General & Estética</div>
                       </td>
                       <td className="font-mono">$300.000 COP</td>
                       <td className="font-mono font-bold">13 sesiones</td>
@@ -1208,7 +1485,14 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
         <div className="mt-4 flex flex-col gap-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Doctor 1: Dra. Sofía Valenzuela */}
-            <div className="cadra-card p-4">
+            <div
+              className="cadra-card p-4"
+              style={{
+                border: selectedDoctor === 'doc-1' ? '2.5px solid #A94384' : '1px solid var(--border-light)',
+                boxShadow: selectedDoctor === 'doc-1' ? '0 6px 18px rgba(169, 67, 132, 0.2)' : 'none',
+                backgroundColor: selectedDoctor === 'doc-1' ? '#fdf8fa' : undefined
+              }}
+            >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <div
@@ -1230,7 +1514,7 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
                   </div>
                   <div>
                     <h3 style={{ margin: 0, fontSize: '15px' }}>Dra. Sofía Valenzuela</h3>
-                    <span className="text-xs text-muted">Odontología General & Estética · Consultorio 1</span>
+                    <span className="text-xs text-muted">Odontología General · Consultorio 1</span>
                   </div>
                 </div>
                 <span className="cadra-tag-pill" style={{ background: '#ecfdf5', color: '#047857' }}>
@@ -1262,7 +1546,14 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
             </div>
 
             {/* Doctor 2: Dr. Alejandro Soto */}
-            <div className="cadra-card p-4">
+            <div
+              className="cadra-card p-4"
+              style={{
+                border: selectedDoctor === 'doc-2' ? '2.5px solid #0284c7' : '1px solid var(--border-light)',
+                boxShadow: selectedDoctor === 'doc-2' ? '0 6px 18px rgba(2, 132, 199, 0.2)' : 'none',
+                backgroundColor: selectedDoctor === 'doc-2' ? '#f0f9ff' : undefined
+              }}
+            >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <div
@@ -1284,7 +1575,7 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
                   </div>
                   <div>
                     <h3 style={{ margin: 0, fontSize: '15px' }}>Dr. Alejandro Soto</h3>
-                    <span className="text-xs text-muted">Ortodoncia & Ortopedia Maxilar · Consultorio 2</span>
+                    <span className="text-xs text-muted">Ortodoncia 1 · Consultorio 2</span>
                   </div>
                 </div>
                 <span className="cadra-tag-pill" style={{ background: '#ecfdf5', color: '#047857' }}>
@@ -1316,7 +1607,14 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
             </div>
 
             {/* Doctor 3: Dra. Claudia Rivas */}
-            <div className="cadra-card p-4">
+            <div
+              className="cadra-card p-4"
+              style={{
+                border: selectedDoctor === 'doc-3' ? '2.5px solid #0d9488' : '1px solid var(--border-light)',
+                boxShadow: selectedDoctor === 'doc-3' ? '0 6px 18px rgba(13, 148, 136, 0.2)' : 'none',
+                backgroundColor: selectedDoctor === 'doc-3' ? '#f0fdfa' : undefined
+              }}
+            >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <div
@@ -1338,7 +1636,7 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
                   </div>
                   <div>
                     <h3 style={{ margin: 0, fontSize: '15px' }}>Dra. Claudia Rivas</h3>
-                    <span className="text-xs text-muted">Endodoncia Microscópica · Consultorio 3</span>
+                    <span className="text-xs text-muted">Ortodoncia 2 · Consultorio 3</span>
                   </div>
                 </div>
                 <span className="cadra-tag-pill" style={{ background: '#ecfdf5', color: '#047857' }}>
@@ -1352,7 +1650,7 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
                   <strong className="text-base font-mono">46</strong>
                 </div>
                 <div className="p-2 rounded bg-card-subtle border border-light">
-                  <span className="text-xs text-muted block">Conductos OK</span>
+                  <span className="text-xs text-muted block">Alineadores OK</span>
                   <strong className="text-base font-mono">26</strong>
                 </div>
                 <div className="p-2 rounded bg-card-subtle border border-light">
@@ -1364,13 +1662,20 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
               </div>
 
               <div className="mt-3 text-xs text-secondary flex items-center justify-between">
-                <span>Tratamientos clave: Tratamientos de conductos uni y multirradiculares, retratamientos</span>
+                <span>Tratamientos clave: Controles ortodoncia 2, alineadores invisibles, ortopedia maxilar</span>
                 <span className="font-semibold text-emerald-600">Puntualidad: 89%</span>
               </div>
             </div>
 
             {/* Doctor 4: Dr. Marcos Pineda */}
-            <div className="cadra-card p-4">
+            <div
+              className="cadra-card p-4"
+              style={{
+                border: selectedDoctor === 'doc-4' ? '2.5px solid #c2410c' : '1px solid var(--border-light)',
+                boxShadow: selectedDoctor === 'doc-4' ? '0 6px 18px rgba(194, 65, 12, 0.2)' : 'none',
+                backgroundColor: selectedDoctor === 'doc-4' ? '#fff7ed' : undefined
+              }}
+            >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <div
@@ -1392,7 +1697,7 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
                   </div>
                   <div>
                     <h3 style={{ margin: 0, fontSize: '15px' }}>Dr. Marcos Pineda</h3>
-                    <span className="text-xs text-muted">Cirugía Oral & Implantología · Consultorio 4</span>
+                    <span className="text-xs text-muted">Diseño de Sonrisa · Consultorio 4</span>
                   </div>
                 </div>
                 <span className="cadra-tag-pill" style={{ background: '#ecfdf5', color: '#047857' }}>
@@ -1406,7 +1711,7 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
                   <strong className="text-base font-mono">46</strong>
                 </div>
                 <div className="p-2 rounded bg-card-subtle border border-light">
-                  <span className="text-xs text-muted block">Implantes / Cord</span>
+                  <span className="text-xs text-muted block">Carillas / Impl</span>
                   <strong className="text-base font-mono">29</strong>
                 </div>
                 <div className="p-2 rounded bg-card-subtle border border-light">
@@ -1418,7 +1723,7 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
               </div>
 
               <div className="mt-3 text-xs text-secondary flex items-center justify-between">
-                <span>Tratamientos clave: 11 implantes de titanio osteointegrados, 18 extracciones cordales</span>
+                <span>Tratamientos clave: Diseño de sonrisa digital, carillas cerámicas, implantes de titanio</span>
                 <span className="font-semibold text-emerald-600">Puntualidad: 92%</span>
               </div>
             </div>

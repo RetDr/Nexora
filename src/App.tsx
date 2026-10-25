@@ -7,6 +7,7 @@ import { Toast } from './components/ui/Toast'
 
 // Auth System
 import { AuthProvider, useAuth } from './context/AuthContext'
+import { WorkspaceProvider } from './context/WorkspaceContext'
 import { LoginPage } from './pages/auth/LoginPage'
 
 // Pages
@@ -241,7 +242,9 @@ function AppShell() {
 export function App() {
   return (
     <AuthProvider>
-      <AppShell />
+      <WorkspaceProvider>
+        <AppShell />
+      </WorkspaceProvider>
     </AuthProvider>
   )
 }

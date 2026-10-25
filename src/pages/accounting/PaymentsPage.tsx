@@ -31,6 +31,7 @@ import { contactsData } from '../../data/cadraData'
 import { ContactItem } from '../../types'
 import { vitadentConfig } from '../../config/clinic.config'
 import { PatientAppointment, INITIAL_PATIENT_APPOINTMENTS } from '../sales/ContactsPage'
+import { useWorkspace, WorkspaceId } from '../../context/WorkspaceContext'
 
 export interface ClinicalPayment {
   id: string
@@ -43,6 +44,7 @@ export interface ClinicalPayment {
   patientEmail: string
   treatment: string
   doctor: string
+  doctorId: 'doc-1' | 'doc-2' | 'doc-3' | 'doc-4'
   amount: number
   method: 'Card' | 'Transfer' | 'Cash'
   methodLabel: string
@@ -55,6 +57,97 @@ export interface ClinicalPayment {
   appointmentId?: string
 }
 
+export interface DoctorMetaInfo {
+  id: 'doc-1' | 'doc-2' | 'doc-3' | 'doc-4'
+  name: string
+  specialty: string
+  shortLabel: string
+  chipLabel: string
+  color: string
+  bg: string
+  borderColor: string
+  iconEmoji: string
+  consultorio: string
+  projectedMonthly: number
+  pendingDebt: number
+}
+
+export const DOCTORS_METADATA: DoctorMetaInfo[] = [
+  {
+    id: 'doc-1',
+    name: 'Dra. Sofía Valenzuela',
+    specialty: 'Odontología General',
+    shortLabel: 'Dra. Sofía Valenzuela',
+    chipLabel: 'Dra. Sofía Valenzuela · General',
+    color: '#A94384',
+    bg: '#fdf2f8',
+    borderColor: '#fbcfe8',
+    iconEmoji: '🦷',
+    consultorio: 'Consultorio 1',
+    projectedMonthly: 14200000,
+    pendingDebt: 1250000,
+  },
+  {
+    id: 'doc-2',
+    name: 'Dr. Alejandro Soto',
+    specialty: 'Ortodoncia 1',
+    shortLabel: 'Dr. Alejandro Soto',
+    chipLabel: 'Dr. Alejandro Soto · Ortodoncia 1',
+    color: '#0284c7',
+    bg: '#eff6ff',
+    borderColor: '#bfdbfe',
+    iconEmoji: '🦷',
+    consultorio: 'Consultorio 2',
+    projectedMonthly: 13800000,
+    pendingDebt: 1420000,
+  },
+  {
+    id: 'doc-3',
+    name: 'Dra. Claudia Rivas',
+    specialty: 'Ortodoncia 2',
+    shortLabel: 'Dra. Claudia Rivas',
+    chipLabel: 'Dra. Claudia Rivas · Ortodoncia 2',
+    color: '#0d9488',
+    bg: '#f0fdfa',
+    borderColor: '#99f6e4',
+    iconEmoji: '🦷',
+    consultorio: 'Consultorio 3',
+    projectedMonthly: 9100000,
+    pendingDebt: 850000,
+  },
+  {
+    id: 'doc-4',
+    name: 'Dr. Marcos Pineda',
+    specialty: 'Diseño de Sonrisa',
+    shortLabel: 'Dr. Marcos Pineda',
+    chipLabel: 'Dr. Marcos Pineda · Diseño de Sonrisa',
+    color: '#c2410c',
+    bg: '#fff7ed',
+    borderColor: '#fed7aa',
+    iconEmoji: '✨',
+    consultorio: 'Consultorio 4',
+    projectedMonthly: 11400000,
+    pendingDebt: 1300000,
+  },
+]
+
+export const resolveDoctorId = (doctorName?: string, existingId?: string): 'doc-1' | 'doc-2' | 'doc-3' | 'doc-4' => {
+  if (existingId === 'doc-1' || existingId === 'doc-2' || existingId === 'doc-3' || existingId === 'doc-4') {
+    return existingId
+  }
+  const name = (doctorName || '').toLowerCase()
+  if (name.includes('soto') || name.includes('alejandro') || name.includes('ortodoncia 1')) return 'doc-2'
+  if (name.includes('rivas') || name.includes('claudia') || name.includes('ortodoncia 2')) return 'doc-3'
+  if (name.includes('pineda') || name.includes('marcos') || name.includes('diseño') || name.includes('sonrisa') || name.includes('cirug')) return 'doc-4'
+  return 'doc-1'
+}
+
+export const getDoctorMeta = (doctorId?: string): DoctorMetaInfo => {
+  const found = DOCTORS_METADATA.find((d) => d.id === doctorId)
+  if (found) return found
+  return DOCTORS_METADATA[0]
+}
+
 const INITIAL_PAYMENTS: ClinicalPayment[] = [
   {
     id: 'pay-1',
@@ -65,8 +158,9 @@ const INITIAL_PAYMENTS: ClinicalPayment[] = [
     patientInitials: 'CG',
     patientPhone: '+57 310 445 8812',
     patientEmail: 'carlos.garcia@gmail.com',
-    treatment: 'Implante de titanio + corona',
+    treatment: 'Diseño de Sonrisa (Carillas Cerámicas)',
     doctor: 'Dr. Marcos Pineda',
+    doctorId: 'doc-4',
     amount: 2500000,
     method: 'Card',
     methodLabel: 'Tarjeta / Datáfono',
@@ -74,7 +168,7 @@ const INITIAL_PAYMENTS: ClinicalPayment[] = [
     time: '10:15 AM',
     period: 'Hoy',
     status: 'Completado',
-    notes: 'Abono fase quirúrgica e integración de corona en zirconio',
+    notes: 'Abono fase 1 carillas de alta estética dental e integración',
     appointmentId: 'apt-1'
   },
   {
@@ -88,6 +182,7 @@ const INITIAL_PAYMENTS: ClinicalPayment[] = [
     patientEmail: 'mariana.torres@hotmail.com',
     treatment: 'Primera consulta + Diagnóstico',
     doctor: 'Dra. Sofía Valenzuela',
+    doctorId: 'doc-1',
     amount: 50000,
     method: 'Transfer',
     methodLabel: 'Nequi / Bancolombia',
@@ -95,7 +190,7 @@ const INITIAL_PAYMENTS: ClinicalPayment[] = [
     time: '11:45 AM',
     period: 'Hoy',
     status: 'Completado',
-    notes: 'Valoración inicial y plan de tratamiento estético'
+    notes: 'Valoración inicial y plan de tratamiento odontología integral'
   },
   {
     id: 'pay-3',
@@ -106,8 +201,9 @@ const INITIAL_PAYMENTS: ClinicalPayment[] = [
     patientInitials: 'LG',
     patientPhone: '+57 301 556 7182',
     patientEmail: 'laura.gomez@yahoo.es',
-    treatment: 'Ortodoncia (mensualidad)',
+    treatment: 'Ortodoncia 1 (mensualidad brackets)',
     doctor: 'Dr. Alejandro Soto',
+    doctorId: 'doc-2',
     amount: 100000,
     method: 'Transfer',
     methodLabel: 'Nequi / Bancolombia',
@@ -115,7 +211,7 @@ const INITIAL_PAYMENTS: ClinicalPayment[] = [
     time: '04:20 PM',
     period: 'Esta Semana',
     status: 'Completado',
-    notes: 'Control mensual y cambio de arcos y elásticos ortodónticos'
+    notes: 'Control mensual ortodoncia 1 y cambio de arcos'
   },
   {
     id: 'pay-4',
@@ -126,8 +222,9 @@ const INITIAL_PAYMENTS: ClinicalPayment[] = [
     patientInitials: 'AM',
     patientPhone: '+57 312 908 4433',
     patientEmail: 'andres.mendoza@outlook.com',
-    treatment: 'Endodoncia unirradicular',
+    treatment: 'Ortodoncia 2 (alineadores invisibles)',
     doctor: 'Dra. Claudia Rivas',
+    doctorId: 'doc-3',
     amount: 350000,
     method: 'Card',
     methodLabel: 'Tarjeta / Datáfono',
@@ -135,7 +232,7 @@ const INITIAL_PAYMENTS: ClinicalPayment[] = [
     time: '02:30 PM',
     period: 'Esta Semana',
     status: 'Completado',
-    notes: 'Conductometría y obturación pieza 26 con localizador de ápice'
+    notes: 'Entrega set de alineadores serie 2 y control ortodoncia 2'
   },
   {
     id: 'pay-5',
@@ -148,6 +245,7 @@ const INITIAL_PAYMENTS: ClinicalPayment[] = [
     patientEmail: 'valentina.rios@gmail.com',
     treatment: 'Limpieza dental ultrasonido',
     doctor: 'Dra. Sofía Valenzuela',
+    doctorId: 'doc-1',
     amount: 90000,
     method: 'Cash',
     methodLabel: 'Efectivo',
@@ -166,16 +264,17 @@ const INITIAL_PAYMENTS: ClinicalPayment[] = [
     patientInitials: 'MF',
     patientPhone: '+57 316 332 5091',
     patientEmail: 'mateo.fernandez@gmail.com',
-    treatment: 'Extracción quirúrgica (cordal)',
+    treatment: 'Diseño de Sonrisa (Mockup Digital)',
     doctor: 'Dr. Marcos Pineda',
-    amount: 250000,
+    doctorId: 'doc-4',
+    amount: 1800000,
     method: 'Card',
     methodLabel: 'Tarjeta / Datáfono',
     date: '05 Nov 2026',
     time: '03:10 PM',
     period: 'Este Mes',
     status: 'Completado',
-    notes: 'Cirugía de cordal inferior derecho con sutura no absorbible'
+    notes: 'Fase de planificación estética y confección de carillas provisionales'
   },
   {
     id: 'pay-7',
@@ -188,6 +287,7 @@ const INITIAL_PAYMENTS: ClinicalPayment[] = [
     patientEmail: 'daniela.roldan@gmail.com',
     treatment: 'Blanqueamiento dental LED',
     doctor: 'Dra. Sofía Valenzuela',
+    doctorId: 'doc-1',
     amount: 300000,
     method: 'Transfer',
     methodLabel: 'Nequi / Bancolombia',
@@ -208,6 +308,7 @@ const INITIAL_PAYMENTS: ClinicalPayment[] = [
     patientEmail: 'roberto.salazar@empresa.com',
     treatment: 'Empaste / Obturación composite',
     doctor: 'Dra. Sofía Valenzuela',
+    doctorId: 'doc-1',
     amount: 120000,
     method: 'Cash',
     methodLabel: 'Efectivo',
@@ -217,6 +318,69 @@ const INITIAL_PAYMENTS: ClinicalPayment[] = [
     status: 'Anulado',
     notes: 'Cobro duplicado por error en digitación de caja',
     cancellationReason: 'Error de digitación en caja: el paciente canceló por datáfono en recibo separado'
+  },
+  {
+    id: 'pay-9',
+    receiptNumber: 'REC-4108',
+    patientId: 'c-9',
+    patientName: 'Esteban Morales Castro',
+    patientDoc: 'CC 1.022.341.879',
+    patientInitials: 'EM',
+    patientPhone: '+57 315 889 0012',
+    patientEmail: 'esteban.morales@gmail.com',
+    treatment: 'Ortodoncia 2 (placas activas y retenedores)',
+    doctor: 'Dra. Claudia Rivas',
+    doctorId: 'doc-3',
+    amount: 280000,
+    method: 'Transfer',
+    methodLabel: 'Nequi / Bancolombia',
+    date: '11 Nov 2026',
+    time: '01:15 PM',
+    period: 'Hoy',
+    status: 'Completado',
+    notes: 'Abono control ortodoncia 2 y ajuste de aparatos ortopédicos'
+  },
+  {
+    id: 'pay-10',
+    receiptNumber: 'REC-4109',
+    patientId: 'c-10',
+    patientName: 'Camila Andrea Varela',
+    patientDoc: 'CC 1.033.987.123',
+    patientInitials: 'CV',
+    patientPhone: '+57 317 445 6789',
+    patientEmail: 'camila.varela@outlook.com',
+    treatment: 'Ortodoncia 1 (control y cambio arcos)',
+    doctor: 'Dr. Alejandro Soto',
+    doctorId: 'doc-2',
+    amount: 120000,
+    method: 'Cash',
+    methodLabel: 'Efectivo',
+    date: '11 Nov 2026',
+    time: '11:10 AM',
+    period: 'Hoy',
+    status: 'Completado',
+    notes: 'Control ortodoncia 1 con colocación de ligaduras estéticas'
+  },
+  {
+    id: 'pay-11',
+    receiptNumber: 'REC-4110',
+    patientId: 'c-11',
+    patientName: 'Sebastián Herrera Ruiz',
+    patientDoc: 'CC 1.019.876.543',
+    patientInitials: 'SH',
+    patientPhone: '+57 313 771 2290',
+    patientEmail: 'sebastian.herrera@hotmail.com',
+    treatment: 'Diseño de Sonrisa (Carillas Cerámicas)',
+    doctor: 'Dr. Marcos Pineda',
+    doctorId: 'doc-4',
+    amount: 2200000,
+    method: 'Card',
+    methodLabel: 'Tarjeta / Datáfono',
+    date: '07 Nov 2026',
+    time: '04:45 PM',
+    period: 'Esta Semana',
+    status: 'Completado',
+    notes: 'Abono inicial diseño de sonrisa 6 carillas anteriores en disilicato'
   }
 ]
 
@@ -227,11 +391,37 @@ interface PaymentsPageProps {
 }
 
 export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onToast }) => {
-  // Load payments from localStorage or fallback
+  // Sync with Workspace Context (Multi-Doctor filter)
+  const workspaceContext = useWorkspace()
+  const [selectedDoctorFilter, setSelectedDoctorFilter] = useState<WorkspaceId>(() => {
+    return workspaceContext?.currentWorkspace || 'all'
+  })
+
+  // Synchronize when workspace changes externally
+  useEffect(() => {
+    if (workspaceContext?.currentWorkspace) {
+      setSelectedDoctorFilter(workspaceContext.currentWorkspace)
+    }
+  }, [workspaceContext?.currentWorkspace])
+
+  const handleSelectDoctorFilter = (id: WorkspaceId) => {
+    setSelectedDoctorFilter(id)
+    if (workspaceContext?.setWorkspace) {
+      workspaceContext.setWorkspace(id)
+    }
+  }
+
+  // Load payments from localStorage or fallback (ensure doctorId is backfilled on legacy records)
   const [payments, setPayments] = useState<ClinicalPayment[]>(() => {
     try {
       const saved = localStorage.getItem('vitadent_clinical_payments')
-      if (saved) return JSON.parse(saved)
+      if (saved) {
+        const parsed: any[] = JSON.parse(saved)
+        return parsed.map((p) => ({
+          ...p,
+          doctorId: resolveDoctorId(p.doctor, p.doctorId)
+        }))
+      }
     } catch {
       // fallback
     }
@@ -282,12 +472,18 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onToast 
   const [paymentToCancel, setPaymentToCancel] = useState<ClinicalPayment | null>(null)
   const [cancellationReasonText, setCancellationReasonText] = useState('')
 
+  // Liquidation Modal State
+  const [isLiquidationModalOpen, setIsLiquidationModalOpen] = useState(false)
+  const [liquidationDoctorScope, setLiquidationDoctorScope] = useState<WorkspaceId>('all')
+  const [liquidationPeriod, setLiquidationPeriod] = useState<'ALL' | 'Hoy' | 'Esta Semana' | 'Este Mes'>('ALL')
+
   // Create Modal Steps & Fields (Paso 1, 2, 3)
   const [patientSearch, setPatientSearch] = useState('')
   const [selectedPatientId, setSelectedPatientId] = useState<string>('')
   const [selectedAppointmentId, setSelectedAppointmentId] = useState<string>('')
   const [customTreatment, setCustomTreatment] = useState(vitadentConfig.treatments[0]?.name || 'Primera consulta + Diagnóstico')
   const [customDoctor, setCustomDoctor] = useState(vitadentConfig.doctors[0]?.name || 'Dra. Sofía Valenzuela')
+  const [selectedDoctorIdForCreate, setSelectedDoctorIdForCreate] = useState<'doc-1' | 'doc-2' | 'doc-3' | 'doc-4'>('doc-1')
   const [paymentAmount, setPaymentAmount] = useState<number>(50000)
   const [paymentMethod, setPaymentMethod] = useState<'Card' | 'Transfer' | 'Cash'>('Card')
   const [receiptNumberInput, setReceiptNumberInput] = useState<string>('')
@@ -314,12 +510,23 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onToast 
       setSelectedAppointmentId(first.id)
       setCustomTreatment(first.treatment)
       setCustomDoctor(first.doctor)
+      setSelectedDoctorIdForCreate(resolveDoctorId(first.doctor))
       setPaymentAmount(first.price)
     } else {
       setSelectedAppointmentId('')
       const defaultTreat = vitadentConfig.treatments[0]
       setCustomTreatment(defaultTreat ? defaultTreat.name : 'Primera consulta + Diagnóstico')
-      setCustomDoctor(vitadentConfig.doctors[0]?.name || 'Dra. Sofía Valenzuela')
+      // If current filter is a specific doctor, pre-select them
+      if (selectedDoctorFilter !== 'all') {
+        const dMeta = DOCTORS_METADATA.find((d) => d.id === selectedDoctorFilter)
+        if (dMeta) {
+          setCustomDoctor(dMeta.name)
+          setSelectedDoctorIdForCreate(dMeta.id)
+        }
+      } else {
+        setCustomDoctor(vitadentConfig.doctors[0]?.name || 'Dra. Sofía Valenzuela')
+        setSelectedDoctorIdForCreate('doc-1')
+      }
       setPaymentAmount(defaultTreat ? defaultTreat.priceCop : 50000)
     }
     const nextNum = 4100 + payments.length + 1
@@ -333,6 +540,7 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onToast 
     if (apt) {
       setCustomTreatment(apt.treatment)
       setCustomDoctor(apt.doctor)
+      setSelectedDoctorIdForCreate(resolveDoctorId(apt.doctor))
       setPaymentAmount(apt.price)
     }
   }
@@ -342,6 +550,16 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onToast 
     const firstPatient = contacts.find((c) => c.type === 'Customer') || contacts[0]
     if (firstPatient) {
       handleSelectPatient(firstPatient.id)
+    }
+    if (selectedDoctorFilter !== 'all') {
+      const dMeta = DOCTORS_METADATA.find((d) => d.id === selectedDoctorFilter)
+      if (dMeta) {
+        setCustomDoctor(dMeta.name)
+        setSelectedDoctorIdForCreate(dMeta.id)
+      }
+    } else {
+      setSelectedDoctorIdForCreate('doc-1')
+      setCustomDoctor(DOCTORS_METADATA[0].name)
     }
     setPaymentMethod('Card')
     setPaymentNotes('')
@@ -368,6 +586,8 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onToast 
       Cash: 'Efectivo'
     }
 
+    const assignedDoctorMeta = DOCTORS_METADATA.find((d) => d.id === selectedDoctorIdForCreate) || DOCTORS_METADATA[0]
+
     const newPayment: ClinicalPayment = {
       id: `pay-${Date.now()}`,
       receiptNumber: receiptNumberInput.trim() || `REC-${4100 + payments.length + 1}`,
@@ -378,7 +598,8 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onToast 
       patientPhone: selectedPatient.phone || '+57 310 000 0000',
       patientEmail: selectedPatient.email || 'paciente@vitadent.com.co',
       treatment: customTreatment,
-      doctor: customDoctor,
+      doctor: assignedDoctorMeta.name,
+      doctorId: assignedDoctorMeta.id,
       amount: paymentAmount,
       method: paymentMethod,
       methodLabel: methodLabelMap[paymentMethod],
@@ -401,7 +622,7 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onToast 
     }
 
     setIsCreateModalOpen(false)
-    onToast(`¡Cobro ${newPayment.receiptNumber} por $${newPayment.amount.toLocaleString('es-CO')} COP registrado con éxito!`)
+    onToast(`¡Cobro ${newPayment.receiptNumber} (${assignedDoctorMeta.name}) por $${newPayment.amount.toLocaleString('es-CO')} COP registrado con éxito!`)
     // Optionally open the digital receipt
     setReceiptToView(newPayment)
   }
@@ -451,9 +672,14 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onToast 
     }
   }
 
-  // Filtered Payments
+  // Filtered Payments (Doctor Scope + Query + Method + Date + Status)
   const filteredPayments = useMemo(() => {
     return payments.filter((p) => {
+      // Doctor filter
+      if (selectedDoctorFilter !== 'all' && p.doctorId !== selectedDoctorFilter) {
+        return false
+      }
+
       // Query filter
       const matchesQuery =
         !query ||
@@ -474,12 +700,144 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onToast 
 
       return matchesQuery && matchesMethod && matchesDate && matchesStatus
     })
-  }, [payments, query, filterMethod, filterDate, filterStatus])
+  }, [payments, selectedDoctorFilter, query, filterMethod, filterDate, filterStatus])
 
-  // KPI Calculations
-  const todayCompletedPayments = payments.filter((p) => p.period === 'Hoy' && p.status === 'Completado')
-  const totalCobradoHoy = todayCompletedPayments.reduce((acc, p) => acc + p.amount, 0)
-  const countCobradoHoy = todayCompletedPayments.length
+  // RECALCULATED REAL-TIME METRICS BASED ON SELECTED DOCTOR OR TOTAL CLINIC
+  const doctorScopedPayments = useMemo(() => {
+    if (selectedDoctorFilter === 'all') {
+      return payments
+    }
+    return payments.filter((p) => p.doctorId === selectedDoctorFilter)
+  }, [payments, selectedDoctorFilter])
+
+  const completedInScope = useMemo(() => {
+    return doctorScopedPayments.filter((p) => p.status === 'Completado')
+  }, [doctorScopedPayments])
+
+  const completedTodayInScope = useMemo(() => {
+    return completedInScope.filter((p) => p.period === 'Hoy')
+  }, [completedInScope])
+
+  const activeDoctorMeta = useMemo(() => {
+    if (selectedDoctorFilter === 'all') return null
+    return DOCTORS_METADATA.find((d) => d.id === selectedDoctorFilter) || null
+  }, [selectedDoctorFilter])
+
+  // Real-time metric 1: Total Cobrado
+  const totalCobradoDoctor = completedInScope.reduce((acc, p) => acc + p.amount, 0)
+  const totalCobradoHoyDoctor = completedTodayInScope.reduce((acc, p) => acc + p.amount, 0)
+  const countCobrosHoy = completedTodayInScope.length
+  const countCobrosTotal = completedInScope.length
+
+  // Real-time metric 2: Facturación Proyectada
+  const facturacionProyectada = activeDoctorMeta ? activeDoctorMeta.projectedMonthly : 48500000
+
+  // Real-time metric 3: Saldos Pendientes / Cartera
+  const saldosPendientes = activeDoctorMeta ? activeDoctorMeta.pendingDebt : 4820000
+
+  // Real-time metric 4: Medios de Pago y Transacciones
+  const methodStats = useMemo(() => {
+    const card = completedInScope.filter((p) => p.method === 'Card').reduce((acc, p) => acc + p.amount, 0)
+    const transfer = completedInScope.filter((p) => p.method === 'Transfer').reduce((acc, p) => acc + p.amount, 0)
+    const cash = completedInScope.filter((p) => p.method === 'Cash').reduce((acc, p) => acc + p.amount, 0)
+    const total = card + transfer + cash || 1
+
+    const cardPct = Math.round((card / total) * 100)
+    const transferPct = Math.round((transfer / total) * 100)
+    const cashPct = Math.max(0, 100 - cardPct - transferPct)
+
+    return {
+      card,
+      transfer,
+      cash,
+      cardPct,
+      transferPct,
+      cashPct,
+      countCard: completedInScope.filter((p) => p.method === 'Card').length,
+      countTransfer: completedInScope.filter((p) => p.method === 'Transfer').length,
+      countCash: completedInScope.filter((p) => p.method === 'Cash').length
+    }
+  }, [completedInScope])
+
+  // CSV Export for Liquidation Report
+  const handleExportLiquidationCSV = () => {
+    const targetScope = liquidationDoctorScope
+    const targetDoc = DOCTORS_METADATA.find((d) => d.id === targetScope)
+    const scopeName = targetScope === 'all' ? 'Total_Clinica' : targetDoc?.shortLabel.replace(/\s+/g, '_') || 'Doctor'
+    const filename = `VitaDent_Liquidacion_${scopeName}_${liquidationPeriod}_${Date.now()}.csv`
+
+    const liqList = payments.filter((p) => {
+      if (targetScope !== 'all' && p.doctorId !== targetScope) return false
+      if (liquidationPeriod !== 'ALL' && p.period !== liquidationPeriod) return false
+      return true
+    })
+
+    const liqCompleted = liqList.filter((p) => p.status === 'Completado')
+    const totalRecaudado = liqCompleted.reduce((acc, p) => acc + p.amount, 0)
+    const totalCash = liqCompleted.filter((p) => p.method === 'Cash').reduce((acc, p) => acc + p.amount, 0)
+    const totalCard = liqCompleted.filter((p) => p.method === 'Card').reduce((acc, p) => acc + p.amount, 0)
+    const totalTransfer = liqCompleted.filter((p) => p.method === 'Transfer').reduce((acc, p) => acc + p.amount, 0)
+
+    const rows: (string | number)[][] = [
+      ['VitaDent Clínica Odontológica - Reporte de Liquidación de Caja y Cobros'],
+      ['Ámbito:', targetScope === 'all' ? 'Consolidado Total Clínica (4 Doctores)' : `${targetDoc?.name} (${targetDoc?.specialty})`],
+      ['Consultorio:', targetScope === 'all' ? 'Consultorios 1, 2, 3 y 4' : targetDoc?.consultorio || ''],
+      ['Período:', liquidationPeriod],
+      ['Generado por:', 'Nathalia Leon (Asistente de Dirección y Coordinadora de Agendas)'],
+      ['Fecha de Emisión:', new Date().toLocaleString('es-CO')],
+      [''],
+      ['RESUMEN FINANCIERO DE RECAUDOS'],
+      ['Concepto', 'Total COP', 'Transacciones'],
+      ['Efectivo en Caja', `$${totalCash.toLocaleString('es-CO')} COP`, liqCompleted.filter((p) => p.method === 'Cash').length],
+      ['Datáfono / Tarjetas', `$${totalCard.toLocaleString('es-CO')} COP`, liqCompleted.filter((p) => p.method === 'Card').length],
+      ['Transferencias (Nequi / Bancolombia)', `$${totalTransfer.toLocaleString('es-CO')} COP`, liqCompleted.filter((p) => p.method === 'Transfer').length],
+      ['TOTAL RECAUDADO', `$${totalRecaudado.toLocaleString('es-CO')} COP`, liqCompleted.length],
+      [''],
+      ['DETALLE DE TRANSACCIONES Y RECIBOS'],
+      ['No. Recibo', 'Fecha', 'Hora', 'Paciente', 'Cédula', 'Tratamiento', 'Doctor Responsable', 'Método', 'Monto COP', 'Estado', 'Notas']
+    ]
+
+    liqList.forEach((p) => {
+      const d = DOCTORS_METADATA.find((m) => m.id === p.doctorId)
+      rows.push([
+        p.receiptNumber,
+        p.date,
+        p.time,
+        p.patientName,
+        p.patientDoc,
+        p.treatment,
+        `${p.doctor} (${d?.specialty || ''})`,
+        p.methodLabel,
+        p.amount,
+        p.status,
+        p.notes || ''
+      ])
+    })
+
+    const csvContent =
+      '\uFEFF' +
+      rows
+        .map((r) =>
+          r
+            .map((c) => {
+              const s = String(c).replace(/"/g, '""')
+              return `"${s}"`
+            })
+            .join(';')
+        )
+        .join('\r\n')
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', filename)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+    onToast(`Liquidación descargada: ${filename}`)
+  }
 
   return (
     <div className="cadra-page-container">
@@ -735,6 +1093,25 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onToast 
               <span>+ Registrar Cobro / Pago</span>
             </button>
 
+            {/* Botón Liquidación / Reporte de Cobros */}
+            <button
+              className="btn-3d-metallic"
+              onClick={() => {
+                setLiquidationDoctorScope(selectedDoctorFilter)
+                setIsLiquidationModalOpen(true)
+              }}
+              style={{
+                background: 'linear-gradient(180deg, #0284c7 0%, #0369a1 100%)',
+                borderColor: '#075985',
+                color: '#ffffff',
+                fontWeight: 700
+              }}
+              title="Sacar liquidación y reporte de cobros por doctor o consolidado clínica"
+            >
+              <FileText size={15} />
+              <span>Liquidación / Reporte</span>
+            </button>
+
             <button
               className="btn-3d-metallic"
               onClick={() => onToast('Generando reporte contable en Excel de cobros clínicos...')}
@@ -746,16 +1123,203 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onToast 
         </div>
       </div>
 
-      {/* 4 Tarjetas KPI Ordenadas en la Parte Superior */}
+      {/* =========================================================================
+          BARRA DE FILTRO POR DOCTOR / TOTALES (Coordinación de Agendas & Cobros)
+          Permite a Nathalia Leon conmutar libremente entre la vista global o cada uno de los 4 doctores
+          ========================================================================= */}
+      <div
+        style={{
+          marginBottom: '18px',
+          padding: '14px 18px',
+          background: 'linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)',
+          borderRadius: '14px',
+          border: '1px solid #e2e8f0',
+          boxShadow: '0 2px 8px rgba(15, 23, 42, 0.04)'
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '10px',
+            marginBottom: '12px'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span
+              style={{
+                width: '28px',
+                height: '28px',
+                borderRadius: '7px',
+                backgroundColor: '#fdf2f8',
+                color: '#A94384',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '1px solid #fbcfe8'
+              }}
+            >
+              <Filter size={15} />
+            </span>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <strong style={{ fontSize: '13px', color: '#0f172a' }}>
+                  Filtrar Cobros por Doctor / Totales Clínica
+                </strong>
+                <span
+                  style={{
+                    fontSize: '10.5px',
+                    fontWeight: 700,
+                    padding: '2px 7px',
+                    borderRadius: '999px',
+                    backgroundColor: '#f1f5f9',
+                    color: '#475569'
+                  }}
+                >
+                  Nathalia Leon · Coordinación
+                </span>
+              </div>
+              <span style={{ fontSize: '11px', color: '#64748b' }}>
+                Seleccione un doctor para recalcular métricas y liquidar sus cobros, o consulte el consolidado institucional.
+              </span>
+            </div>
+          </div>
+
+          {/* Acceso rápido a Liquidación de este scope */}
+          <button
+            onClick={() => {
+              setLiquidationDoctorScope(selectedDoctorFilter)
+              setIsLiquidationModalOpen(true)
+            }}
+            style={{
+              padding: '6px 12px',
+              fontSize: '11.5px',
+              fontWeight: 700,
+              borderRadius: '8px',
+              border: '1px solid #cbd5e1',
+              backgroundColor: '#ffffff',
+              color: '#0f172a',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              boxShadow: '0 1px 3px rgba(0,0,0,0.06)'
+            }}
+          >
+            <Printer size={13} style={{ color: '#A94384' }} />
+            <span>
+              {selectedDoctorFilter === 'all'
+                ? 'Sacar Pagos Totales de la Clínica'
+                : `Sacar Pagos de ${activeDoctorMeta?.name || 'Doctor'}`}
+            </span>
+          </button>
+        </div>
+
+        {/* Botones de Filtro Requeridos */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+          {/* [🏢 Todos los Pagos (Total Clínica)] */}
+          <button
+            onClick={() => handleSelectDoctorFilter('all')}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '8px 14px',
+              borderRadius: '10px',
+              fontSize: '12.5px',
+              fontWeight: 700,
+              cursor: 'pointer',
+              transition: 'all 0.15s ease',
+              border: selectedDoctorFilter === 'all' ? '2px solid #0f172a' : '1px solid #cbd5e1',
+              backgroundColor: selectedDoctorFilter === 'all' ? '#0f172a' : '#ffffff',
+              color: selectedDoctorFilter === 'all' ? '#ffffff' : '#334155',
+              boxShadow: selectedDoctorFilter === 'all' ? '0 4px 10px rgba(15, 23, 42, 0.25)' : 'none'
+            }}
+          >
+            <span style={{ fontSize: '14px' }}>🏢</span>
+            <span>Todos los Pagos (Total Clínica)</span>
+            <span
+              style={{
+                fontSize: '11px',
+                padding: '2px 7px',
+                borderRadius: '999px',
+                backgroundColor: selectedDoctorFilter === 'all' ? '#A94384' : '#f1f5f9',
+                color: selectedDoctorFilter === 'all' ? '#ffffff' : '#475569',
+                fontWeight: 800
+              }}
+            >
+              {payments.length}
+            </span>
+          </button>
+
+          {/* [🦷 Dra. Sofía Valenzuela · General] */}
+          {/* [🦷 Dr. Alejandro Soto · Ortodoncia 1] */}
+          {/* [🦷 Dra. Claudia Rivas · Ortodoncia 2] */}
+          {/* [✨ Dr. Marcos Pineda · Diseño de Sonrisa] */}
+          {DOCTORS_METADATA.map((doc) => {
+            const isSelected = selectedDoctorFilter === doc.id
+            const docPaymentsCount = payments.filter((p) => p.doctorId === doc.id).length
+            return (
+              <button
+                key={doc.id}
+                onClick={() => handleSelectDoctorFilter(doc.id)}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '8px 14px',
+                  borderRadius: '10px',
+                  fontSize: '12.5px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                  border: isSelected ? `2px solid ${doc.color}` : '1px solid #cbd5e1',
+                  backgroundColor: isSelected ? doc.bg : '#ffffff',
+                  color: isSelected ? doc.color : '#334155',
+                  boxShadow: isSelected ? `0 4px 12px ${doc.color}33` : 'none',
+                  transform: isSelected ? 'translateY(-1px)' : 'none'
+                }}
+              >
+                <span style={{ fontSize: '14px' }}>{doc.iconEmoji}</span>
+                <span>{doc.chipLabel}</span>
+                <span
+                  style={{
+                    fontSize: '11px',
+                    padding: '2px 7px',
+                    borderRadius: '999px',
+                    backgroundColor: isSelected ? doc.color : '#f1f5f9',
+                    color: isSelected ? '#ffffff' : '#64748b',
+                    fontWeight: 800
+                  }}
+                >
+                  {docPaymentsCount}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* 4 Tarjetas KPI Ordenadas en la Parte Superior - Recalculadas en tiempo real */}
       <div className="cadra-kpi-grid-4" style={{ marginBottom: '22px' }}>
-        {/* KPI 1: Total Cobrado Hoy */}
+        {/* KPI 1: Total Cobrado del Doctor o Total Clínica */}
         <div className="cadra-kpi-card kpi-card-dark">
           <div className="kpi-card-top">
             <DollarSign size={16} style={{ color: '#10b981' }} />
-            <span className="kpi-label">Total Cobrado Hoy</span>
+            <span className="kpi-label">
+              {selectedDoctorFilter === 'all'
+                ? 'Total Cobrado Hoy (Clínica)'
+                : `Total Cobrado · ${activeDoctorMeta?.shortLabel || 'Doctor'}`}
+            </span>
           </div>
           <div className="kpi-main-number">
-            <AnimatedCounter value={`$${(totalCobradoHoy || 2550000).toLocaleString('es-CO')}`} duration={750} delay={100} />
+            <AnimatedCounter
+              value={`$${(selectedDoctorFilter === 'all' ? (totalCobradoHoyDoctor || 2550000) : totalCobradoDoctor).toLocaleString('es-CO')}`}
+              duration={750}
+              delay={100}
+            />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
             <span
@@ -768,20 +1332,34 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onToast 
                 borderRadius: '4px'
               }}
             >
-              ● {countCobradoHoy || 2} cobros hoy
+              {selectedDoctorFilter === 'all'
+                ? `● ${countCobrosHoy || 2} cobros hoy ingresados`
+                : `● ${countCobrosTotal} cobros completados (${countCobrosHoy} hoy)`}
             </span>
-            <span style={{ fontSize: '11px', color: '#94a3b8' }}>Ingresados a caja</span>
+            <span style={{ fontSize: '11px', color: '#94a3b8' }}>
+              {selectedDoctorFilter === 'all'
+                ? `Acumulado: $${totalCobradoDoctor.toLocaleString('es-CO')}`
+                : `${activeDoctorMeta?.consultorio || ''} · ${activeDoctorMeta?.specialty}`}
+            </span>
           </div>
         </div>
 
-        {/* KPI 2: Facturación del Mes */}
+        {/* KPI 2: Facturación Proyectada del Doctor o Clínica */}
         <div className="cadra-kpi-card kpi-card-blue">
           <div className="kpi-card-top">
             <TrendingUp size={16} style={{ color: '#A94384' }} />
-            <span className="kpi-label">Facturación del Mes</span>
+            <span className="kpi-label">
+              {selectedDoctorFilter === 'all'
+                ? 'Facturación del Mes (Clínica)'
+                : `Facturación Proyectada · ${activeDoctorMeta?.shortLabel || 'Doctor'}`}
+            </span>
           </div>
           <div className="kpi-main-number">
-            <AnimatedCounter value="$48.500.000" duration={750} delay={150} />
+            <AnimatedCounter
+              value={`$${facturacionProyectada.toLocaleString('es-CO')}`}
+              duration={750}
+              delay={150}
+            />
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
             <span
@@ -794,41 +1372,59 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onToast 
                 borderRadius: '4px'
               }}
             >
-              +12.4% vs mes anterior
+              {selectedDoctorFilter === 'all' ? '+12.4% vs mes anterior' : 'Proyección mensual'}
             </span>
-            <span style={{ fontSize: '11px', color: '#64748b' }}>Meta: $50M COP</span>
+            <span style={{ fontSize: '11px', color: '#64748b' }}>
+              {selectedDoctorFilter === 'all'
+                ? 'Meta: $50M COP'
+                : `Meta consultorio: $${(facturacionProyectada * 1.05).toLocaleString('es-CO', { maximumFractionDigits: 0 })}`}
+            </span>
           </div>
         </div>
 
-        {/* KPI 3: Saldos Pendientes de Cobro */}
+        {/* KPI 3: Saldos Pendientes / Cartera del Doctor o Clínica */}
         <div className="cadra-kpi-card kpi-card-light">
           <div className="kpi-card-top">
             <Clock size={16} style={{ color: '#d97706' }} />
-            <span className="kpi-label">Saldos Pendientes de Cobro</span>
+            <span className="kpi-label">
+              {selectedDoctorFilter === 'all'
+                ? 'Saldos Pendientes de Cobro'
+                : `Cartera Pendiente · ${activeDoctorMeta?.shortLabel || 'Doctor'}`}
+            </span>
           </div>
           <div className="kpi-number-row">
             <span className="kpi-main-number">
-              <AnimatedCounter value="$4.820.000" duration={750} delay={200} />
+              <AnimatedCounter value={`$${saldosPendientes.toLocaleString('es-CO')}`} duration={750} delay={200} />
             </span>
             <span className="cadra-tag-pill tag-orange" style={{ fontSize: '10.5px' }}>
               En Gestión
             </span>
           </div>
           <span style={{ fontSize: '11px', color: '#64748b', marginTop: '4px' }}>
-            Convenios EPS Sura y tratamientos en curso
+            {selectedDoctorFilter === 'all'
+              ? 'Convenios EPS Sura y tratamientos en curso'
+              : `Planes activos de ${activeDoctorMeta?.name || 'Doctor'}`}
           </span>
         </div>
 
-        {/* KPI 4: Método de Pago Predilecto */}
+        {/* KPI 4: Total Transacciones del Doctor o Clínica & Métodos */}
         <div className="cadra-kpi-card kpi-card-light">
           <div className="kpi-card-top">
             <CreditCard size={16} style={{ color: '#0284c7' }} />
-            <span className="kpi-label">Método de Pago Predilecto</span>
+            <span className="kpi-label">
+              {selectedDoctorFilter === 'all'
+                ? 'Transacciones Totales (Clínica)'
+                : `Transacciones · ${activeDoctorMeta?.shortLabel || 'Doctor'}`}
+            </span>
           </div>
           <div style={{ marginTop: '2px' }}>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-              <strong style={{ fontSize: '16px', color: '#0f172a' }}>Tarjetas / Datáfono</strong>
-              <span style={{ fontSize: '15px', fontWeight: 800, color: '#A94384' }}>48%</span>
+              <strong style={{ fontSize: '15px', color: '#0f172a' }}>
+                {doctorScopedPayments.length} transacciones
+              </strong>
+              <span style={{ fontSize: '13px', fontWeight: 700, color: '#A94384' }}>
+                ({completedInScope.length} cobradas)
+              </span>
             </div>
             {/* Progress breakdown */}
             <div
@@ -841,21 +1437,22 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onToast 
                 backgroundColor: '#e2e8f0'
               }}
             >
-              <div style={{ width: '48%', backgroundColor: '#A94384' }} title="Datáfono 48%" />
-              <div style={{ width: '32%', backgroundColor: '#0284c7' }} title="Nequi/Bancolombia 32%" />
-              <div style={{ width: '20%', backgroundColor: '#10b981' }} title="Efectivo 20%" />
+              <div style={{ width: `${methodStats.cardPct}%`, backgroundColor: '#A94384' }} title={`Datáfono ${methodStats.cardPct}%`} />
+              <div style={{ width: `${methodStats.transferPct}%`, backgroundColor: '#0284c7' }} title={`Nequi/Bancolombia ${methodStats.transferPct}%`} />
+              <div style={{ width: `${methodStats.cashPct}%`, backgroundColor: '#10b981' }} title={`Efectivo ${methodStats.cashPct}%`} />
             </div>
             <div
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                fontSize: '10.5px',
+                fontSize: '10px',
                 color: '#64748b',
                 marginTop: '5px'
               }}
             >
-              <span>Nequi (32%)</span>
-              <span>Efectivo (20%)</span>
+              <span>Tarjetas ({methodStats.cardPct}%)</span>
+              <span>Nequi ({methodStats.transferPct}%)</span>
+              <span>Efectivo ({methodStats.cashPct}%)</span>
             </div>
           </div>
         </div>
@@ -1013,6 +1610,7 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onToast 
                 <th style={{ padding: '10px 12px', fontWeight: 700 }}># Recibo / Ref</th>
                 <th style={{ padding: '10px 12px', fontWeight: 700 }}>Paciente</th>
                 <th style={{ padding: '10px 12px', fontWeight: 700 }}>Tratamiento Dental</th>
+                <th style={{ padding: '10px 12px', fontWeight: 700 }}>Doctor(a) Responsable</th>
                 <th style={{ padding: '10px 12px', fontWeight: 700 }}>Método de Pago</th>
                 <th style={{ padding: '10px 12px', fontWeight: 700 }}>Fecha & Hora</th>
                 <th style={{ padding: '10px 12px', fontWeight: 700, textAlign: 'right' }}>Monto (COP)</th>
@@ -1023,12 +1621,14 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onToast 
             <tbody>
               {filteredPayments.length === 0 ? (
                 <tr>
-                  <td colSpan={8} style={{ padding: '36px', textAlign: 'center', color: '#64748b' }}>
+                  <td colSpan={9} style={{ padding: '36px', textAlign: 'center', color: '#64748b' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
                       <AlertCircle size={28} color="#94a3b8" />
                       <span style={{ fontSize: '13.5px', fontWeight: 600 }}>No se encontraron cobros registrados</span>
                       <span style={{ fontSize: '12px', color: '#94a3b8' }}>
-                        Ajuste los filtros o registre un nuevo cobro con el botón superior.
+                        {selectedDoctorFilter !== 'all'
+                          ? `No hay cobros para el especialista seleccionado con los filtros actuales.`
+                          : 'Ajuste los filtros o registre un nuevo cobro con el botón superior.'}
                       </span>
                     </div>
                   </td>
@@ -1036,6 +1636,7 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onToast 
               ) : (
                 filteredPayments.map((p) => {
                   const isVoid = p.status === 'Anulado'
+                  const docMeta = getDoctorMeta(p.doctorId)
                   return (
                     <tr
                       key={p.id}
@@ -1110,8 +1711,32 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onToast 
                           <span style={{ fontWeight: 600, color: '#1e293b', display: 'block' }}>
                             {p.treatment}
                           </span>
-                          <span style={{ fontSize: '11px', color: '#8A8A8F' }}>
-                            {p.doctor}
+                        </div>
+                      </td>
+
+                      {/* Doctor(a) Responsable con Badge */}
+                      <td style={{ padding: '12px' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                          <span
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '5px',
+                              padding: '3px 8px',
+                              borderRadius: '6px',
+                              fontSize: '11px',
+                              fontWeight: 700,
+                              backgroundColor: docMeta.bg,
+                              color: docMeta.color,
+                              border: `1px solid ${docMeta.borderColor}`,
+                              width: 'fit-content'
+                            }}
+                          >
+                            <span>{docMeta.iconEmoji}</span>
+                            <span>{p.doctor}</span>
+                          </span>
+                          <span style={{ fontSize: '10.5px', color: '#64748b' }}>
+                            {docMeta.specialty} · {docMeta.consultorio}
                           </span>
                         </div>
                       </td>
@@ -1453,8 +2078,13 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onToast 
                           </select>
 
                           <select
-                            value={customDoctor}
-                            onChange={(e) => setCustomDoctor(e.target.value)}
+                            value={selectedDoctorIdForCreate}
+                            onChange={(e) => {
+                              const docId = e.target.value as 'doc-1' | 'doc-2' | 'doc-3' | 'doc-4'
+                              setSelectedDoctorIdForCreate(docId)
+                              const d = DOCTORS_METADATA.find((m) => m.id === docId)
+                              if (d) setCustomDoctor(d.name)
+                            }}
                             style={{
                               border: '1px solid #cbd5e1',
                               borderRadius: '6px',
@@ -1463,15 +2093,77 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onToast 
                               color: '#0f172a'
                             }}
                           >
-                            {vitadentConfig.doctors.map((d) => (
-                              <option key={d.id} value={d.name}>
-                                {d.name} ({d.specialty})
+                            {DOCTORS_METADATA.map((d) => (
+                              <option key={d.id} value={d.id}>
+                                {d.iconEmoji} {d.name} ({d.specialty})
                               </option>
                             ))}
                           </select>
                         </div>
                       </div>
                     )}
+
+                    {/* SELECTOR OBLIGATORIO DEL DOCTOR RESPONSABLE CON TARJETAS VISUALES */}
+                    <div style={{ marginTop: '8px' }}>
+                      <label style={{ fontSize: '12px', fontWeight: 700, color: '#334155', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
+                        <Stethoscope size={14} style={{ color: '#A94384' }} />
+                        <span>Doctor(a) Responsable del Procedimiento *</span>
+                        <span style={{ fontSize: '10.5px', color: '#A94384', fontWeight: 700 }}>(Obligatorio para liquidación)</span>
+                      </label>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
+                        {DOCTORS_METADATA.map((doc) => {
+                          const isSelected = selectedDoctorIdForCreate === doc.id
+                          return (
+                            <div
+                              key={doc.id}
+                              onClick={() => {
+                                setSelectedDoctorIdForCreate(doc.id)
+                                setCustomDoctor(doc.name)
+                              }}
+                              style={{
+                                padding: '9px 11px',
+                                borderRadius: '10px',
+                                border: isSelected ? `2px solid ${doc.color}` : '1px solid #cbd5e1',
+                                backgroundColor: isSelected ? doc.bg : '#ffffff',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                transition: 'all 0.15s ease',
+                                boxShadow: isSelected ? `0 2px 8px ${doc.color}25` : 'none'
+                              }}
+                            >
+                              <span style={{ fontSize: '18px' }}>{doc.iconEmoji}</span>
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <strong style={{ fontSize: '12px', display: 'block', color: isSelected ? doc.color : '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                  {doc.name}
+                                </strong>
+                                <span style={{ fontSize: '10.5px', color: '#64748b', display: 'block' }}>
+                                  {doc.specialty} · {doc.consultorio}
+                                </span>
+                              </div>
+                              {isSelected && (
+                                <div
+                                  style={{
+                                    width: '18px',
+                                    height: '18px',
+                                    borderRadius: '50%',
+                                    backgroundColor: doc.color,
+                                    color: '#ffffff',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    flexShrink: 0
+                                  }}
+                                >
+                                  <Check size={11} />
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
                   </div>
                 )}
 
@@ -1810,7 +2502,15 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onToast 
                         </div>
                       </td>
                       <td style={{ padding: '10px 0', color: '#475569' }}>
-                        {receiptToView.doctor}
+                        {(() => {
+                          const d = getDoctorMeta(receiptToView.doctorId)
+                          return (
+                            <div>
+                              <strong style={{ display: 'block', color: d.color }}>{d.iconEmoji} {receiptToView.doctor}</strong>
+                              <span style={{ fontSize: '11px', color: '#64748b' }}>{d.specialty} · {d.consultorio}</span>
+                            </div>
+                          )
+                        })()}
                       </td>
                       <td style={{ padding: '10px 0', textAlign: 'right', fontWeight: 700, color: '#0f172a' }}>
                         ${receiptToView.amount.toLocaleString('es-CO')} COP
@@ -2020,6 +2720,39 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onToast 
                       boxSizing: 'border-box'
                     }}
                   />
+                </div>
+
+                {/* Doctor(a) Responsable */}
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: 700, color: '#334155', display: 'block', marginBottom: '4px' }}>
+                    Doctor(a) Responsable *
+                  </label>
+                  <select
+                    value={paymentToEdit.doctorId}
+                    onChange={(e) => {
+                      const docId = e.target.value as 'doc-1' | 'doc-2' | 'doc-3' | 'doc-4'
+                      const meta = DOCTORS_METADATA.find((d) => d.id === docId)
+                      setPaymentToEdit({
+                        ...paymentToEdit,
+                        doctorId: docId,
+                        doctor: meta ? meta.name : paymentToEdit.doctor
+                      })
+                    }}
+                    style={{
+                      width: '100%',
+                      border: '1.5px solid #cbd5e1',
+                      borderRadius: '8px',
+                      padding: '8px 12px',
+                      fontSize: '13px',
+                      boxSizing: 'border-box'
+                    }}
+                  >
+                    {DOCTORS_METADATA.map((d) => (
+                      <option key={d.id} value={d.id}>
+                        {d.iconEmoji} {d.name} ({d.specialty})
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 {/* Método de Pago */}
@@ -2248,6 +2981,384 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onToast 
                   }}
                 >
                   Confirmar Anulación
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          MODAL 5: LIQUIDACIÓN / REPORTE OFICIAL DE COBROS
+          Permite sacar pagos por Doctor o Totales Consolidados de la Clínica
+          Con opciones de Impresión oficial y Descarga CSV para contabilidad
+          ========================================================================= */}
+      {isLiquidationModalOpen && (
+        <div
+          className="cadra-modal-overlay"
+          onClick={() => setIsLiquidationModalOpen(false)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(15, 23, 42, 0.65)',
+            backdropFilter: 'blur(4px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 9999,
+            padding: '16px'
+          }}
+        >
+          <div
+            className="cadra-action-modal receipt-watermark-card"
+            style={{
+              maxWidth: '820px',
+              width: '100%',
+              background: '#ffffff',
+              borderRadius: '16px',
+              overflow: 'hidden',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+              maxHeight: '90vh',
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header del Modal */}
+            <div
+              style={{
+                padding: '20px 24px',
+                borderBottom: '1px solid #f1f5f9',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                background: 'linear-gradient(180deg, #fdf8fa 0%, #ffffff 100%)'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div
+                  style={{
+                    width: '38px',
+                    height: '38px',
+                    borderRadius: '10px',
+                    background: 'linear-gradient(135deg, #A94384 0%, #8e356e 100%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#ffffff',
+                    boxShadow: '0 4px 10px rgba(169, 67, 132, 0.3)'
+                  }}
+                >
+                  <FileText size={20} />
+                </div>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: '#0f172a' }}>
+                    Liquidación & Reporte Oficial de Cobros
+                  </h3>
+                  <span style={{ fontSize: '11px', color: '#64748b' }}>
+                    VitaDent Clínica Odontológica · NIT 901.482.910-4 · Recepción & Coordinación de Agendas
+                  </span>
+                </div>
+              </div>
+
+              <button
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748b' }}
+                onClick={() => setIsLiquidationModalOpen(false)}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Contenido con Scroll */}
+            <div style={{ padding: '20px 24px', overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '18px' }}>
+              {/* Selectores de Ámbito (Doctor o Totales) y Período */}
+              <div
+                style={{
+                  padding: '14px 16px',
+                  borderRadius: '12px',
+                  backgroundColor: '#f8fafc',
+                  border: '1px solid #e2e8f0',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '12px'
+                }}
+              >
+                <div>
+                  <label style={{ fontSize: '12px', fontWeight: 700, color: '#334155', display: 'block', marginBottom: '8px' }}>
+                    1. ¿Qué pagos desea sacar en este reporte / liquidación? *
+                  </label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                    <button
+                      type="button"
+                      onClick={() => setLiquidationDoctorScope('all')}
+                      style={{
+                        padding: '7px 12px',
+                        borderRadius: '8px',
+                        fontSize: '12px',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        border: liquidationDoctorScope === 'all' ? '2px solid #0f172a' : '1px solid #cbd5e1',
+                        backgroundColor: liquidationDoctorScope === 'all' ? '#0f172a' : '#ffffff',
+                        color: liquidationDoctorScope === 'all' ? '#ffffff' : '#334155'
+                      }}
+                    >
+                      🏢 Sacar Pagos Totales de la Clínica
+                    </button>
+                    {DOCTORS_METADATA.map((doc) => {
+                      const isSel = liquidationDoctorScope === doc.id
+                      return (
+                        <button
+                          key={doc.id}
+                          type="button"
+                          onClick={() => setLiquidationDoctorScope(doc.id)}
+                          style={{
+                            padding: '7px 12px',
+                            borderRadius: '8px',
+                            fontSize: '12px',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            border: isSel ? `2px solid ${doc.color}` : '1px solid #cbd5e1',
+                            backgroundColor: isSel ? doc.bg : '#ffffff',
+                            color: isSel ? doc.color : '#334155'
+                          }}
+                        >
+                          {doc.iconEmoji} Sacar Pagos de {doc.shortLabel}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+
+                {/* Período de Liquidación */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px', paddingTop: '8px', borderTop: '1px dashed #cbd5e1' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Calendar size={14} style={{ color: '#A94384' }} />
+                    <span style={{ fontSize: '12px', fontWeight: 700, color: '#334155' }}>
+                      Período de Arqueo y Cobro:
+                    </span>
+                  </div>
+                  <div style={{ display: 'inline-flex', background: '#e2e8f0', padding: '2px', borderRadius: '8px' }}>
+                    {(['ALL', 'Hoy', 'Esta Semana', 'Este Mes'] as const).map((period) => (
+                      <button
+                        key={period}
+                        type="button"
+                        onClick={() => setLiquidationPeriod(period)}
+                        style={{
+                          padding: '4px 10px',
+                          fontSize: '11.5px',
+                          fontWeight: 700,
+                          borderRadius: '6px',
+                          border: 'none',
+                          cursor: 'pointer',
+                          backgroundColor: liquidationPeriod === period ? '#ffffff' : 'transparent',
+                          color: liquidationPeriod === period ? '#0f172a' : '#64748b',
+                          boxShadow: liquidationPeriod === period ? '0 1px 2px rgba(0,0,0,0.1)' : 'none'
+                        }}
+                      >
+                        {period === 'ALL' ? 'Todo el Histórico' : period}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Tarjetas de Resumen Financiero de la Liquidación */}
+              {(() => {
+                const liqItems = payments.filter((p) => {
+                  if (liquidationDoctorScope !== 'all' && p.doctorId !== liquidationDoctorScope) return false
+                  if (liquidationPeriod !== 'ALL' && p.period !== liquidationPeriod) return false
+                  return true
+                })
+                const liqCompleted = liqItems.filter((p) => p.status === 'Completado')
+                const totalMonto = liqCompleted.reduce((acc, p) => acc + p.amount, 0)
+                const cardMonto = liqCompleted.filter((p) => p.method === 'Card').reduce((acc, p) => acc + p.amount, 0)
+                const transMonto = liqCompleted.filter((p) => p.method === 'Transfer').reduce((acc, p) => acc + p.amount, 0)
+                const cashMonto = liqCompleted.filter((p) => p.method === 'Cash').reduce((acc, p) => acc + p.amount, 0)
+                const targetDoc = DOCTORS_METADATA.find((d) => d.id === liquidationDoctorScope)
+
+                return (
+                  <>
+                    <div
+                      style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(4, 1fr)',
+                        gap: '10px'
+                      }}
+                    >
+                      <div style={{ padding: '12px', borderRadius: '10px', backgroundColor: '#0f172a', color: '#ffffff' }}>
+                        <span style={{ fontSize: '10.5px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>
+                          Total Liquidado
+                        </span>
+                        <div style={{ fontSize: '17px', fontWeight: 900, color: '#10b981', marginTop: '3px' }}>
+                          ${totalMonto.toLocaleString('es-CO')}
+                        </div>
+                        <span style={{ fontSize: '10px', color: '#cbd5e1' }}>
+                          {liqCompleted.length} recibos completados
+                        </span>
+                      </div>
+
+                      <div style={{ padding: '12px', borderRadius: '10px', backgroundColor: '#fdf2f8', border: '1px solid #fbcfe8' }}>
+                        <span style={{ fontSize: '10.5px', color: '#A94384', textTransform: 'uppercase', fontWeight: 700 }}>
+                          Datáfono / Tarjetas
+                        </span>
+                        <div style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', marginTop: '3px' }}>
+                          ${cardMonto.toLocaleString('es-CO')}
+                        </div>
+                        <span style={{ fontSize: '10px', color: '#64748b' }}>
+                          {liqCompleted.filter((p) => p.method === 'Card').length} transacciones
+                        </span>
+                      </div>
+
+                      <div style={{ padding: '12px', borderRadius: '10px', backgroundColor: '#f0f9ff', border: '1px solid #bae6fd' }}>
+                        <span style={{ fontSize: '10.5px', color: '#0284c7', textTransform: 'uppercase', fontWeight: 700 }}>
+                          Transferencias (Nequi)
+                        </span>
+                        <div style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', marginTop: '3px' }}>
+                          ${transMonto.toLocaleString('es-CO')}
+                        </div>
+                        <span style={{ fontSize: '10px', color: '#64748b' }}>
+                          {liqCompleted.filter((p) => p.method === 'Transfer').length} transacciones
+                        </span>
+                      </div>
+
+                      <div style={{ padding: '12px', borderRadius: '10px', backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0' }}>
+                        <span style={{ fontSize: '10.5px', color: '#15803d', textTransform: 'uppercase', fontWeight: 700 }}>
+                          Efectivo en Caja
+                        </span>
+                        <div style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', marginTop: '3px' }}>
+                          ${cashMonto.toLocaleString('es-CO')}
+                        </div>
+                        <span style={{ fontSize: '10px', color: '#64748b' }}>
+                          {liqCompleted.filter((p) => p.method === 'Cash').length} pagos en caja
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Previsualización de Recibos Incluidos */}
+                    <div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                        <span style={{ fontSize: '12px', fontWeight: 700, color: '#334155' }}>
+                          Desglose de Recibos Incluidos ({liqItems.length} transacciones):
+                        </span>
+                        <span style={{ fontSize: '11px', color: '#64748b' }}>
+                          {liquidationDoctorScope === 'all'
+                            ? '🏢 Consolidado 4 Consultorios'
+                            : `${targetDoc?.name} · ${targetDoc?.specialty}`}
+                        </span>
+                      </div>
+
+                      <div style={{ border: '1px solid #e2e8f0', borderRadius: '10px', overflow: 'hidden', maxHeight: '180px', overflowY: 'auto' }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11.5px', textAlign: 'left' }}>
+                          <thead style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0', color: '#64748b', fontSize: '10.5px' }}>
+                            <tr>
+                              <th style={{ padding: '6px 10px' }}>Recibo</th>
+                              <th style={{ padding: '6px 10px' }}>Paciente</th>
+                              <th style={{ padding: '6px 10px' }}>Tratamiento</th>
+                              <th style={{ padding: '6px 10px' }}>Doctor Responsable</th>
+                              <th style={{ padding: '6px 10px' }}>Método</th>
+                              <th style={{ padding: '6px 10px', textAlign: 'right' }}>Monto (COP)</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {liqItems.length === 0 ? (
+                              <tr>
+                                <td colSpan={6} style={{ padding: '16px', textAlign: 'center', color: '#94a3b8' }}>
+                                  No hay cobros para el ámbito y período seleccionado.
+                                </td>
+                              </tr>
+                            ) : (
+                              liqItems.map((item) => (
+                                <tr key={item.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                                  <td style={{ padding: '6px 10px', fontWeight: 700, color: '#A94384' }}>
+                                    {item.receiptNumber}
+                                  </td>
+                                  <td style={{ padding: '6px 10px' }}>{item.patientName}</td>
+                                  <td style={{ padding: '6px 10px', color: '#475569' }}>{item.treatment}</td>
+                                  <td style={{ padding: '6px 10px', fontWeight: 600 }}>{item.doctor}</td>
+                                  <td style={{ padding: '6px 10px' }}>{item.methodLabel}</td>
+                                  <td style={{ padding: '6px 10px', textAlign: 'right', fontWeight: 800, color: item.status === 'Anulado' ? '#94a3b8' : '#047857' }}>
+                                    {item.status === 'Anulado' ? '(Anulado) ' : ''}${item.amount.toLocaleString('es-CO')}
+                                  </td>
+                                </tr>
+                              ))
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    {/* Bloque de Certificación & Firmas */}
+                    <div
+                      style={{
+                        padding: '12px 16px',
+                        borderRadius: '10px',
+                        backgroundColor: '#fafafa',
+                        border: '1px solid #e2e8f0',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        fontSize: '11px',
+                        color: '#64748b'
+                      }}
+                    >
+                      <div>
+                        <strong>Elaborado por:</strong> Nathalia Leon · Asistente de Dirección y Coordinadora de Agendas
+                        <div style={{ marginTop: '2px', fontSize: '10px', color: '#94a3b8' }}>
+                          Arqueo certificado para liquidación de honorarios y conciliación bancaria VitaDent.
+                        </div>
+                      </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <strong>Revisión:</strong> {liquidationDoctorScope === 'all' ? 'Dirección General' : targetDoc?.name}
+                        <div style={{ marginTop: '2px', fontSize: '10px', color: '#94a3b8' }}>
+                          {new Date().toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )
+              })()}
+            </div>
+
+            {/* Footer con Acciones */}
+            <div
+              style={{
+                padding: '16px 24px',
+                borderTop: '1px solid #f1f5f9',
+                background: '#f8fafc',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}
+            >
+              <button
+                type="button"
+                className="btn-3d-metallic"
+                onClick={() => setIsLiquidationModalOpen(false)}
+              >
+                Cerrar
+              </button>
+
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button
+                  type="button"
+                  className="btn-3d-metallic"
+                  onClick={handleExportLiquidationCSV}
+                  title="Descargar liquidación en archivo Excel / CSV"
+                >
+                  <Download size={14} />
+                  <span>Descargar CSV (Excel)</span>
+                </button>
+
+                <button
+                  type="button"
+                  className="btn-3d-magenta"
+                  onClick={() => {
+                    window.print()
+                  }}
+                  title="Imprimir liquidación oficial de caja"
+                >
+                  <Printer size={15} />
+                  <span>Imprimir Liquidación Oficial</span>
                 </button>
               </div>
             </div>

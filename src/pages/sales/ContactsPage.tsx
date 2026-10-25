@@ -24,6 +24,7 @@ import {
 import { contactsData } from '../../data/cadraData'
 import { ContactItem } from '../../types'
 import { vitadentConfig } from '../../config/clinic.config'
+import { useWorkspace, DOCTORS_WORKSPACES } from '../../context/WorkspaceContext'
 
 export interface PatientAppointment {
   id: string
@@ -140,11 +141,20 @@ interface ContactsPageProps {
 }
 
 export const ContactsPage: React.FC<ContactsPageProps> = ({ onNavigate, onOpenCreate, onToast }) => {
-  // Load contacts from localStorage if present
+  const { currentWorkspace, activeWorkspaceInfo, canViewPatient } = useWorkspace()
+
+  // Load contacts from localStorage or initialize with updated VitaDent dataset
   const [contacts, setContacts] = useState<ContactItem[]>(() => {
     try {
       const saved = localStorage.getItem('vitadent_contacts')
-      if (saved) return JSON.parse(saved)
+      if (saved) {
+        const parsed: ContactItem[] = JSON.parse(saved)
+        // Ensure contacts have assignedDoctorId and new patients are present
+        const hasDoctorAssigned = parsed.some((c) => !!c.assignedDoctorId)
+        if (hasDoctorAssigned && parsed.length >= contactsData.length) {
+          return parsed
+        }
+      }
     } catch {
       // fallback
     }
@@ -180,8 +190,18 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({ onNavigate, onOpenCr
   const [newPatientPhone, setNewPatientPhone] = useState('')
   const [newPatientEmail, setNewPatientEmail] = useState('')
   const [newPatientCity, setNewPatientCity] = useState('Bogotá')
-  const [newPatientCategory, setNewPatientCategory] = useState('Ortodoncia')
+  const [newPatientCategory, setNewPatientCategory] = useState('Ortodoncia 1 · Brackets')
   const [newPatientStarred, setNewPatientStarred] = useState(false)
+  const [newPatientDoctorId, setNewPatientDoctorId] = useState<string>(() => {
+    return currentWorkspace !== 'all' ? currentWorkspace : 'doc-1'
+  })
+
+  // Sincronizar doctor por defecto al abrir o cambiar de espacio
+  useEffect(() => {
+    if (currentWorkspace !== 'all') {
+      setNewPatientDoctorId(currentWorkspace)
+    }
+  }, [currentWorkspace])
 
   // Form state for Scheduling Appointment
   const [scheduleDoctor, setScheduleDoctor] = useState(vitadentConfig.doctors[0]?.name || 'Dra. Sofía Valenzuela')
@@ -190,6 +210,60 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({ onNavigate, onOpenCr
   const [scheduleTime, setScheduleTime] = useState('10:00 AM')
   const [scheduleBox, setScheduleBox] = useState('Consultorio 1 (General)')
   const [scheduleNotes, setScheduleNotes] = useState('')
+
+  // Helper para obtener metadatos y colores del doctor asignado
+  const getDoctorInfo = (doctorId?: string) => {
+    if (doctorId === 'doc-2') {
+      return {
+        id: 'doc-2',
+        name: 'Dr. Alejandro Soto',
+        specialty: 'Ortodoncia 1',
+        shortTitle: 'Dr. Alejandro Soto · Ortodoncia 1',
+        color: '#0284c7',
+        badgeBg: '#f0f9ff',
+        badgeBorder: '#bae6fd',
+        initials: 'AS',
+        consultorio: 'Consultorio 2'
+      }
+    }
+    if (doctorId === 'doc-3') {
+      return {
+        id: 'doc-3',
+        name: 'Dra. Claudia Rivas',
+        specialty: 'Ortodoncia 2',
+        shortTitle: 'Dra. Claudia Rivas · Ortodoncia 2',
+        color: '#0d9488',
+        badgeBg: '#f0fdfa',
+        badgeBorder: '#99f6e4',
+        initials: 'CR',
+        consultorio: 'Consultorio 3'
+      }
+    }
+    if (doctorId === 'doc-4') {
+      return {
+        id: 'doc-4',
+        name: 'Dr. Marcos Pineda',
+        specialty: 'Diseño de Sonrisa',
+        shortTitle: 'Dr. Marcos Pineda · Diseño de Sonrisa',
+        color: '#c2410c',
+        badgeBg: '#fff7ed',
+        badgeBorder: '#fed7aa',
+        initials: 'MP',
+        consultorio: 'Consultorio 4'
+      }
+    }
+    return {
+      id: 'doc-1',
+      name: 'Dra. Sofía Valenzuela',
+      specialty: 'Odontología General',
+      shortTitle: 'Dra. Sofía Valenzuela · General',
+      color: '#A94384',
+      badgeBg: '#fdf2f8',
+      badgeBorder: '#fbcfe8',
+      initials: 'SV',
+      consultorio: 'Consultorio 1'
+    }
+  }
 
   // Toast handler
   const notify = (msg: string) => {
@@ -295,7 +369,8 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({ onNavigate, onOpenCr
       category: newPatientCategory,
       email: newPatientEmail.trim() || `${initials.toLowerCase()}@vitadent.com.co`,
       phone: newPatientPhone.trim() || '+57 310 000 0000',
-      starred: newPatientStarred
+      starred: newPatientStarred,
+      assignedDoctorId: newPatientDoctorId as any,
     }
 
     setContacts((prev) => [newPatient, ...prev])
@@ -307,7 +382,7 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({ onNavigate, onOpenCr
     setNewPatientPhone('')
     setNewPatientEmail('')
     setNewPatientCity('Bogotá')
-    setNewPatientCategory('Ortodoncia')
+    setNewPatientCategory('Ortodoncia 1 · Brackets')
     setNewPatientStarred(false)
     setIsNewPatientModalOpen(false)
   }
@@ -342,8 +417,24 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({ onNavigate, onOpenCr
   // Alphabet scrubber
   const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
 
+  // Filtrado estricto por Espacio de Trabajo Odontológico
+  const matchesWorkspace = (c: ContactItem): boolean => {
+    // 1. Si el espacio activo es 'all' (Toda la Clínica / Asistente Nathalia): MUESTRA TODOS LOS PACIENTES
+    if (currentWorkspace === 'all') return true
+
+    // 2. Si el espacio activo es 'doc-1' (Dra. Valenzuela - Odontología General):
+    // MUESTRA TODOS LOS PACIENTES (¡La doctora general tiene permiso para todos los pacientes!)
+    if (currentWorkspace === 'doc-1') return true
+
+    // 3. Si el espacio activo es un especialista único ('doc-2', 'doc-3', 'doc-4'):
+    // SOLO muestra los pacientes asignados a ese doctor
+    return c.assignedDoctorId === currentWorkspace
+  }
+
   // Filtered contacts
   const filtered = contacts.filter((c) => {
+    if (!matchesWorkspace(c)) return false
+
     const matchesQuery =
       c.company.toLowerCase().includes(query.toLowerCase()) ||
       c.rep.toLowerCase().includes(query.toLowerCase()) ||
@@ -641,6 +732,81 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({ onNavigate, onOpenCr
         </div>
       </div>
 
+      {/* Contextual Workspace Information Banner */}
+      <div
+        className="workspace-context-banner"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '12px',
+          padding: '12px 18px',
+          borderRadius: '12px',
+          marginBottom: '16px',
+          background: currentWorkspace === 'all'
+            ? 'linear-gradient(135deg, rgba(169, 67, 132, 0.08) 0%, rgba(248, 248, 250, 0.95) 100%)'
+            : `linear-gradient(135deg, ${activeWorkspaceInfo.color}15 0%, rgba(255, 255, 255, 0.95) 100%)`,
+          border: `1.5px solid ${currentWorkspace === 'all' ? 'rgba(169, 67, 132, 0.28)' : `${activeWorkspaceInfo.color}45`}`,
+          boxShadow: '0 2px 8px rgba(0,0,0,0.03)'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <span
+            style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '10px',
+              backgroundColor: currentWorkspace === 'all' ? '#A94384' : activeWorkspaceInfo.color,
+              color: '#ffffff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontWeight: 800,
+              fontSize: '15px',
+              boxShadow: `0 2px 6px ${currentWorkspace === 'all' ? '#A94384' : activeWorkspaceInfo.color}45`
+            }}
+          >
+            {currentWorkspace === 'all' ? '🏢' : activeWorkspaceInfo.iconEmoji || '🦷'}
+          </span>
+          <div>
+            <div style={{ fontSize: '13.5px', fontWeight: 800, color: 'var(--text-main, #0f172a)' }}>
+              Mostrando pacientes asignados a:{' '}
+              <span style={{ color: currentWorkspace === 'all' ? '#A94384' : activeWorkspaceInfo.color }}>
+                {currentWorkspace === 'all' ? 'Toda la Clínica (Coordinación Nathalia Leon)' : activeWorkspaceInfo.name}
+              </span>
+              {' '}
+              <span style={{ fontSize: '12px', fontWeight: 600, color: '#64748b' }}>
+                ({filtered.length} {filtered.length === 1 ? 'paciente' : 'pacientes'})
+              </span>
+            </div>
+            <div style={{ fontSize: '11.5px', color: '#64748b', marginTop: '2px' }}>
+              {currentWorkspace === 'all' && 'Vista Global Asistente: Visualización y administración central de todos los consultorios con distintivo por doctor.'}
+              {currentWorkspace === 'doc-1' && 'Dra. Sofía Valenzuela (Consultorio 1) · Odontología General cuenta con permiso para todos los pacientes.'}
+              {currentWorkspace === 'doc-2' && 'Dr. Alejandro Soto (Consultorio 2) · Espacio exclusivo con pacientes únicos de Ortodoncia 1.'}
+              {currentWorkspace === 'doc-3' && 'Dra. Claudia Rivas (Consultorio 3) · Espacio exclusivo con pacientes únicos de Ortodoncia 2.'}
+              {currentWorkspace === 'doc-4' && 'Dr. Marcos Pineda (Consultorio 4) · Espacio exclusivo con pacientes únicos de Diseño de Sonrisa.'}
+            </div>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span
+            className="cadra-tag-pill"
+            style={{
+              backgroundColor: currentWorkspace === 'all' ? '#fdf2f8' : `${activeWorkspaceInfo.color}15`,
+              color: currentWorkspace === 'all' ? '#A94384' : activeWorkspaceInfo.color,
+              borderColor: currentWorkspace === 'all' ? '#fbcfe8' : `${activeWorkspaceInfo.color}35`,
+              fontWeight: 700,
+              fontSize: '11px',
+              padding: '4px 10px'
+            }}
+          >
+            {currentWorkspace === 'all' ? 'Vista Global' : activeWorkspaceInfo.consultorio}
+          </span>
+        </div>
+      </div>
+
       {/* Controls Bar: Search + Filter Tabs + View Mode */}
       <div className="contacts-control-bar">
         <div className="contacts-search-box">
@@ -776,6 +942,7 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({ onNavigate, onOpenCr
                       {grouped[letter].map((c) => {
                         const patientApts = getPatientAppointments(c.id)
                         const latestApt = patientApts[0]
+                        const docInfo = getDoctorInfo(c.assignedDoctorId)
 
                         return (
                           <div key={c.id} className="contact-row-item">
@@ -819,6 +986,44 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({ onNavigate, onOpenCr
                             >
                               ● {c.type === 'Customer' ? 'Paciente' : c.type === 'Partner' ? 'Convenio' : 'Proveedor'}
                             </span>
+
+                            {/* Badge del Doctor / Espacio Odontológico Asignado */}
+                            {c.type === 'Customer' && (
+                              <div
+                                style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '5px',
+                                  padding: '3px 9px',
+                                  borderRadius: '12px',
+                                  backgroundColor: docInfo.badgeBg,
+                                  border: `1px solid ${docInfo.badgeBorder}`,
+                                  color: docInfo.color,
+                                  fontSize: '11px',
+                                  fontWeight: 700,
+                                  whiteSpace: 'nowrap'
+                                }}
+                                title={`Doctor(a) Tratante: ${docInfo.name} (${docInfo.consultorio})`}
+                              >
+                                <span
+                                  style={{
+                                    width: '17px',
+                                    height: '17px',
+                                    borderRadius: '50%',
+                                    backgroundColor: docInfo.color,
+                                    color: '#ffffff',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '8.5px',
+                                    fontWeight: 800
+                                  }}
+                                >
+                                  {docInfo.initials}
+                                </span>
+                                <span>{docInfo.shortTitle}</span>
+                              </div>
+                            )}
 
                             {/* Ubicación */}
                             <div className="contact-location-info">
@@ -888,6 +1093,7 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({ onNavigate, onOpenCr
                 filtered.map((c) => {
                   const patientApts = getPatientAppointments(c.id)
                   const latestApt = patientApts[0]
+                  const docInfo = getDoctorInfo(c.assignedDoctorId)
 
                   return (
                     <div key={c.id} className="patient-card-3d">
@@ -917,6 +1123,42 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({ onNavigate, onOpenCr
                           />
                         </button>
                       </div>
+
+                      {/* Doctor Asignado Badge */}
+                      {c.type === 'Customer' && (
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            padding: '4px 8px',
+                            borderRadius: '8px',
+                            backgroundColor: docInfo.badgeBg,
+                            border: `1px solid ${docInfo.badgeBorder}`,
+                            color: docInfo.color,
+                            fontSize: '11.5px',
+                            fontWeight: 700
+                          }}
+                        >
+                          <span
+                            style={{
+                              width: '18px',
+                              height: '18px',
+                              borderRadius: '50%',
+                              backgroundColor: docInfo.color,
+                              color: '#ffffff',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              fontSize: '9px',
+                              fontWeight: 800
+                            }}
+                          >
+                            {docInfo.initials}
+                          </span>
+                          <span>{docInfo.shortTitle}</span>
+                        </div>
+                      )}
 
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11.5px', color: '#475569', marginTop: '2px' }}>
                         <MapPin size={12} color="#8A8A8F" />
@@ -1179,14 +1421,38 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({ onNavigate, onOpenCr
                 </div>
 
                 <div className="vitadent-field-group">
+                  <label>Doctor / Espacio Clínico Asignado *</label>
+                  <select
+                    value={newPatientDoctorId}
+                    onChange={(e) => {
+                      const docId = e.target.value
+                      setNewPatientDoctorId(docId)
+                      if (docId === 'doc-2') setNewPatientCategory('Ortodoncia 1 · Brackets')
+                      else if (docId === 'doc-3') setNewPatientCategory('Ortodoncia 2 · Alineadores')
+                      else if (docId === 'doc-4') setNewPatientCategory('Diseño de Sonrisa · Carillas')
+                      else setNewPatientCategory('Odontología General · Consulta & Limpieza')
+                    }}
+                  >
+                    <option value="doc-1">Dra. Sofía Valenzuela — Odontología General (Consultorio 1)</option>
+                    <option value="doc-2">Dr. Alejandro Soto — Ortodoncia 1 (Consultorio 2)</option>
+                    <option value="doc-3">Dra. Claudia Rivas — Ortodoncia 2 (Consultorio 3)</option>
+                    <option value="doc-4">Dr. Marcos Pineda — Diseño de Sonrisa (Consultorio 4)</option>
+                  </select>
+                  <span style={{ fontSize: '11px', color: '#64748b' }}>
+                    Vincula al paciente al consultorio y agenda exclusiva del doctor seleccionado.
+                  </span>
+                </div>
+
+                <div className="vitadent-field-group">
                   <label>Categoría / Tratamiento de Interés *</label>
                   <select value={newPatientCategory} onChange={(e) => setNewPatientCategory(e.target.value)}>
-                    <option value="Ortodoncia">Ortodoncia (Brackets / Alineadores)</option>
-                    <option value="Implantes & Cirugía">Implantes de Titanio & Cirugía Oral</option>
-                    <option value="Odontología General & Diagnóstico">Odontología General & Diagnóstico</option>
-                    <option value="Endodoncia">Endodoncia (Tratamiento de Conducto)</option>
-                    <option value="Estética Dental & Carillas">Estética Dental & Diseño de Sonrisa</option>
-                    <option value="Higiene & Prevención">Higiene & Limpieza Ultrasonido</option>
+                    <option value="Odontología General · Consulta & Limpieza">Odontología General (Consulta, Limpieza & Resinas)</option>
+                    <option value="Ortodoncia 1 · Brackets">Ortodoncia 1 (Brackets Convencionales / Autoligado)</option>
+                    <option value="Ortodoncia 2 · Alineadores">Ortodoncia 2 (Alineadores Invisibles / Ortopedia)</option>
+                    <option value="Diseño de Sonrisa · Carillas">Diseño de Sonrisa (Carillas Cerámicas & Mockup Digital)</option>
+                    <option value="Implantes & Cirugía">Implantes Dentales & Cirugía Oral</option>
+                    <option value="Endodoncia">Endodoncia (Tratamiento de Conducto Rotatorio)</option>
+                    <option value="Higiene & Prevención">Higiene & Profilaxis con Ultrasonido</option>
                   </select>
                 </div>
 

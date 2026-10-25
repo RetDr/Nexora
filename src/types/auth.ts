@@ -17,7 +17,8 @@ export interface AuthUser {
 
 /**
  * Catálogo de usuarios autorizados de VitaDent Clínica Odontológica.
- * Roles exclusivos: Administrador y Doctores/Especialistas.
+ * Perfil único de inicio de sesión institucional:
+ * Nathalia Leon (Asistente de Dirección y Coordinadora de Agendas Clínicas).
  */
 export const VITA_USERS: AuthUser[] = [
   {
@@ -26,67 +27,11 @@ export const VITA_USERS: AuthUser[] = [
     role: 'admin',
     email: 'administracion@vitadent.com.co',
     initials: 'NL',
-    title: 'Administradora General',
+    title: 'Asistente de Dirección y Coordinadora de Agendas Clínicas',
     avatarColor: '#A94384',
     badgeEmoji: '👑',
-    phone: '+57 312 456 7890',
-    bio: 'Dirección médica, gestión operativa integral, finanzas y control de agenda clínica.'
-  },
-  {
-    id: 'doc-1',
-    name: 'Dra. Sofía Valenzuela',
-    role: 'doctor',
-    email: 'sofia.valenzuela@vitadent.com.co',
-    specialty: 'Odontología General & Estética',
-    consultorio: 'Consultorio 1',
-    initials: 'SV',
-    title: 'Odontóloga Especialista',
-    avatarColor: '#A94384',
-    badgeEmoji: '🦷',
-    phone: '+57 301 234 5678',
-    bio: 'Especialista en rehabilitación oral, estética dental y prevención clínica.'
-  },
-  {
-    id: 'doc-2',
-    name: 'Dr. Alejandro Soto',
-    role: 'doctor',
-    email: 'alejandro.soto@vitadent.com.co',
-    specialty: 'Ortodoncia',
-    consultorio: 'Consultorio 2',
-    initials: 'AS',
-    title: 'Especialista en Ortodoncia',
-    avatarColor: '#0284c7',
-    badgeEmoji: '🦷',
-    phone: '+57 310 987 6543',
-    bio: 'Ortodoncia convencional, autoligado y alineadores invisibles de última generación.'
-  },
-  {
-    id: 'doc-3',
-    name: 'Dra. Claudia Rivas',
-    role: 'doctor',
-    email: 'claudia.rivas@vitadent.com.co',
-    specialty: 'Endodoncia',
-    consultorio: 'Consultorio 3',
-    initials: 'CR',
-    title: 'Especialista en Endodoncia',
-    avatarColor: '#0d9488',
-    badgeEmoji: '🦷',
-    phone: '+57 315 444 8899',
-    bio: 'Tratamientos de conductos avanzados con magnificación microscópica y cirugía apical.'
-  },
-  {
-    id: 'doc-4',
-    name: 'Dr. Marcos Pineda',
-    role: 'doctor',
-    email: 'marcos.pineda@vitadent.com.co',
-    specialty: 'Cirugía & Implantes',
-    consultorio: 'Consultorio 4',
-    initials: 'MP',
-    title: 'Cirujano Maxilofacial & Implantólogo',
-    avatarColor: '#ea580c',
-    badgeEmoji: '🦷',
-    phone: '+57 320 777 1122',
-    bio: 'Implantología guiada, regeneración ósea y cirugía maxilofacial compleja.'
+    phone: '+57 311 405 2910',
+    bio: 'Asistente de Dirección y Coordinadora de Agendas Clínicas. Supervisión centralizada de agendas, consultorios y pacientes de VitaDent.'
   }
 ]
 

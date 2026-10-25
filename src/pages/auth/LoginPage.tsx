@@ -11,8 +11,8 @@ import {
   CheckCircle2,
   AlertCircle,
   HelpCircle,
-  Stethoscope,
-  Crown
+  Crown,
+  Key
 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { VITA_USERS, AuthUser } from '../../types/auth'
@@ -32,6 +32,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [successRoleFlash, setSuccessRoleFlash] = useState<string | null>(null)
 
+  const nathalia = VITA_USERS[0]
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setErrorMessage(null)
@@ -47,7 +49,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
   const handleQuickLogin = (u: AuthUser) => {
     setSuccessRoleFlash(u.id)
     setEmail(u.email)
-    setPassword('••••••••')
+    setPassword('vitadent2026')
     setTimeout(() => {
       loginAs(u.id)
       if (onLoginSuccess) onLoginSuccess()
@@ -74,12 +76,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
 
           <div className="vita-auth-badge-security">
             <ShieldCheck size={14} className="text-[#A94384]" />
-            <span>Acceso Seguro · Conexión Cifrada SSL/TLS 256-bit</span>
+            <span>Acceso Seguro Institucional · Conexión Cifrada SSL/TLS 256-bit</span>
           </div>
 
-          <h1 className="vita-auth-title">Portal Clínico & Administrativo</h1>
+          <h1 className="vita-auth-title">Portal de Coordinación & Dirección Clínica</h1>
           <p className="vita-auth-subtitle">
-            Ingresa con tus credenciales de especialista o selecciona un perfil demo para entrar en 1 clic.
+            Acceso administrativo para la Asistente de Dirección y Coordinadora de Agendas Clínicas (<strong>Nathalia Leon</strong>). Clave predeterminada: <code>vitadent2026</code>.
           </p>
         </div>
 
@@ -107,7 +109,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="ej: administracion@vitadent.com.co"
+                placeholder="administracion@vitadent.com.co"
                 className="vita-input-field"
                 required
                 autoComplete="email"
@@ -119,18 +121,18 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
           <div className="vita-form-group">
             <div className="vita-label-row">
               <label htmlFor="vita-password" className="vita-form-label">
-                Contraseña
+                Contraseña de Acceso Clínico
               </label>
               <button
                 type="button"
                 className="vita-link-btn"
                 onClick={() =>
                   alert(
-                    'Para esta demostración puedes utilizar cualquier contraseña de al menos 4 caracteres o usar el "Acceso Rápido en 1 Clic" abajo.'
+                    'La contraseña predeterminada para el acceso administrativo es: vitadent2026. También puedes hacer clic en el botón de "Acceso Rápido en 1 Clic".'
                   )
                 }
               >
-                ¿Olvidaste tu contraseña?
+                ¿Ayuda con tu contraseña?
               </button>
             </div>
             <div className="vita-input-box">
@@ -142,7 +144,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
+                placeholder="vitadent2026"
                 className="vita-input-field"
                 required
                 autoComplete="current-password"
@@ -168,7 +170,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                 onChange={(e) => setRememberMe(e.target.checked)}
                 className="vita-checkbox"
               />
-              <span>Mantener sesión activa en esta estación</span>
+              <span>Mantener sesión activa en esta estación clínica</span>
             </label>
           </div>
 
@@ -181,11 +183,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
             {isLoading ? (
               <span className="vita-btn-loading">
                 <span className="vita-spinner" />
-                <span>Verificando credenciales...</span>
+                <span>Verificando credenciales oficiales...</span>
               </span>
             ) : (
               <>
-                <span>Iniciar Sesión</span>
+                <span>Iniciar Sesión en VitaDent</span>
                 <ArrowRight size={17} />
               </>
             )}
@@ -196,74 +198,69 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
         <div className="vita-auth-divider">
           <span className="vita-divider-line" />
           <span className="vita-divider-text">
-            O ACCESO RÁPIDO EN 1 CLIC · ROLES DEMO
+            O ACCESO DIRECTO EN 1 CLIC
           </span>
           <span className="vita-divider-line" />
         </div>
 
-        {/* Selector de Roles Demo Táctil en 1 Clic */}
+        {/* Botón Directo de Acceso Rápido para Nathalia Leon */}
         <div className="vita-quick-roles-section">
           <p className="vita-quick-roles-tip">
             <Sparkles size={13} className="text-[#A94384]" />
-            <span>Haz clic en cualquier perfil para acceder instantáneamente:</span>
+            <span>Haz clic para ingresar inmediatamente como Asistente de Dirección:</span>
           </p>
 
           <div className="vita-roles-grid">
-            {VITA_USERS.map((u) => {
-              const isSelected = successRoleFlash === u.id
-              const isAdmin = u.role === 'admin'
-
-              return (
-                <button
-                  key={u.id}
-                  type="button"
-                  className={`vita-role-card ${isAdmin ? 'vita-role-card-admin' : ''} ${
-                    isSelected ? 'selected' : ''
-                  }`}
-                  onClick={() => handleQuickLogin(u)}
-                  title={`Entrar de inmediato como ${u.name}`}
-                >
-                  <div className="vita-role-card-left">
-                    <div
-                      className="vita-role-avatar"
-                      style={{
-                        backgroundColor: u.avatarColor,
-                        boxShadow: `0 3px 10px ${u.avatarColor}40`,
-                      }}
-                    >
-                      <span>{u.initials}</span>
-                      <span className="vita-role-avatar-badge">
-                        {isAdmin ? <Crown size={10} /> : <Stethoscope size={10} />}
-                      </span>
-                    </div>
-
-                    <div className="vita-role-info">
-                      <div className="vita-role-name-row">
-                        <span className="vita-role-name">{u.name}</span>
-                        {isAdmin ? (
-                          <span className="vita-role-tag admin">Administradora</span>
-                        ) : (
-                          <span className="vita-role-tag doctor">{u.consultorio}</span>
-                        )}
-                      </div>
-                      <span className="vita-role-specialty">
-                        {isAdmin ? u.title : u.specialty}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="vita-role-card-right">
-                    <span className="vita-role-enter-pill">
-                      {isSelected ? (
-                        <CheckCircle2 size={14} className="text-emerald-600" />
-                      ) : (
-                        <span>Entrar</span>
-                      )}
+            {nathalia && (
+              <button
+                key={nathalia.id}
+                type="button"
+                className={`vita-role-card vita-role-card-admin ${
+                  successRoleFlash === nathalia.id ? 'selected' : ''
+                }`}
+                onClick={() => handleQuickLogin(nathalia)}
+                title={`Entrar de inmediato como ${nathalia.name}`}
+              >
+                <div className="vita-role-card-left">
+                  <div
+                    className="vita-role-avatar"
+                    style={{
+                      backgroundColor: nathalia.avatarColor,
+                      boxShadow: `0 3px 10px ${nathalia.avatarColor}40`,
+                    }}
+                  >
+                    <span>{nathalia.initials}</span>
+                    <span className="vita-role-avatar-badge">
+                      <Crown size={10} />
                     </span>
                   </div>
-                </button>
-              )
-            })}
+
+                  <div className="vita-role-info">
+                    <div className="vita-role-name-row">
+                      <span className="vita-role-name">{nathalia.name}</span>
+                      <span className="vita-role-tag admin">Coordinación Clínica</span>
+                    </div>
+                    <span className="vita-role-specialty">
+                      {nathalia.title}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="vita-role-card-right flex items-center gap-2">
+                  <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-semibold text-[#8A8A8F]">
+                    <Key size={11} className="text-[#A94384]" />
+                    <code>vitadent2026</code>
+                  </span>
+                  <span className="vita-role-enter-pill">
+                    {successRoleFlash === nathalia.id ? (
+                      <CheckCircle2 size={14} className="text-emerald-600" />
+                    ) : (
+                      <span>Entrar en 1 Clic</span>
+                    )}
+                  </span>
+                </div>
+              </button>
+            )}
           </div>
         </div>
 

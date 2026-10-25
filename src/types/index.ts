@@ -85,6 +85,7 @@ export interface ContactItem {
   email: string
   phone: string
   starred?: boolean
+  assignedDoctorId?: 'doc-1' | 'doc-2' | 'doc-3' | 'doc-4' | 'general' | string
 }
 
 export interface POSProduct {

@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { AnimatedCounter } from '../../components/ui/AnimatedCounter'
 import { LiveFloorPill } from '../../components/ui/LiveFloorPill'
+import { useWorkspace, DOCTORS_WORKSPACES } from '../../context/WorkspaceContext'
 import {
   ChevronLeft,
   ChevronRight,
@@ -62,19 +63,19 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
   // LUNES 9
   {
     id: 'apt-1',
-    patientName: 'Carlos García Restrepo',
-    patientId: 'CC 1.028.455.912',
-    patientPhone: '+57 312 450 8921',
-    patientEmail: 'carlos.garcia@gmail.com',
+    patientName: 'Valentina Ríos Castro',
+    patientId: 'TI 1.098.234.190',
+    patientPhone: '+57 320 192 8472',
+    patientEmail: 'valentina.rios@yahoo.com',
     doctorName: 'Dra. Sofía Valenzuela',
-    doctorSpecialty: 'Odontología General & Estética',
+    doctorSpecialty: 'Odontología General',
     doctorColor: '#A94384',
     doctorId: 'doc-1',
     doctorInitials: 'SV',
     treatment: 'Limpieza Ultrasonido y Profilaxis Fluorada',
-    category: 'Higiene',
-    categoryLabel: 'Higiene & Prevención',
-    categoryColor: '#10b981',
+    category: 'General',
+    categoryLabel: 'Odontología General',
+    categoryColor: '#A94384',
     dayIndex: 0,
     dateStr: 'Lun 9 Nov',
     dayNum: 9,
@@ -87,18 +88,18 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
   },
   {
     id: 'apt-2',
-    patientName: 'Laura Gómez Cárdenas',
-    patientId: 'CC 1.032.889.102',
-    patientPhone: '+57 315 220 1144',
-    patientEmail: 'laura.gomez@hotmail.com',
+    patientName: 'Laura Gómez Restrepo',
+    patientId: 'CC 1.032.481.923',
+    patientPhone: '+57 312 904 1120',
+    patientEmail: 'laura.gomez@gmail.com',
     doctorName: 'Dr. Alejandro Soto',
-    doctorSpecialty: 'Ortodoncia',
+    doctorSpecialty: 'Ortodoncia 1',
     doctorColor: '#0284c7',
     doctorId: 'doc-2',
     doctorInitials: 'AS',
     treatment: 'Cambio de Arcos NiTi 0.016 y Ligaduras',
     category: 'Ortodoncia',
-    categoryLabel: 'Ortodoncia',
+    categoryLabel: 'Ortodoncia 1',
     categoryColor: '#0284c7',
     dayIndex: 0,
     dateStr: 'Lun 9 Nov',
@@ -112,19 +113,19 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
   },
   {
     id: 'apt-3',
-    patientName: 'Mateo Fernández Quintero',
-    patientId: 'CC 1.019.340.551',
-    patientPhone: '+57 318 901 2345',
-    patientEmail: 'mateo.fernandez@yahoo.com',
+    patientName: 'Carlos García Mendoza',
+    patientId: 'CC 1.020.485.912',
+    patientPhone: '+57 310 482 9182',
+    patientEmail: 'carlos.garcia@gmail.com',
     doctorName: 'Dr. Marcos Pineda',
-    doctorSpecialty: 'Cirugía & Implantes',
-    doctorColor: '#ea580c',
+    doctorSpecialty: 'Diseño de Sonrisa',
+    doctorColor: '#c2410c',
     doctorId: 'doc-4',
     doctorInitials: 'MP',
-    treatment: 'Colocación Implante Straumann BLX 4.0mm',
+    treatment: 'Diseño de Sonrisa & Carillas de Porcelana (Fase 1)',
     category: 'Cirugía',
-    categoryLabel: 'Cirugía & Implantes',
-    categoryColor: '#ea580c',
+    categoryLabel: 'Diseño de Sonrisa',
+    categoryColor: '#c2410c',
     dayIndex: 0,
     dateStr: 'Lun 9 Nov',
     dayNum: 9,
@@ -133,22 +134,22 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     timeFormatted: '2:00 PM – 4:00 PM',
     box: 'Consultorio 4',
     status: 'Realizada',
-    notes: 'Torque de inserción primario óptimo (35 Ncm). Se prescribió amoxicilina 875mg y ketoprofeno.'
+    notes: 'Escaneo intraoral 3D y diseño digital smile design. Muestras de color BL1 aprobadas.'
   },
   {
     id: 'apt-4',
-    patientName: 'María Paula Duque',
-    patientId: 'CC 1.020.771.839',
-    patientPhone: '+57 310 882 9901',
-    patientEmail: 'mpauladuque@gmail.com',
+    patientName: 'Andrés Felipe Mendoza',
+    patientId: 'CC 1.014.892.301',
+    patientPhone: '+57 318 459 2018',
+    patientEmail: 'andres.mendoza@gmail.com',
     doctorName: 'Dra. Sofía Valenzuela',
-    doctorSpecialty: 'Odontología General & Estética',
+    doctorSpecialty: 'Odontología General',
     doctorColor: '#A94384',
     doctorId: 'doc-1',
     doctorInitials: 'SV',
-    treatment: 'Restauración Estética Resina Filtek 3M',
+    treatment: 'Restauración Resina Filtek 3M (Calzas)',
     category: 'General',
-    categoryLabel: 'Odontología General & Estética',
+    categoryLabel: 'Odontología General',
     categoryColor: '#A94384',
     dayIndex: 0,
     dateStr: 'Lun 9 Nov',
@@ -164,18 +165,18 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
   // MARTES 10
   {
     id: 'apt-5',
-    patientName: 'Andrés Mendoza Londoño',
-    patientId: 'CC 1.017.654.321',
-    patientPhone: '+57 314 555 7820',
-    patientEmail: 'andres.mendoza@outlook.com',
+    patientName: 'Mariana Torres Peña',
+    patientId: 'CC 1.022.391.823',
+    patientPhone: '+57 311 839 2011',
+    patientEmail: 'mariana.tp@gmail.com',
     doctorName: 'Dra. Claudia Rivas',
-    doctorSpecialty: 'Endodoncia',
+    doctorSpecialty: 'Ortodoncia 2',
     doctorColor: '#0d9488',
     doctorId: 'doc-3',
     doctorInitials: 'CR',
-    treatment: 'Conductometría y Limas Rotatorias Mtwo',
-    category: 'Endodoncia',
-    categoryLabel: 'Endodoncia',
+    treatment: 'Alineadores Invisibles · Set-up y Planificación',
+    category: 'Ortodoncia',
+    categoryLabel: 'Ortodoncia 2',
     categoryColor: '#0d9488',
     dayIndex: 1,
     dateStr: 'Mar 10 Nov',
@@ -185,22 +186,22 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     timeFormatted: '9:00 AM – 10:30 AM',
     box: 'Consultorio 3',
     status: 'Realizada',
-    notes: 'Pieza 24 conducto permeable. Longitud de trabajo 21mm. Medicación intraconducto hidróxido de calcio.'
+    notes: 'Planificación de 18 alineadores superiores e inferiores. Entrega de primeros 2 juegos de placas.'
   },
   {
     id: 'apt-6',
-    patientName: 'Felipe Castro Morales',
-    patientId: 'CC 1.030.912.448',
-    patientPhone: '+57 320 441 5590',
-    patientEmail: 'felipe.castro@empresa.com',
+    patientName: 'Camilo Echeverri',
+    patientId: 'CC 1.017.392.810',
+    patientPhone: '+57 316 772 3419',
+    patientEmail: 'camilo.echeverri@hotmail.com',
     doctorName: 'Dr. Alejandro Soto',
-    doctorSpecialty: 'Ortodoncia',
+    doctorSpecialty: 'Ortodoncia 1',
     doctorColor: '#0284c7',
     doctorId: 'doc-2',
     doctorInitials: 'AS',
-    treatment: 'Cementado Brackets MBT 0.022 Superior',
+    treatment: 'Cementado Brackets MBT 0.022 y Arcos NiTi',
     category: 'Ortodoncia',
-    categoryLabel: 'Ortodoncia',
+    categoryLabel: 'Ortodoncia 1',
     categoryColor: '#0284c7',
     dayIndex: 1,
     dateStr: 'Mar 10 Nov',
@@ -214,19 +215,19 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
   },
   {
     id: 'apt-7',
-    patientName: 'Camilo Rincón Prieto',
-    patientId: 'CC 1.022.667.112',
-    patientPhone: '+57 316 778 3344',
-    patientEmail: 'camilo.rincon@gmail.com',
+    patientName: 'Valeria Ospina',
+    patientId: 'CC 1.033.928.172',
+    patientPhone: '+57 314 550 8912',
+    patientEmail: 'valeria.ospina@gmail.com',
     doctorName: 'Dr. Marcos Pineda',
-    doctorSpecialty: 'Cirugía & Implantes',
-    doctorColor: '#ea580c',
+    doctorSpecialty: 'Diseño de Sonrisa',
+    doctorColor: '#c2410c',
     doctorId: 'doc-4',
     doctorInitials: 'MP',
-    treatment: 'Control Postquirúrgico y Retiro Sutura',
+    treatment: 'Mockup Digital y Prueba de Sonrisa Estética',
     category: 'Cirugía',
-    categoryLabel: 'Cirugía & Implantes',
-    categoryColor: '#ea580c',
+    categoryLabel: 'Diseño de Sonrisa',
+    categoryColor: '#c2410c',
     dayIndex: 1,
     dateStr: 'Mar 10 Nov',
     dayNum: 10,
@@ -235,50 +236,50 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     timeFormatted: '3:00 PM – 4:00 PM',
     box: 'Consultorio 4',
     status: 'Realizada',
-    notes: 'Cicatrización gingival de primera intención. Sin signos de inflamación ni edema.'
+    notes: 'Prueba de mockup en bisacrilato con alta satisfacción. Se envía orden para carillas cerámicas disilicato.'
   },
   {
     id: 'apt-8',
-    patientName: 'Diana Marcela Gómez',
-    patientId: 'CC 1.015.443.990',
-    patientPhone: '+57 311 234 5678',
-    patientEmail: 'diana.gomez@gmail.com',
-    doctorName: 'Dra. Sofía Valenzuela',
-    doctorSpecialty: 'Odontología General & Estética',
-    doctorColor: '#A94384',
-    doctorId: 'doc-1',
-    doctorInitials: 'SV',
-    treatment: 'Carillas Cerámicas Disilicato Prueba Bisel',
-    category: 'General',
-    categoryLabel: 'Odontología General & Estética',
-    categoryColor: '#A94384',
+    patientName: 'Mateo Salazar',
+    patientId: 'CC 1.028.391.740',
+    patientPhone: '+57 318 640 1928',
+    patientEmail: 'mateo.salazar@outlook.com',
+    doctorName: 'Dra. Claudia Rivas',
+    doctorSpecialty: 'Ortodoncia 2',
+    doctorColor: '#0d9488',
+    doctorId: 'doc-3',
+    doctorInitials: 'CR',
+    treatment: 'Estudio Cefalométrico y Análisis Steiner',
+    category: 'Ortodoncia',
+    categoryLabel: 'Ortodoncia 2',
+    categoryColor: '#0d9488',
     dayIndex: 1,
     dateStr: 'Mar 10 Nov',
     dayNum: 10,
     startHour: 16.5,
     durationHours: 1.5,
     timeFormatted: '4:30 PM – 6:00 PM',
-    box: 'Consultorio 1',
+    box: 'Consultorio 3',
     status: 'Realizada',
-    notes: 'Ajuste marginal de carillas 11, 12, 21 y 22. Color BL2 aprobado con satisfacción por la paciente.'
+    notes: 'Trazado cefalométrico computarizado completado. Clase II esquelética confirmada.'
   },
 
   // MIÉRCOLES 11 (HOY)
   {
     id: 'apt-9',
-    patientName: 'Juliana Pardo Ramos',
-    patientId: 'CC 1.026.883.210',
-    patientPhone: '+57 300 456 7890',
-    patientEmail: 'juliana.pardo@gmail.com',
+    patientName: 'Carlos García Mendoza',
+    patientId: 'CC 1.020.485.912',
+    patientPhone: '+57 310 482 9182',
+    patientEmail: 'carlos.garcia@gmail.com',
     doctorName: 'Dr. Marcos Pineda',
-    doctorSpecialty: 'Cirugía & Implantes',
-    doctorColor: '#ea580c',
+    doctorSpecialty: 'Diseño de Sonrisa',
+    doctorColor: '#c2410c',
     doctorId: 'doc-4',
     doctorInitials: 'MP',
-    treatment: 'Extracción Quirúrgica Cordales 38 y 48',
+    treatment: 'Cementación Adhesiva 6 Carillas Porcelana',
     category: 'Cirugía',
-    categoryLabel: 'Cirugía & Implantes',
-    categoryColor: '#ea580c',
+    categoryLabel: 'Diseño de Sonrisa',
+    categoryColor: '#c2410c',
     dayIndex: 2,
     dateStr: 'Mié 11 Nov',
     dayNum: 11,
@@ -287,22 +288,22 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     timeFormatted: '8:30 AM – 10:00 AM',
     box: 'Consultorio 4',
     status: 'Realizada',
-    notes: 'Odontosección limpia cordal 48 retenida. Sutura seda 3-0. Hemostasia y recuperación inmediata.'
+    notes: 'Aislamiento absoluto con OptraDam. Cemento resinoso Variolink Esthetic Light.'
   },
   {
     id: 'apt-10',
-    patientName: 'Mariana Torres Valencia',
-    patientId: 'CC 1.033.441.229',
-    patientPhone: '+57 317 654 9911',
-    patientEmail: 'mariana.torres@gmail.com',
+    patientName: 'Valentina Ríos Castro',
+    patientId: 'TI 1.098.234.190',
+    patientPhone: '+57 320 192 8472',
+    patientEmail: 'valentina.rios@yahoo.com',
     doctorName: 'Dra. Sofía Valenzuela',
-    doctorSpecialty: 'Odontología General & Estética',
+    doctorSpecialty: 'Odontología General',
     doctorColor: '#A94384',
     doctorId: 'doc-1',
     doctorInitials: 'SV',
-    treatment: 'Estratificación 4 Carillas Estéticas',
+    treatment: 'Control Semestral y Pulido Dental Profiláctico',
     category: 'General',
-    categoryLabel: 'Odontología General & Estética',
+    categoryLabel: 'Odontología General',
     categoryColor: '#A94384',
     dayIndex: 2,
     dateStr: 'Mié 11 Nov',
@@ -312,47 +313,47 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     timeFormatted: '10:30 AM – 12:00 PM',
     box: 'Consultorio 1',
     status: 'En atención',
-    notes: 'Estratificación de esmalte y dentina opalescente. Paciente en atención con aislamiento absoluto dique de goma.'
+    notes: 'Pasta profiláctica Nupro y pulido interproximal con tiras de acabado.'
   },
   {
     id: 'apt-11',
-    patientName: 'Santiago Beltrán Castro',
-    patientId: 'CC 1.018.776.324',
-    patientPhone: '+57 313 890 1234',
-    patientEmail: 'santiago.beltran@gmail.com',
-    doctorName: 'Dra. Sofía Valenzuela',
-    doctorSpecialty: 'Odontología General & Estética',
-    doctorColor: '#A94384',
-    doctorId: 'doc-1',
-    doctorInitials: 'SV',
-    treatment: 'Higiene Profunda y Curetaje Subgingival',
-    category: 'Higiene',
-    categoryLabel: 'Higiene & Prevención',
-    categoryColor: '#10b981',
+    patientName: 'Laura Gómez Restrepo',
+    patientId: 'CC 1.032.481.923',
+    patientPhone: '+57 312 904 1120',
+    patientEmail: 'laura.gomez@gmail.com',
+    doctorName: 'Dr. Alejandro Soto',
+    doctorSpecialty: 'Ortodoncia 1',
+    doctorColor: '#0284c7',
+    doctorId: 'doc-2',
+    doctorInitials: 'AS',
+    treatment: 'Control Mensual Brackets Zafiro',
+    category: 'Ortodoncia',
+    categoryLabel: 'Ortodoncia 1',
+    categoryColor: '#0284c7',
     dayIndex: 2,
     dateStr: 'Mié 11 Nov',
     dayNum: 11,
     startHour: 13.0,
     durationHours: 1.0,
     timeFormatted: '1:00 PM – 2:00 PM',
-    box: 'Consultorio 1',
+    box: 'Consultorio 2',
     status: 'Confirmada',
-    notes: 'Sondeo periodontal con bolsas de 4mm en sextante 5. Requiere profilaxis de mantenimiento con ultrasonido.'
+    notes: 'Ajuste de torque anterior y cambio de ligaduras elastoméricas transparentes.'
   },
   {
     id: 'apt-12',
-    patientName: 'Valentina Ríos Botero',
-    patientId: 'CC 1.029.112.873',
-    patientPhone: '+57 319 012 3456',
-    patientEmail: 'valentina.rios@gmail.com',
+    patientName: 'Andrés Felipe Mendoza',
+    patientId: 'CC 1.014.892.301',
+    patientPhone: '+57 318 459 2018',
+    patientEmail: 'andres.mendoza@gmail.com',
     doctorName: 'Dra. Sofía Valenzuela',
-    doctorSpecialty: 'Odontología General & Estética',
+    doctorSpecialty: 'Odontología General',
     doctorColor: '#A94384',
     doctorId: 'doc-1',
     doctorInitials: 'SV',
-    treatment: 'Blanqueamiento Dental LED Sesión 2',
+    treatment: 'Blanqueamiento Dental LED Clínica',
     category: 'General',
-    categoryLabel: 'Odontología General & Estética',
+    categoryLabel: 'Odontología General',
     categoryColor: '#A94384',
     dayIndex: 2,
     dateStr: 'Mié 11 Nov',
@@ -362,74 +363,74 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     timeFormatted: '2:30 PM – 4:00 PM',
     box: 'Consultorio 1',
     status: 'Confirmada',
-    notes: 'Peróxido de hidrógeno al 35%. Aplicación de barrera gingival fotopolimerizable OpalDam.'
+    notes: 'Peróxido de hidrógeno al 35%. Aplicación de barrera gingival fotopolimerizable.'
   },
   {
     id: 'apt-13',
-    patientName: 'Samuel Ortiz Ospina',
-    patientId: 'CC 1.031.556.789',
-    patientPhone: '+57 301 234 5678',
-    patientEmail: 'samuel.ortiz@gmail.com',
-    doctorName: 'Dr. Alejandro Soto',
-    doctorSpecialty: 'Ortodoncia',
-    doctorColor: '#0284c7',
-    doctorId: 'doc-2',
-    doctorInitials: 'AS',
-    treatment: 'Ajuste y Control Ortodoncia Invisible',
+    patientName: 'Mariana Torres Peña',
+    patientId: 'CC 1.022.391.823',
+    patientPhone: '+57 311 839 2011',
+    patientEmail: 'mariana.tp@gmail.com',
+    doctorName: 'Dra. Claudia Rivas',
+    doctorSpecialty: 'Ortodoncia 2',
+    doctorColor: '#0d9488',
+    doctorId: 'doc-3',
+    doctorInitials: 'CR',
+    treatment: 'Control Alineador #8 y Revisión de Aditamentos',
     category: 'Ortodoncia',
-    categoryLabel: 'Ortodoncia',
-    categoryColor: '#0284c7',
+    categoryLabel: 'Ortodoncia 2',
+    categoryColor: '#0d9488',
     dayIndex: 2,
     dateStr: 'Mié 11 Nov',
     dayNum: 11,
     startHour: 16.5,
     durationHours: 1.5,
     timeFormatted: '4:30 PM – 6:00 PM',
-    box: 'Consultorio 2',
+    box: 'Consultorio 3',
     status: 'Confirmada',
-    notes: 'Entrega alineadores serie #12 al #16. Stripping interproximal en 32 y 42 según planificación digital.'
+    notes: 'Encaje perfecto de alineadores. Se entregan placas 9, 10 y 11 para las próximas 6 semanas.'
   },
 
   // JUEVES 12
   {
     id: 'apt-14',
-    patientName: 'Patricia Henao Zuluaga',
-    patientId: 'CC 1.014.332.901',
-    patientPhone: '+57 316 123 4567',
-    patientEmail: 'patricia.henao@gmail.com',
-    doctorName: 'Dra. Claudia Rivas',
-    doctorSpecialty: 'Endodoncia',
-    doctorColor: '#0d9488',
-    doctorId: 'doc-3',
-    doctorInitials: 'CR',
-    treatment: 'Obturación Gutapercha Caliente System B',
-    category: 'Endodoncia',
-    categoryLabel: 'Endodoncia',
-    categoryColor: '#0d9488',
+    patientName: 'Valeria Ospina',
+    patientId: 'CC 1.033.928.172',
+    patientPhone: '+57 314 550 8912',
+    patientEmail: 'valeria.ospina@gmail.com',
+    doctorName: 'Dr. Marcos Pineda',
+    doctorSpecialty: 'Diseño de Sonrisa',
+    doctorColor: '#c2410c',
+    doctorId: 'doc-4',
+    doctorInitials: 'MP',
+    treatment: 'Micropreparación Estética y Toma de Impresiones Silicona',
+    category: 'Cirugía',
+    categoryLabel: 'Diseño de Sonrisa',
+    categoryColor: '#c2410c',
     dayIndex: 3,
     dateStr: 'Jue 12 Nov',
     dayNum: 12,
     startHour: 8.5,
     durationHours: 1.5,
     timeFormatted: '8:30 AM – 10:00 AM',
-    box: 'Consultorio 3',
+    box: 'Consultorio 4',
     status: 'Confirmada',
-    notes: 'Sellado tridimensional conducto distal molar 46 con cemento biocerámico AH Plus.'
+    notes: 'Preparación mínimamente invasiva carillas 13 al 23. Silicona por adición Express 3M.'
   },
   {
     id: 'apt-15',
-    patientName: 'Daniela Roldán Vélez',
-    patientId: 'CC 1.025.774.119',
-    patientPhone: '+57 312 998 8776',
-    patientEmail: 'daniela.roldan@gmail.com',
+    patientName: 'Camilo Echeverri',
+    patientId: 'CC 1.017.392.810',
+    patientPhone: '+57 316 772 3419',
+    patientEmail: 'camilo.echeverri@hotmail.com',
     doctorName: 'Dr. Alejandro Soto',
-    doctorSpecialty: 'Ortodoncia',
+    doctorSpecialty: 'Ortodoncia 1',
     doctorColor: '#0284c7',
     doctorId: 'doc-2',
     doctorInitials: 'AS',
-    treatment: 'Toma de Registros Escáner Intraoral 3D',
+    treatment: 'Instalación Arco NiTi Rectangular 0.016x0.022',
     category: 'Ortodoncia',
-    categoryLabel: 'Ortodoncia',
+    categoryLabel: 'Ortodoncia 1',
     categoryColor: '#0284c7',
     dayIndex: 3,
     dateStr: 'Jue 12 Nov',
@@ -439,75 +440,75 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     timeFormatted: '10:30 AM – 12:00 PM',
     box: 'Consultorio 2',
     status: 'Confirmada',
-    notes: 'Escaneo de arcadas completas para diseño de ortodoncia lingual y set-up virtual 3D.'
+    notes: 'Avance en secuencia de arcos. Ligaduras metálicas en caninos para control de rotación.'
   },
   {
     id: 'apt-16',
-    patientName: 'Nicolás Vega Salazar',
-    patientId: 'CC 1.019.223.445',
-    patientPhone: '+57 314 887 6655',
-    patientEmail: 'nicolas.vega@gmail.com',
-    doctorName: 'Dra. Sofía Valenzuela',
-    doctorSpecialty: 'Odontología General & Estética',
-    doctorColor: '#A94384',
-    doctorId: 'doc-1',
-    doctorInitials: 'SV',
-    treatment: 'Reconstrucción de Muñón Pre-Corona',
-    category: 'General',
-    categoryLabel: 'Odontología General & Estética',
-    categoryColor: '#A94384',
+    patientName: 'Mateo Salazar',
+    patientId: 'CC 1.028.391.740',
+    patientPhone: '+57 318 640 1928',
+    patientEmail: 'mateo.salazar@outlook.com',
+    doctorName: 'Dra. Claudia Rivas',
+    doctorSpecialty: 'Ortodoncia 2',
+    doctorColor: '#0d9488',
+    doctorId: 'doc-3',
+    doctorInitials: 'CR',
+    treatment: 'Entrega de Placas Alineadoras e Instrucciones',
+    category: 'Ortodoncia',
+    categoryLabel: 'Ortodoncia 2',
+    categoryColor: '#0d9488',
     dayIndex: 3,
     dateStr: 'Jue 12 Nov',
     dayNum: 12,
     startHour: 14.0,
     durationHours: 1.5,
     timeFormatted: '2:00 PM – 3:30 PM',
-    box: 'Consultorio 1',
+    box: 'Consultorio 3',
     status: 'Confirmada',
-    notes: 'Poste de fibra de vidrio cementado en conducto palatino. Reconstrucción con resina Core.'
+    notes: 'Colocación de attachments vestibulares en resina compuesta fotocurable.'
   },
   {
     id: 'apt-17',
-    patientName: 'Esteban Cárdenas Gil',
-    patientId: 'CC 1.028.990.334',
-    patientPhone: '+57 318 443 2211',
-    patientEmail: 'esteban.cardenas@gmail.com',
-    doctorName: 'Dr. Marcos Pineda',
-    doctorSpecialty: 'Cirugía & Implantes',
-    doctorColor: '#ea580c',
-    doctorId: 'doc-4',
-    doctorInitials: 'MP',
-    treatment: 'Cirugía Guiada Implante Primer Molar',
-    category: 'Cirugía',
-    categoryLabel: 'Cirugía & Implantes',
-    categoryColor: '#ea580c',
+    patientName: 'Mateo Fernández Silva',
+    patientId: 'CC 1.018.239.014',
+    patientPhone: '+57 315 782 3910',
+    patientEmail: 'mateo.f@outlook.com',
+    doctorName: 'Dra. Sofía Valenzuela',
+    doctorSpecialty: 'Odontología General',
+    doctorColor: '#A94384',
+    doctorId: 'doc-1',
+    doctorInitials: 'SV',
+    treatment: 'Operatoria Dental y Restauración Estética',
+    category: 'General',
+    categoryLabel: 'Odontología General',
+    categoryColor: '#A94384',
     dayIndex: 3,
     dateStr: 'Jue 12 Nov',
     dayNum: 12,
     startHour: 16.0,
     durationHours: 1.5,
     timeFormatted: '4:00 PM – 5:30 PM',
-    box: 'Consultorio 4',
+    box: 'Consultorio 1',
     status: 'Pendiente',
-    notes: 'Férula quirúrgica esterilizada lista. Kit quirúrgico guiado Straumann BLX preparado.'
+    notes: 'Cambio de amalgama defectuosa por composite estético nanorrelleno pieza 46.'
   },
 
   // VIERNES 13
   {
     id: 'apt-18',
-    patientName: 'Claudia Restrepo Villegas',
-    patientId: 'CC 1.016.554.887',
-    patientPhone: '+57 315 667 8899',
-    patientEmail: 'claudia.restrepo@gmail.com',
+    patientName: 'Valentina Ríos Castro',
+    patientId: 'TI 1.098.234.190',
+    patientPhone: '+57 320 192 8472',
+    patientEmail: 'valentina.rios@yahoo.com',
     doctorName: 'Dra. Sofía Valenzuela',
-    doctorSpecialty: 'Odontología General & Estética',
+    doctorSpecialty: 'Odontología General',
     doctorColor: '#A94384',
     doctorId: 'doc-1',
     doctorInitials: 'SV',
-    treatment: 'Destartraje Supragingival y Flúor',
-    category: 'Higiene',
-    categoryLabel: 'Higiene & Prevención',
-    categoryColor: '#10b981',
+    treatment: 'Aplicación Sellantes de Fosas y Fisuras',
+    category: 'General',
+    categoryLabel: 'Odontología General',
+    categoryColor: '#A94384',
     dayIndex: 4,
     dateStr: 'Vie 13 Nov',
     dayNum: 13,
@@ -516,22 +517,22 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     timeFormatted: '9:00 AM – 10:30 AM',
     box: 'Consultorio 1',
     status: 'Confirmada',
-    notes: 'Mantenimiento semestral programado. Refuerzo de técnica de cepillado Bass modificada.'
+    notes: 'Prevención en molares permanentes con sellante resinoso Clinpro 3M.'
   },
   {
     id: 'apt-19',
-    patientName: 'Roberto Mejía Correa',
-    patientId: 'CC 1.023.445.667',
-    patientPhone: '+57 320 112 3344',
-    patientEmail: 'roberto.mejia@gmail.com',
+    patientName: 'Mariana Torres Peña',
+    patientId: 'CC 1.022.391.823',
+    patientPhone: '+57 311 839 2011',
+    patientEmail: 'mariana.tp@gmail.com',
     doctorName: 'Dra. Claudia Rivas',
-    doctorSpecialty: 'Endodoncia',
+    doctorSpecialty: 'Ortodoncia 2',
     doctorColor: '#0d9488',
     doctorId: 'doc-3',
     doctorInitials: 'CR',
-    treatment: 'Retratamiento Conducto Molar Superior',
-    category: 'Endodoncia',
-    categoryLabel: 'Endodoncia',
+    treatment: 'Stripping Interproximal Calibrado',
+    category: 'Ortodoncia',
+    categoryLabel: 'Ortodoncia 2',
     categoryColor: '#0d9488',
     dayIndex: 4,
     dateStr: 'Vie 13 Nov',
@@ -541,22 +542,22 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     timeFormatted: '11:00 AM – 12:30 PM',
     box: 'Consultorio 3',
     status: 'Pendiente',
-    notes: 'Desobturación con solvente de gutapercha y magnificación microscópica.'
+    notes: 'Desgaste interproximal de 0.2mm en sector anteroinferior para resolver apiñamiento.'
   },
   {
     id: 'apt-20',
-    patientName: 'Lucía Ospina Marín',
-    patientId: 'CC 1.034.221.998',
-    patientPhone: '+57 311 998 7766',
-    patientEmail: 'lucia.ospina@gmail.com',
+    patientName: 'Laura Gómez Restrepo',
+    patientId: 'CC 1.032.481.923',
+    patientPhone: '+57 312 904 1120',
+    patientEmail: 'laura.gomez@gmail.com',
     doctorName: 'Dr. Alejandro Soto',
-    doctorSpecialty: 'Ortodoncia',
+    doctorSpecialty: 'Ortodoncia 1',
     doctorColor: '#0284c7',
     doctorId: 'doc-2',
     doctorInitials: 'AS',
-    treatment: 'Instalación Arco Transpalatino de Anclaje',
+    treatment: 'Colocación Elásticos Intermaxilares Clase II',
     category: 'Ortodoncia',
-    categoryLabel: 'Ortodoncia',
+    categoryLabel: 'Ortodoncia 1',
     categoryColor: '#0284c7',
     dayIndex: 4,
     dateStr: 'Vie 13 Nov',
@@ -566,23 +567,23 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     timeFormatted: '2:30 PM – 4:00 PM',
     box: 'Consultorio 2',
     status: 'Confirmada',
-    notes: 'Adaptación bandas molares 16 y 26 cementadas con ionómero de vidrio GC Fuji I.'
+    notes: 'Elásticos 3/16 4.5oz. Paciente capacitada para recambio diario.'
   },
   {
     id: 'apt-21',
-    patientName: 'Gonzalo Morales Tamayo',
-    patientId: 'CC 1.012.334.556',
-    patientPhone: '+57 317 334 5566',
-    patientEmail: 'gonzalo.morales@gmail.com',
+    patientName: 'Carlos García Mendoza',
+    patientId: 'CC 1.020.485.912',
+    patientPhone: '+57 310 482 9182',
+    patientEmail: 'carlos.garcia@gmail.com',
     doctorName: 'Dr. Marcos Pineda',
-    doctorSpecialty: 'Cirugía & Implantes',
-    doctorColor: '#ea580c',
+    doctorSpecialty: 'Diseño de Sonrisa',
+    doctorColor: '#c2410c',
     doctorId: 'doc-4',
     doctorInitials: 'MP',
-    treatment: 'Elevación de Seno Maxilar con Injerto Óseo',
+    treatment: 'Control y Pulido Final de Carillas de Porcelana',
     category: 'Cirugía',
-    categoryLabel: 'Cirugía & Implantes',
-    categoryColor: '#ea580c',
+    categoryLabel: 'Diseño de Sonrisa',
+    categoryColor: '#c2410c',
     dayIndex: 4,
     dateStr: 'Vie 13 Nov',
     dayNum: 13,
@@ -591,24 +592,24 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     timeFormatted: '4:30 PM – 6:00 PM',
     box: 'Consultorio 4',
     status: 'Pendiente',
-    notes: 'Bio-Oss 0.5g y membrana de colágeno Bio-Gide preparados en quirófano ambulatorio.'
+    notes: 'Revisión oclusal en lateralidades y protrusiva. Brillo de cerámica con pasta diamantada.'
   },
 
   // SÁBADO 14
   {
     id: 'apt-22',
-    patientName: 'Tatiana Salgado Ruiz',
-    patientId: 'CC 1.027.665.443',
-    patientPhone: '+57 310 554 3322',
-    patientEmail: 'tatiana.salgado@gmail.com',
+    patientName: 'Andrés Felipe Mendoza',
+    patientId: 'CC 1.014.892.301',
+    patientPhone: '+57 318 459 2018',
+    patientEmail: 'andres.mendoza@gmail.com',
     doctorName: 'Dra. Sofía Valenzuela',
-    doctorSpecialty: 'Odontología General & Estética',
+    doctorSpecialty: 'Odontología General',
     doctorColor: '#A94384',
     doctorId: 'doc-1',
     doctorInitials: 'SV',
-    treatment: 'Diseño de Sonrisa Consulta Diagnóstica',
+    treatment: 'Revisión Post-Tratamiento y Guarda Oclusal',
     category: 'General',
-    categoryLabel: 'Odontología General & Estética',
+    categoryLabel: 'Odontología General',
     categoryColor: '#A94384',
     dayIndex: 5,
     dateStr: 'Sáb 14 Nov',
@@ -618,22 +619,22 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     timeFormatted: '8:30 AM – 10:00 AM',
     box: 'Consultorio 1',
     status: 'Confirmada',
-    notes: 'Fotografía clínica digital intra y extraoral, encerado digital y mock-up.'
+    notes: 'Toma de impresión para placa miorrelajante nocturna tipo Michigan.'
   },
   {
     id: 'apt-23',
-    patientName: 'David Quintero Barrientos',
-    patientId: 'CC 1.018.990.223',
-    patientPhone: '+57 313 445 6677',
-    patientEmail: 'david.quintero@gmail.com',
+    patientName: 'Camilo Echeverri',
+    patientId: 'CC 1.017.392.810',
+    patientPhone: '+57 316 772 3419',
+    patientEmail: 'camilo.echeverri@hotmail.com',
     doctorName: 'Dr. Alejandro Soto',
-    doctorSpecialty: 'Ortodoncia',
+    doctorSpecialty: 'Ortodoncia 1',
     doctorColor: '#0284c7',
     doctorId: 'doc-2',
     doctorInitials: 'AS',
-    treatment: 'Colocación Microtornillos Ortodónticos',
+    treatment: 'Urgencia Alambre Molesto y Recorte de Arco',
     category: 'Ortodoncia',
-    categoryLabel: 'Ortodoncia',
+    categoryLabel: 'Ortodoncia 1',
     categoryColor: '#0284c7',
     dayIndex: 5,
     dateStr: 'Sáb 14 Nov',
@@ -643,49 +644,49 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     timeFormatted: '10:30 AM – 12:00 PM',
     box: 'Consultorio 2',
     status: 'Confirmada',
-    notes: 'Anclaje esquelético interradicular entre 15 y 16 para intrusión de molar superior.'
+    notes: 'Corte distal de arco con fresa y alivio con cera ortodóntica.'
   },
   {
     id: 'apt-24',
-    patientName: 'Natalia Arango Echeverri',
-    patientId: 'CC 1.029.443.112',
-    patientPhone: '+57 316 778 9900',
-    patientEmail: 'natalia.arango@gmail.com',
-    doctorName: 'Dra. Sofía Valenzuela',
-    doctorSpecialty: 'Odontología General & Estética',
-    doctorColor: '#A94384',
-    doctorId: 'doc-1',
-    doctorInitials: 'SV',
-    treatment: 'Control y Pulido de Carillas Composite',
-    category: 'General',
-    categoryLabel: 'Odontología General & Estética',
-    categoryColor: '#A94384',
+    patientName: 'Valeria Ospina',
+    patientId: 'CC 1.033.928.172',
+    patientPhone: '+57 314 550 8912',
+    patientEmail: 'valeria.ospina@gmail.com',
+    doctorName: 'Dr. Marcos Pineda',
+    doctorSpecialty: 'Diseño de Sonrisa',
+    doctorColor: '#c2410c',
+    doctorId: 'doc-4',
+    doctorInitials: 'MP',
+    treatment: 'Sesión Fotográfica Clínica Final de Sonrisa',
+    category: 'Cirugía',
+    categoryLabel: 'Diseño de Sonrisa',
+    categoryColor: '#c2410c',
     dayIndex: 5,
     dateStr: 'Sáb 14 Nov',
     dayNum: 14,
     startHour: 12.5,
     durationHours: 1.0,
     timeFormatted: '12:30 PM – 1:30 PM',
-    box: 'Consultorio 1',
+    box: 'Consultorio 4',
     status: 'Pendiente',
-    notes: 'Discos Sof-Lex abrasivos y pasta diamantada de alto brillo Prisma Gloss.'
+    notes: 'Fotografía con flash anular y contrastadores negros para book clínico.'
   },
 
   // DOMINGO 15
   {
     id: 'apt-25',
-    patientName: 'Valeria Monsalve Jaramillo',
-    patientId: 'CC 1.035.882.119',
-    patientPhone: '+57 314 667 2288',
-    patientEmail: 'valeria.monsalve@gmail.com',
+    patientName: 'Mateo Salazar',
+    patientId: 'CC 1.028.391.740',
+    patientPhone: '+57 318 640 1928',
+    patientEmail: 'mateo.salazar@outlook.com',
     doctorName: 'Dra. Claudia Rivas',
-    doctorSpecialty: 'Endodoncia',
+    doctorSpecialty: 'Ortodoncia 2',
     doctorColor: '#0d9488',
     doctorId: 'doc-3',
     doctorInitials: 'CR',
-    treatment: 'Urgencia Dolor Agudo Pulpar y Apertura',
-    category: 'Endodoncia',
-    categoryLabel: 'Endodoncia',
+    treatment: 'Ajuste de Botón de Anclaje de Urgencia',
+    category: 'Ortodoncia',
+    categoryLabel: 'Ortodoncia 2',
     categoryColor: '#0d9488',
     dayIndex: 6,
     dateStr: 'Dom 15 Nov',
@@ -695,77 +696,75 @@ const INITIAL_APPOINTMENTS: ClinicalAppointment[] = [
     timeFormatted: '10:00 AM – 11:30 AM',
     box: 'Consultorio 3',
     status: 'Realizada',
-    notes: 'Guardia dominical de urgencias odontológicas. Biopulpectomía de emergencia pieza 36.'
+    notes: 'Recementado de aditamento desprendido en pieza 15 con resina fluida.'
   }
 ]
 
-// Specialty Color Guide definition as requested
+// Specialty Color Guide definition adaptada a VitaDent
 const SPECIALTY_GUIDE = [
   {
     id: 'General',
-    name: 'Odontología General & Estética',
+    name: 'Odontología General (Consultorio 1)',
     color: '#A94384',
+    count: 7,
+  },
+  {
+    id: 'Ortodoncia 1',
+    name: 'Ortodoncia 1 · Dr. Soto (Consultorio 2)',
+    color: '#0284c7',
     count: 6,
   },
   {
-    id: 'Ortodoncia',
-    name: 'Ortodoncia',
-    color: '#0284c7',
-    count: 5,
-  },
-  {
-    id: 'Endodoncia',
-    name: 'Endodoncia',
+    id: 'Ortodoncia 2',
+    name: 'Ortodoncia 2 · Dra. Rivas (Consultorio 3)',
     color: '#0d9488',
-    count: 4,
+    count: 6,
   },
   {
-    id: 'Cirugía',
-    name: 'Cirugía & Implantes',
-    color: '#ea580c',
-    count: 5,
-  },
-  {
-    id: 'Higiene',
-    name: 'Higiene & Prevención',
-    color: '#10b981',
-    count: 5,
+    id: 'Diseño Sonrisa',
+    name: 'Diseño de Sonrisa · Dr. Pineda (Consultorio 4)',
+    color: '#c2410c',
+    count: 6,
   },
 ]
 
-// Clinical Doctors List
-const CLINIC_DOCTORS = [
+// Clinical Doctors List con Consultorios Oficiales de VitaDent
+export const CLINIC_DOCTORS = [
   {
     id: 'doc-1',
     name: 'Dra. Sofía Valenzuela',
-    specialty: 'Odontología General & Estética',
+    specialty: 'Odontología General',
+    consultorio: 'Consultorio 1',
     initials: 'SV',
     color: '#A94384',
-    activeCount: 11
+    activeCount: 7
   },
   {
     id: 'doc-2',
     name: 'Dr. Alejandro Soto',
-    specialty: 'Ortodoncia',
+    specialty: 'Ortodoncia 1',
+    consultorio: 'Consultorio 2',
     initials: 'AS',
     color: '#0284c7',
-    activeCount: 5
+    activeCount: 6
   },
   {
     id: 'doc-3',
     name: 'Dra. Claudia Rivas',
-    specialty: 'Endodoncia',
+    specialty: 'Ortodoncia 2',
+    consultorio: 'Consultorio 3',
     initials: 'CR',
     color: '#0d9488',
-    activeCount: 4
+    activeCount: 6
   },
   {
     id: 'doc-4',
     name: 'Dr. Marcos Pineda',
-    specialty: 'Cirugía & Implantes',
+    specialty: 'Diseño de Sonrisa',
+    consultorio: 'Consultorio 4',
     initials: 'MP',
-    color: '#ea580c',
-    activeCount: 5
+    color: '#c2410c',
+    activeCount: 6
   }
 ]
 
@@ -795,20 +794,76 @@ const HOURS_AXIS = [
 ]
 
 export const SchedulingPage: React.FC<SchedulingPageProps> = ({ onNavigate, onOpenCreate }) => {
+  const { currentWorkspace, setWorkspace, activeWorkspaceInfo } = useWorkspace()
+
   // Navigation & View Mode State
   const [rangeMode, setRangeMode] = useState<'Week' | 'Month' | 'Quarter'>('Week')
   const [selectedDoctorId, setSelectedDoctorId] = useState<string | 'all'>('all')
   const [selectedCategory, setSelectedCategory] = useState<string | 'all'>('all')
-  const [appointments, setAppointments] = useState<ClinicalAppointment[]>(INITIAL_APPOINTMENTS)
+  
+  // Cargar y persistir citas clínicas
+  const [appointments, setAppointments] = useState<ClinicalAppointment[]>(() => {
+    try {
+      const saved = localStorage.getItem('vitadent_clinical_appointments')
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        if (Array.isArray(parsed) && parsed.length >= INITIAL_APPOINTMENTS.length) return parsed
+      }
+    } catch {}
+    return INITIAL_APPOINTMENTS
+  })
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('vitadent_clinical_appointments', JSON.stringify(appointments))
+    } catch {}
+  }, [appointments])
+
+  // Sincronizar el doctor del workspace con el filtro de agenda
+  useEffect(() => {
+    if (currentWorkspace !== 'all') {
+      setSelectedDoctorId(currentWorkspace)
+    } else {
+      setSelectedDoctorId('all')
+    }
+  }, [currentWorkspace])
+
+  // Doctor activo a filtrar: si el workspace está activo, manda el workspace
+  const effectiveDoctorId = currentWorkspace !== 'all' ? currentWorkspace : selectedDoctorId
   
   // Drawer & Modal States
   const [selectedAppointment, setSelectedAppointment] = useState<ClinicalAppointment | null>(null)
   const [isEditingNotes, setIsEditingNotes] = useState(false)
   const [tempNotes, setTempNotes] = useState('')
+
+  // Modal de Reasignar / Mover Turnos entre Consultorios
   const [isReassignModalOpen, setIsReassignModalOpen] = useState(false)
   const [reassignTargetApt, setReassignTargetApt] = useState<ClinicalAppointment | null>(null)
   const [reassignBox, setReassignBox] = useState('Consultorio 1')
   const [reassignDoctor, setReassignDoctor] = useState('doc-1')
+  const [reassignDayIndex, setReassignDayIndex] = useState(2)
+  const [reassignStartHour, setReassignStartHour] = useState(10.0)
+
+  // Modal de Agendar Nueva Cita (Herramienta Asistente Nathalia Leon)
+  const [isNewAptModalOpen, setIsNewAptModalOpen] = useState(false)
+  const [newAptPatientName, setNewAptPatientName] = useState('')
+  const [newAptPatientPhone, setNewAptPatientPhone] = useState('+57 310 ')
+  const [newAptPatientId, setNewAptPatientId] = useState('')
+  const [newAptDoctorId, setNewAptDoctorId] = useState<string>(() => {
+    return currentWorkspace !== 'all' ? currentWorkspace : 'doc-1'
+  })
+  const [newAptTreatment, setNewAptTreatment] = useState('Primera consulta + Diagnóstico')
+  const [newAptDayIndex, setNewAptDayIndex] = useState(2) // Miércoles por defecto
+  const [newAptStartHour, setNewAptStartHour] = useState(10.0) // 10:00 AM
+  const [newAptDuration, setNewAptDuration] = useState(1.5) // 1.5 horas
+  const [newAptNotes, setNewAptNotes] = useState('')
+
+  useEffect(() => {
+    if (currentWorkspace !== 'all') {
+      setNewAptDoctorId(currentWorkspace)
+    }
+  }, [currentWorkspace])
+
   const [toastMessage, setToastMessage] = useState<string | null>(null)
 
   const showNotification = (msg: string) => {
@@ -821,11 +876,15 @@ export const SchedulingPage: React.FC<SchedulingPageProps> = ({ onNavigate, onOp
   // Filter appointments according to selected doctor and category
   const filteredAppointments = useMemo(() => {
     return appointments.filter((apt) => {
-      if (selectedDoctorId !== 'all' && apt.doctorId !== selectedDoctorId) return false
-      if (selectedCategory !== 'all' && apt.category !== selectedCategory) return false
+      if (effectiveDoctorId !== 'all' && apt.doctorId !== effectiveDoctorId) return false
+      if (selectedCategory !== 'all') {
+        const catNorm = apt.category.toLowerCase()
+        const selNorm = selectedCategory.toLowerCase()
+        if (!catNorm.includes(selNorm) && !selNorm.includes(catNorm)) return false
+      }
       return true
     })
-  }, [appointments, selectedDoctorId, selectedCategory])
+  }, [appointments, effectiveDoctorId, selectedCategory])
 
   // Open drawer for appointment
   const handleOpenAppointment = (apt: ClinicalAppointment) => {
@@ -882,22 +941,44 @@ export const SchedulingPage: React.FC<SchedulingPageProps> = ({ onNavigate, onOp
     setReassignTargetApt(selectedAppointment)
     setReassignBox(selectedAppointment.box)
     setReassignDoctor(selectedAppointment.doctorId)
+    setReassignDayIndex(selectedAppointment.dayIndex)
+    setReassignStartHour(selectedAppointment.startHour)
     setIsReassignModalOpen(true)
   }
 
-  // Execute Reassign
+  // Execute Reassign / Move
   const handleConfirmReassign = (e: React.FormEvent) => {
     e.preventDefault()
     if (!reassignTargetApt) return
-    const doctorObj = CLINIC_DOCTORS.find((d) => d.id === reassignDoctor)
+    const doctorObj = CLINIC_DOCTORS.find((d) => d.id === reassignDoctor) || CLINIC_DOCTORS[0]
+    const dayHeader = DAYS_HEADER[reassignDayIndex] || DAYS_HEADER[reassignTargetApt.dayIndex]
+
+    const startH = Math.floor(reassignStartHour)
+    const startM = (reassignStartHour % 1) * 60
+    const endHourDec = reassignStartHour + reassignTargetApt.durationHours
+    const endH = Math.floor(endHourDec)
+    const endM = (endHourDec % 1) * 60
+    const fmt = (h: number, m: number) => {
+      const ampm = h >= 12 ? 'PM' : 'AM'
+      const h12 = h > 12 ? h - 12 : h === 0 ? 12 : h
+      const mStr = m === 0 ? '00' : `${Math.round(m)}`
+      return `${h12}:${mStr} ${ampm}`
+    }
+    const timeFormatted = `${fmt(startH, startM)} – ${fmt(endH, endM)}`
+
     const updated: ClinicalAppointment = {
       ...reassignTargetApt,
       box: reassignBox,
       doctorId: reassignDoctor,
-      doctorName: doctorObj ? doctorObj.name : reassignTargetApt.doctorName,
-      doctorSpecialty: doctorObj ? doctorObj.specialty : reassignTargetApt.doctorSpecialty,
-      doctorColor: doctorObj ? doctorObj.color : reassignTargetApt.doctorColor,
-      doctorInitials: doctorObj ? doctorObj.initials : reassignTargetApt.doctorInitials,
+      doctorName: doctorObj.name,
+      doctorSpecialty: doctorObj.specialty,
+      doctorColor: doctorObj.color,
+      doctorInitials: doctorObj.initials,
+      dayIndex: reassignDayIndex,
+      dateStr: `${dayHeader.label} ${dayHeader.num} Nov`,
+      dayNum: dayHeader.num,
+      startHour: reassignStartHour,
+      timeFormatted,
     }
 
     setAppointments((prev) => prev.map((a) => (a.id === updated.id ? updated : a)))
@@ -906,7 +987,65 @@ export const SchedulingPage: React.FC<SchedulingPageProps> = ({ onNavigate, onOp
     }
     setIsReassignModalOpen(false)
     setReassignTargetApt(null)
-    showNotification(`Turno reasignado con éxito a ${reassignBox} con ${updated.doctorName}`)
+    showNotification(`Turno reasignado con éxito a ${reassignBox} con ${updated.doctorName} (${updated.timeFormatted})`)
+  }
+
+  // Crear Nueva Cita Odontológica (Asistente Nathalia Leon)
+  const handleCreateNewAppointment = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!newAptPatientName.trim()) return
+
+    const doctorObj = CLINIC_DOCTORS.find((d) => d.id === newAptDoctorId) || CLINIC_DOCTORS[0]
+    const dayHeader = DAYS_HEADER[newAptDayIndex] || DAYS_HEADER[2]
+
+    const startH = Math.floor(newAptStartHour)
+    const startM = (newAptStartHour % 1) * 60
+    const endHourDec = newAptStartHour + newAptDuration
+    const endH = Math.floor(endHourDec)
+    const endM = (endHourDec % 1) * 60
+    const fmt = (h: number, m: number) => {
+      const ampm = h >= 12 ? 'PM' : 'AM'
+      const h12 = h > 12 ? h - 12 : h === 0 ? 12 : h
+      const mStr = m === 0 ? '00' : `${Math.round(m)}`
+      return `${h12}:${mStr} ${ampm}`
+    }
+    const timeFormatted = `${fmt(startH, startM)} – ${fmt(endH, endM)}`
+
+    const newApt: ClinicalAppointment = {
+      id: `apt-${Date.now()}`,
+      patientName: newAptPatientName.trim(),
+      patientId: newAptPatientId.trim() || `CC 1.0${Math.floor(10000000 + Math.random() * 90000000)}`,
+      patientPhone: newAptPatientPhone.trim() || '+57 310 000 0000',
+      patientEmail: `${newAptPatientName.trim().toLowerCase().replace(/\s+/g, '.')}@gmail.com`,
+      doctorName: doctorObj.name,
+      doctorSpecialty: doctorObj.specialty,
+      doctorColor: doctorObj.color,
+      doctorId: doctorObj.id,
+      doctorInitials: doctorObj.initials,
+      treatment: newAptTreatment,
+      category: doctorObj.id === 'doc-2' || doctorObj.id === 'doc-3' ? 'Ortodoncia' : doctorObj.id === 'doc-4' ? 'Cirugía' : 'General',
+      categoryLabel: doctorObj.specialty,
+      categoryColor: doctorObj.color,
+      dayIndex: newAptDayIndex,
+      dateStr: `${dayHeader.label} ${dayHeader.num} Nov`,
+      dayNum: dayHeader.num,
+      startHour: newAptStartHour,
+      durationHours: newAptDuration,
+      timeFormatted,
+      box: doctorObj.consultorio,
+      status: 'Confirmada',
+      notes: newAptNotes.trim() || `Cita colocada en agenda por la Asistente Nathalia Leon para ${doctorObj.name} en ${doctorObj.consultorio}.`
+    }
+
+    setAppointments((prev) => [newApt, ...prev])
+    showNotification(`¡Cita agendada para ${newApt.patientName} con ${doctorObj.name} en ${doctorObj.consultorio}!`)
+    setIsNewAptModalOpen(false)
+
+    // Reset
+    setNewAptPatientName('')
+    setNewAptPatientPhone('+57 310 ')
+    setNewAptPatientId('')
+    setNewAptNotes('')
   }
 
   // Render Status Badge
@@ -1014,7 +1153,7 @@ export const SchedulingPage: React.FC<SchedulingPageProps> = ({ onNavigate, onOp
               <span>Exportar</span>
             </button>
 
-            <button className="cadra-btn-primary" onClick={onOpenCreate}>
+            <button className="cadra-btn-primary" onClick={() => setIsNewAptModalOpen(true)}>
               <Plus size={15} />
               <span>Nueva Cita</span>
             </button>
@@ -1071,7 +1210,8 @@ export const SchedulingPage: React.FC<SchedulingPageProps> = ({ onNavigate, onOp
               onClick={() => {
                 setSelectedDoctorId('all')
                 setSelectedCategory('all')
-                showNotification('Filtros restablecidos')
+                setWorkspace('all')
+                showNotification('Filtros y espacio restablecidos a Toda la Clínica')
               }}
             >
               <X size={12} />
@@ -1081,13 +1221,129 @@ export const SchedulingPage: React.FC<SchedulingPageProps> = ({ onNavigate, onOp
         </div>
       </div>
 
+      {/* Workspace & Assistant Coordination Context Banner */}
+      <div
+        className="scheduling-workspace-banner"
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '12px',
+          padding: '12px 18px',
+          borderRadius: '12px',
+          background: currentWorkspace === 'all'
+            ? 'linear-gradient(135deg, rgba(169, 67, 132, 0.08) 0%, rgba(248, 248, 250, 0.95) 100%)'
+            : `linear-gradient(135deg, ${activeWorkspaceInfo.color}15 0%, rgba(255, 255, 255, 0.95) 100%)`,
+          border: `1.5px solid ${currentWorkspace === 'all' ? 'rgba(169, 67, 132, 0.28)' : `${activeWorkspaceInfo.color}45`}`,
+          boxShadow: '0 2px 8px rgba(0,0,0,0.03)'
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <span
+            style={{
+              width: '36px',
+              height: '36px',
+              borderRadius: '10px',
+              backgroundColor: currentWorkspace === 'all' ? '#A94384' : activeWorkspaceInfo.color,
+              color: '#ffffff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontWeight: 800,
+              fontSize: '15px',
+              boxShadow: `0 2px 6px ${currentWorkspace === 'all' ? '#A94384' : activeWorkspaceInfo.color}45`
+            }}
+          >
+            {currentWorkspace === 'all' ? '👑' : activeWorkspaceInfo.iconEmoji || '🦷'}
+          </span>
+          <div>
+            <div style={{ fontSize: '13.5px', fontWeight: 800, color: 'var(--text-main, #0f172a)' }}>
+              {currentWorkspace === 'all' ? (
+                <>
+                  Vista Global de Agendas Clínicas · <span style={{ color: '#A94384' }}>Asistente de Dirección (Nathalia Leon)</span>
+                </>
+              ) : (
+                <>
+                  Agenda Clínica:{' '}
+                  <span style={{ color: activeWorkspaceInfo.color }}>
+                    {activeWorkspaceInfo.name} ({activeWorkspaceInfo.consultorio})
+                  </span>
+                </>
+              )}
+              {' '}
+              <span style={{ fontSize: '12px', fontWeight: 600, color: '#64748b' }}>
+                ({filteredAppointments.length} {filteredAppointments.length === 1 ? 'cita visible' : 'citas visibles'})
+              </span>
+            </div>
+            <div style={{ fontSize: '11.5px', color: '#64748b', marginTop: '2px' }}>
+              {currentWorkspace === 'all'
+                ? 'Coordinación centralizada de los 4 consultorios odontológicos. Utiliza las herramientas ágiles para agendar o reasignar.'
+                : `Mostrando y resaltando exclusivamente la agenda de ${activeWorkspaceInfo.specialty} en ${activeWorkspaceInfo.consultorio}.`}
+            </div>
+          </div>
+        </div>
+
+        {/* Herramientas Ágiles de la Asistente */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          <div className="flex items-center gap-1 bg-white/80 p-1 rounded-lg border border-slate-200">
+            <button
+              type="button"
+              className={`px-2.5 py-1 text-xs rounded font-bold transition-all ${currentWorkspace === 'all' ? 'bg-[#A94384] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
+              onClick={() => {
+                setWorkspace('all')
+                showNotification('Mostrando agenda global de todos los consultorios')
+              }}
+              title="Vista global de todos los consultorios"
+            >
+              Todos
+            </button>
+            {CLINIC_DOCTORS.map((doc) => {
+              const isActive = currentWorkspace === doc.id
+              return (
+                <button
+                  key={doc.id}
+                  type="button"
+                  className={`px-2 py-1 text-xs rounded font-bold transition-all ${isActive ? 'text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
+                  style={isActive ? { backgroundColor: doc.color } : {}}
+                  onClick={() => {
+                    setWorkspace(doc.id as any)
+                    showNotification(`Filtrando y resaltando agenda de ${doc.name} (${doc.consultorio})`)
+                  }}
+                  title={`Filtrar agenda de ${doc.name} (${doc.consultorio})`}
+                >
+                  {doc.initials} ({doc.consultorio.replace('Consultorio ', 'C')})
+                </button>
+              )
+            })}
+          </div>
+
+          <button
+            className="btn-3d-magenta"
+            style={{
+              padding: '6px 12px',
+              fontSize: '12px',
+              fontWeight: 700,
+              borderRadius: '8px',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+            onClick={() => setIsNewAptModalOpen(true)}
+          >
+            <Plus size={14} />
+            <span>+ Agendar Cita</span>
+          </button>
+        </div>
+      </div>
+
       {/* Clinical Operations Alert Banner */}
       <div className="cadra-alert-banner">
         <span className="green-live-dot" />
         <p className="alert-banner-text">
           <strong><AnimatedCounter value={5} /> citas activas hoy</strong> en 4 consultorios clínicos ·{' '}
-          <strong><AnimatedCounter value={filteredAppointments.length} /> citas registradas</strong> en la agenda ·{' '}
-          En atención actual: <span style={{ color: '#A94384', fontWeight: 700 }}>Mariana Torres (Consultorio 1 - Carillas)</span>
+          <strong><AnimatedCounter value={filteredAppointments.length} /> citas filtradas</strong> en la agenda ·{' '}
+          En atención actual: <span style={{ color: '#A94384', fontWeight: 700 }}>Valentina Ríos (Consultorio 1 - Profilaxis)</span>
         </p>
       </div>
 
@@ -1176,14 +1432,24 @@ export const SchedulingPage: React.FC<SchedulingPageProps> = ({ onNavigate, onOp
                         const topPosition = (apt.startHour - 8) * 68
                         const cardHeight = apt.durationHours * 68 - 6
 
+                        const isDoctorHighlighted = currentWorkspace !== 'all' && apt.doctorId === currentWorkspace
+
                         return (
                           <div
                             key={apt.id}
-                            className="clinical-appointment-card"
+                            className={`clinical-appointment-card ${isDoctorHighlighted ? 'is-active-doctor-highlight' : ''}`}
                             style={{
                               top: `${topPosition}px`,
                               height: `${cardHeight}px`,
                               borderLeftColor: apt.categoryColor,
+                              ...(isDoctorHighlighted
+                                ? {
+                                    boxShadow: `0 4px 14px ${apt.doctorColor}35`,
+                                    borderWidth: '2px',
+                                    borderColor: `${apt.doctorColor}60`,
+                                    backgroundColor: 'var(--bg-card, #ffffff)',
+                                  }
+                                : {}),
                             }}
                             onClick={() => handleOpenAppointment(apt)}
                           >
@@ -1515,7 +1781,8 @@ export const SchedulingPage: React.FC<SchedulingPageProps> = ({ onNavigate, onOp
                 className={`doctor-filter-item ${selectedDoctorId === 'all' ? 'active' : ''}`}
                 onClick={() => {
                   setSelectedDoctorId('all')
-                  showNotification('Mostrando agenda de todos los doctores')
+                  setWorkspace('all')
+                  showNotification('Mostrando agenda global de toda la clínica')
                 }}
               >
                 <div className="doc-info-cluster">
@@ -1541,11 +1808,13 @@ export const SchedulingPage: React.FC<SchedulingPageProps> = ({ onNavigate, onOp
                     key={doc.id}
                     className={`doctor-filter-item ${isSelected ? 'active' : ''}`}
                     onClick={() => {
-                      setSelectedDoctorId((cur) => (cur === doc.id ? 'all' : doc.id))
+                      const nextId = selectedDoctorId === doc.id ? 'all' : doc.id
+                      setSelectedDoctorId(nextId)
+                      setWorkspace(nextId as any)
                       showNotification(
-                        isSelected
-                          ? 'Mostrando todos los doctores'
-                          : `Filtrando citas de ${doc.name}`
+                        nextId === 'all'
+                          ? 'Mostrando todos los doctores (Toda la Clínica)'
+                          : `Espacio y agenda cambiados a: ${doc.name} (${doc.consultorio})`
                       )
                     }}
                   >
@@ -1872,32 +2141,81 @@ export const SchedulingPage: React.FC<SchedulingPageProps> = ({ onNavigate, onOp
               </div>
 
               <div className="form-group">
-                <label>Nuevo Consultorio Clínico *</label>
+                <label>Doctor Especialista Asignado *</label>
+                <select
+                  value={reassignDoctor}
+                  onChange={(e) => {
+                    const docId = e.target.value
+                    setReassignDoctor(docId)
+                    const docObj = CLINIC_DOCTORS.find((d) => d.id === docId)
+                    if (docObj) {
+                      setReassignBox(docObj.consultorio)
+                    }
+                  }}
+                  required
+                >
+                  {CLINIC_DOCTORS.map((d) => (
+                    <option key={d.id} value={d.id}>
+                      {d.name} — {d.specialty} ({d.consultorio})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Consultorio Clínico Asignado *</label>
                 <select
                   value={reassignBox}
                   onChange={(e) => setReassignBox(e.target.value)}
                   required
                 >
-                  <option value="Consultorio 1">Consultorio 1 — Odontología General & Estética</option>
-                  <option value="Consultorio 2">Consultorio 2 — Ortodoncia & Escáner 3D</option>
-                  <option value="Consultorio 3">Consultorio 3 — Endodoncia & Microscopía</option>
-                  <option value="Consultorio 4">Consultorio 4 — Cirugía & Quirófano Implantes</option>
+                  <option value="Consultorio 1">Consultorio 1 — Dra. Sofía Valenzuela (General)</option>
+                  <option value="Consultorio 2">Consultorio 2 — Dr. Alejandro Soto (Ortodoncia 1)</option>
+                  <option value="Consultorio 3">Consultorio 3 — Dra. Claudia Rivas (Ortodoncia 2)</option>
+                  <option value="Consultorio 4">Consultorio 4 — Dr. Marcos Pineda (Diseño de Sonrisa)</option>
                 </select>
               </div>
 
-              <div className="form-group">
-                <label>Doctor Especialista Asignado *</label>
-                <select
-                  value={reassignDoctor}
-                  onChange={(e) => setReassignDoctor(e.target.value)}
-                  required
-                >
-                  {CLINIC_DOCTORS.map((d) => (
-                    <option key={d.id} value={d.id}>
-                      {d.name} — {d.specialty}
-                    </option>
-                  ))}
-                </select>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div className="form-group">
+                  <label>Día de la Cita *</label>
+                  <select
+                    value={reassignDayIndex}
+                    onChange={(e) => setReassignDayIndex(Number(e.target.value))}
+                    required
+                  >
+                    {DAYS_HEADER.map((d, idx) => (
+                      <option key={idx} value={idx}>
+                        {d.label} {d.num} Nov {d.isToday ? '(Hoy)' : ''}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label>Hora de Inicio *</label>
+                  <select
+                    value={reassignStartHour}
+                    onChange={(e) => setReassignStartHour(Number(e.target.value))}
+                    required
+                  >
+                    <option value={8.0}>8:00 AM</option>
+                    <option value={8.5}>8:30 AM</option>
+                    <option value={9.0}>9:00 AM</option>
+                    <option value={9.5}>9:30 AM</option>
+                    <option value={10.0}>10:00 AM</option>
+                    <option value={10.5}>10:30 AM</option>
+                    <option value={11.0}>11:00 AM</option>
+                    <option value={11.5}>11:30 AM</option>
+                    <option value={14.0}>2:00 PM</option>
+                    <option value={14.5}>2:30 PM</option>
+                    <option value={15.0}>3:00 PM</option>
+                    <option value={15.5}>3:30 PM</option>
+                    <option value={16.0}>4:00 PM</option>
+                    <option value={16.5}>4:30 PM</option>
+                    <option value={17.0}>5:00 PM</option>
+                  </select>
+                </div>
               </div>
 
               <div className="action-modal-footer">
@@ -1911,6 +2229,195 @@ export const SchedulingPage: React.FC<SchedulingPageProps> = ({ onNavigate, onOp
                 <button type="submit" className="cadra-btn-primary">
                   <Check size={16} />
                   <span>Confirmar Reasignación</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          MODAL DE AGENDAR NUEVA CITA (HERRAMIENTA ASISTENTE NATHALIA LEON)
+          ========================================================================= */}
+      {isNewAptModalOpen && (
+        <div className="cadra-modal-overlay" onClick={() => setIsNewAptModalOpen(false)}>
+          <div
+            className="cadra-action-modal"
+            style={{ maxWidth: '580px' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="action-modal-header">
+              <div>
+                <span className="cadra-eyebrow" style={{ color: '#A94384' }}>
+                  ASISTENTE DE DIRECCIÓN · NATHALIA LEON
+                </span>
+                <h2>Agendar Nueva Cita Odontológica</h2>
+              </div>
+              <button
+                className="icon-close-btn"
+                onClick={() => setIsNewAptModalOpen(false)}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateNewAppointment} className="action-modal-form">
+              <div className="form-group">
+                <label>Nombre Completo del Paciente *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ej. Andrés Felipe Gómez..."
+                  value={newAptPatientName}
+                  onChange={(e) => setNewAptPatientName(e.target.value)}
+                />
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div className="form-group">
+                  <label>Documento de Identidad (CC)</label>
+                  <input
+                    type="text"
+                    placeholder="CC 1.020.394.819"
+                    value={newAptPatientId}
+                    onChange={(e) => setNewAptPatientId(e.target.value)}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Teléfono / WhatsApp *</label>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="+57 310 ..."
+                    value={newAptPatientPhone}
+                    onChange={(e) => setNewAptPatientPhone(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>Doctor Clínico & Consultorio *</label>
+                <select
+                  value={newAptDoctorId}
+                  onChange={(e) => setNewAptDoctorId(e.target.value)}
+                  required
+                >
+                  {CLINIC_DOCTORS.map((d) => (
+                    <option key={d.id} value={d.id}>
+                      {d.name} — {d.specialty} ({d.consultorio})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Tratamiento / Procedimiento *</label>
+                <select
+                  value={newAptTreatment}
+                  onChange={(e) => setNewAptTreatment(e.target.value)}
+                  required
+                >
+                  <option value="Primera consulta + Diagnóstico integral">Primera consulta + Diagnóstico integral</option>
+                  <option value="Control Ortodoncia (Ajuste de Arcos & Brackets)">Control Ortodoncia (Ajuste de Arcos & Brackets)</option>
+                  <option value="Alineadores Invisibles · Set-up y Planificación">Alineadores Invisibles · Set-up y Planificación</option>
+                  <option value="Diseño de Sonrisa · Preparación Carillas Cerámicas">Diseño de Sonrisa · Preparación Carillas Cerámicas</option>
+                  <option value="Mockup Digital y Prueba de Sonrisa Estética">Mockup Digital y Prueba de Sonrisa Estética</option>
+                  <option value="Profilaxis Profunda Ultrasonido y Aeropulidor">Profilaxis Profunda Ultrasonido y Aeropulidor</option>
+                  <option value="Restauración Resina Filtek 3M (Calzas)">Restauración Resina Filtek 3M (Calzas)</option>
+                  <option value="Blanqueamiento Dental LED Philips Zoom">Blanqueamiento Dental LED Philips Zoom</option>
+                </select>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+                <div className="form-group">
+                  <label>Día *</label>
+                  <select
+                    value={newAptDayIndex}
+                    onChange={(e) => setNewAptDayIndex(Number(e.target.value))}
+                    required
+                  >
+                    {DAYS_HEADER.map((d, idx) => (
+                      <option key={idx} value={idx}>
+                        {d.label} {d.num} Nov {d.isToday ? '(Hoy)' : ''}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label>Hora Inicio *</label>
+                  <select
+                    value={newAptStartHour}
+                    onChange={(e) => setNewAptStartHour(Number(e.target.value))}
+                    required
+                  >
+                    <option value={8.0}>8:00 AM</option>
+                    <option value={8.5}>8:30 AM</option>
+                    <option value={9.0}>9:00 AM</option>
+                    <option value={9.5}>9:30 AM</option>
+                    <option value={10.0}>10:00 AM</option>
+                    <option value={10.5}>10:30 AM</option>
+                    <option value={11.0}>11:00 AM</option>
+                    <option value={11.5}>11:30 AM</option>
+                    <option value={14.0}>2:00 PM</option>
+                    <option value={14.5}>2:30 PM</option>
+                    <option value={15.0}>3:00 PM</option>
+                    <option value={15.5}>3:30 PM</option>
+                    <option value={16.0}>4:00 PM</option>
+                    <option value={16.5}>4:30 PM</option>
+                    <option value={17.0}>5:00 PM</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label>Duración *</label>
+                  <select
+                    value={newAptDuration}
+                    onChange={(e) => setNewAptDuration(Number(e.target.value))}
+                    required
+                  >
+                    <option value={0.5}>30 min</option>
+                    <option value={1.0}>1 hora</option>
+                    <option value={1.5}>1.5 horas</option>
+                    <option value={2.0}>2 horas</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>Notas Clínicas / Indicaciones Asistente</label>
+                <textarea
+                  rows={2}
+                  placeholder="Observaciones de ingreso, alergias o preparación previa..."
+                  value={newAptNotes}
+                  onChange={(e) => setNewAptNotes(e.target.value)}
+                />
+              </div>
+
+              <div className="action-modal-footer">
+                <button
+                  type="button"
+                  className="cadra-btn-secondary"
+                  onClick={() => setIsNewAptModalOpen(false)}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="btn-3d-magenta"
+                  style={{
+                    padding: '8px 18px',
+                    fontSize: '13px',
+                    fontWeight: 800,
+                    borderRadius: '8px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px'
+                  }}
+                >
+                  <Plus size={16} />
+                  <span>Agendar Cita en Consultorio</span>
                 </button>
               </div>
             </form>

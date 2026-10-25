@@ -1,8 +1,9 @@
 import React, { useState, useRef, useLayoutEffect, useCallback, useEffect } from 'react'
-import { Bell, Check, LogOut, UserCheck, Crown, Stethoscope, ChevronDown } from 'lucide-react'
+import { Bell, Check, LogOut, Crown, ChevronDown, ShieldCheck, Sparkles } from 'lucide-react'
 import { vitadentConfig } from '../../config/clinic.config'
 import { useAuth } from '../../context/AuthContext'
-import { VITA_USERS } from '../../types/auth'
+import { useWorkspace } from '../../context/WorkspaceContext'
+import { WorkspaceSwitcher } from './WorkspaceSwitcher'
 
 interface HeaderProps {
   currentPath: string
@@ -13,7 +14,8 @@ interface HeaderProps {
 type NavKey = 'inicio' | 'agenda' | 'pacientes' | 'pagos' | 'stock' | 'precios' | 'informes'
 
 export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenProfile }) => {
-  const { user, logout, loginAs } = useAuth()
+  const { user, logout } = useAuth()
+  const { activeWorkspaceInfo, currentWorkspace } = useWorkspace()
   const [showNotifications, setShowNotifications] = useState(false)
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [hasUnread, setHasUnread] = useState(true)
@@ -108,25 +110,39 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenP
   }, [updatePill])
 
   const notifications = [
-    { id: 1, title: 'Paciente Carlos García en recepción (Box 1)', time: '5m ago', urgent: true },
+    { id: 1, title: 'Paciente Carlos García en recepción (Consultorio 1)', time: '5m ago', urgent: true },
     { id: 2, title: 'Stock crítico: Anestesia con vasoconstrictor baja', time: '20m ago', urgent: true },
     { id: 3, title: 'Pago recibido: $2.500.000 Implante (Dra. Valenzuela)', time: '1h ago', urgent: false },
     { id: 4, title: 'Presupuesto ortodoncia aceptado: Laura Gómez', time: '2h ago', urgent: false },
   ]
 
   const userInitial = user?.initials || 'NL'
-  const userColor = user?.avatarColor || '#A94384'
-  const isDoc = user?.role === 'doctor'
+  const userName = user?.name || 'Nathalia Leon'
+  const userRoleTitle = 'Asistente y Coordinadora Clínica'
+  const userFullRole = user?.title || 'Asistente de Dirección y Coordinadora de Agendas Clínicas'
 
   return (
     <header className="cadra-header">
-      {/* Brand VitaDent con Logo Horizontal */}
-      <div className="cadra-brand" onClick={() => onNavigate('/inicio')} style={{ cursor: 'pointer' }} title="Ir a Inicio">
-        <img
-          src="/Logo_Horizontal.png"
-          alt="VitaDent Clínica Odontológica"
-          style={{ height: '38px', width: 'auto', maxWidth: '210px', objectFit: 'contain' }}
-        />
+      {/* Brand VitaDent + Workspace Switcher 3D */}
+      <div className="flex items-center gap-3">
+        <div
+          className="cadra-brand"
+          onClick={() => onNavigate('/inicio')}
+          style={{ cursor: 'pointer' }}
+          title="Ir a Inicio"
+        >
+          <img
+            src="/Logo_Horizontal.png"
+            alt="VitaDent Clínica Odontológica"
+            style={{ height: '36px', width: 'auto', maxWidth: '190px', objectFit: 'contain' }}
+          />
+        </div>
+
+        {/* Separador vertical sutil */}
+        <div className="h-6 w-[1px] bg-slate-200 dark:bg-neutral-800 hidden md:block" />
+
+        {/* Selector de Espacio de Trabajo ("Workspace Switcher") */}
+        <WorkspaceSwitcher />
       </div>
 
       {/* Main Nav Pill Bar with Animated Sliding Indicator */}
@@ -144,7 +160,9 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenP
         {vitadentConfig.navigation.map((item) => (
           <button
             key={item.key}
-            ref={(el) => { itemRefs.current[item.key as NavKey] = el }}
+            ref={(el) => {
+              itemRefs.current[item.key as NavKey] = el
+            }}
             className={`cadra-nav-item ${isModuleActive(item.key as NavKey) ? 'active' : ''}`}
             onClick={() => onNavigate(item.path)}
           >
@@ -155,7 +173,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenP
       </nav>
 
       {/* Right Header Status & Controls */}
-      <div className="cadra-header-right">
+      <div className="cadra-header-right flex items-center gap-2.5">
         {/* Notifications */}
         <div className="notification-dropdown-wrapper">
           <button
@@ -175,7 +193,9 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenP
             <div className="cadra-dropdown-menu notifications-menu">
               <div className="notifications-header">
                 <strong>Alertas Clínicas</strong>
-                <span className="badge-count" style={{ backgroundColor: '#A94384' }}>4</span>
+                <span className="badge-count" style={{ backgroundColor: '#A94384' }}>
+                  4
+                </span>
               </div>
               <div className="notifications-list">
                 {notifications.map((n) => (
@@ -194,25 +214,46 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenP
           )}
         </div>
 
-        {/* User Profile Avatar & Dropdown */}
+        {/* User Profile Avatar & Dropdown: Nathalia Leon · Asistente y Coordinadora Clínica */}
         <div className="cadra-user-profile-wrapper" ref={userMenuRef}>
           <button
-            className="cadra-avatar-btn flex items-center justify-center gap-1"
+            className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full border border-slate-200 dark:border-neutral-800 hover:border-[#A94384] transition-all bg-white/90 dark:bg-neutral-900 shadow-sm"
             onClick={() => {
               setShowUserMenu(!showUserMenu)
               setShowNotifications(false)
             }}
-            title={`${user?.name || 'Usuario'} (${user?.title || 'Personal Clínico'})`}
-            style={{
-              backgroundColor: userColor,
-              color: '#ffffff',
-              fontWeight: 700,
-              boxShadow: `0 2px 8px ${userColor}55`,
-              border: '2px solid rgba(255, 255, 255, 0.85)',
-              position: 'relative',
-            }}
+            title="Nathalia Leon · Asistente y Coordinadora Clínica"
           >
-            <span>{userInitial}</span>
+            {/* Avatar circular con badge de corona */}
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs text-white shadow-sm flex-shrink-0 relative"
+              style={{
+                backgroundColor: '#A94384',
+                boxShadow: '0 2px 8px rgba(169, 67, 132, 0.4)',
+              }}
+            >
+              <span>{userInitial}</span>
+              <span className="absolute -bottom-0.5 -right-0.5 bg-amber-400 text-amber-950 rounded-full w-3.5 h-3.5 flex items-center justify-center text-[8px] font-bold shadow-xs">
+                👑
+              </span>
+            </div>
+
+            {/* Etiqueta visible del usuario: Nathalia Leon · Asistente y Coordinadora Clínica */}
+            <div className="hidden lg:flex flex-col text-left leading-tight">
+              <span className="text-[12.5px] font-bold text-main flex items-center gap-1">
+                <span>{userName}</span>
+              </span>
+              <span className="text-[10px] text-[#A94384] font-semibold tracking-tight">
+                {userRoleTitle}
+              </span>
+            </div>
+
+            <ChevronDown
+              size={13}
+              className={`text-[#8A8A8F] transition-transform duration-200 ${
+                showUserMenu ? 'rotate-180' : ''
+              }`}
+            />
           </button>
 
           {/* Menú Desplegable Táctil del Usuario */}
@@ -223,70 +264,37 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenP
                 <div
                   className="cadra-user-dropdown-avatar"
                   style={{
-                    backgroundColor: userColor,
-                    boxShadow: `0 3px 10px ${userColor}40`,
+                    backgroundColor: '#A94384',
+                    boxShadow: '0 3px 10px rgba(169, 67, 132, 0.4)',
                   }}
                 >
                   {userInitial}
                 </div>
                 <div className="cadra-user-dropdown-details">
-                  <span className="cadra-user-dropdown-name">{user?.name}</span>
-                  <span className="cadra-user-dropdown-email">{user?.email}</span>
+                  <span className="cadra-user-dropdown-name">{userName}</span>
+                  <span className="cadra-user-dropdown-email">{user?.email || 'administracion@vitadent.com.co'}</span>
                   <span className="cadra-user-dropdown-badge">
-                    {user?.role === 'admin' ? (
-                      <>
-                        <Crown size={11} />
-                        <span>Administración General</span>
-                      </>
-                    ) : (
-                      <>
-                        <Stethoscope size={11} />
-                        <span>{user?.consultorio || 'Especialista'}</span>
-                      </>
-                    )}
+                    <Crown size={11} />
+                    <span>{userRoleTitle}</span>
                   </span>
                 </div>
               </div>
 
-              {/* Selector Rápido: Cambiar de Usuario */}
-              <div className="cadra-user-switch-section">
-                <span className="cadra-user-switch-title">
-                  <UserCheck size={12} />
-                  <span>Cambiar de Usuario (1 clic)</span>
-                </span>
-
-                <div className="cadra-user-switch-list">
-                  {VITA_USERS.map((u) => {
-                    const isCurrent = u.id === user?.id
-                    return (
-                      <button
-                        key={u.id}
-                        type="button"
-                        className={`cadra-user-switch-item ${isCurrent ? 'active' : ''}`}
-                        onClick={() => {
-                          loginAs(u.id)
-                          setShowUserMenu(false)
-                        }}
-                        title={`Cambiar a ${u.name}`}
-                      >
-                        <div className="cadra-user-switch-left">
-                          <span
-                            className="cadra-user-switch-avatar"
-                            style={{ backgroundColor: u.avatarColor }}
-                          >
-                            {u.initials}
-                          </span>
-                          <div className="flex flex-col text-left">
-                            <span className="cadra-user-switch-name">{u.name}</span>
-                            <span className="cadra-user-switch-tag">
-                              {u.role === 'admin' ? 'Administradora' : u.consultorio}
-                            </span>
-                          </div>
-                        </div>
-                        {isCurrent && <Check size={14} className="text-[#A94384]" />}
-                      </button>
-                    )
-                  })}
+              {/* Tarjeta Informativa de Rol & Workspace Actual */}
+              <div className="p-3 bg-slate-50 dark:bg-neutral-900 border-b border-border-light text-xs">
+                <div className="text-[11px] font-bold text-[#8A8A8F] uppercase tracking-wider mb-1 flex items-center gap-1">
+                  <ShieldCheck size={12} className="text-[#A94384]" />
+                  <span>Control Institucional Central</span>
+                </div>
+                <div className="text-secondary leading-snug">
+                  {userFullRole}
+                </div>
+                <div className="mt-2 pt-2 border-t border-slate-200 dark:border-neutral-800 flex items-center justify-between text-[11px]">
+                  <span className="text-muted font-medium">Espacio activo:</span>
+                  <span className="font-bold text-[#A94384] flex items-center gap-1">
+                    <span>{activeWorkspaceInfo.iconEmoji}</span>
+                    <span>{currentWorkspace === 'all' ? 'Toda la Clínica' : activeWorkspaceInfo.name}</span>
+                  </span>
                 </div>
               </div>
 
@@ -300,7 +308,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenP
                     onOpenProfile()
                   }}
                 >
-                  <span>👤 Ver Mi Ficha Clínica</span>
+                  <span>👤 Ver Mi Ficha de Coordinación</span>
                 </button>
 
                 {/* Botón de Cerrar Sesión */}
