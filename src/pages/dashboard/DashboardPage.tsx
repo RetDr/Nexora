@@ -1,5 +1,6 @@
 import React from 'react'
 import { AnimatedCounter } from '../../components/ui/AnimatedCounter'
+import { useAuth } from '../../context/AuthContext'
 import {
   Calendar,
   Clock,
@@ -67,6 +68,11 @@ interface SpecialistDuty {
 }
 
 export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
+  const { user } = useAuth()
+  
+  // Saludo dinámico según usuario logueado
+  const userGreetingName = user?.name ? (user.name.includes('Dr') ? user.name : user.name.split(' ')[0]) : 'Nathalia'
+
   // Próximas Citas de Hoy
   const upcomingAppointments: AppointmentItem[] = [
     {
@@ -279,8 +285,31 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
           <span>MIÉRCOLES, 11 DE NOVIEMBRE DE 2026</span>
         </div>
 
-        {/* Saludo al admin */}
-        <h2 className="welcome-greeting-title">Buenos días, Nathalia.</h2>
+        {/* Saludo dinámico al usuario o especialista */}
+        <div className="flex items-center gap-3 flex-wrap">
+          <h2 className="welcome-greeting-title">Buenos días, {userGreetingName}.</h2>
+          {user?.role === 'doctor' && (
+            <span
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold"
+              style={{
+                backgroundColor: `${user.avatarColor}18`,
+                color: user.avatarColor,
+                border: `1px solid ${user.avatarColor}35`,
+              }}
+            >
+              <Stethoscope size={13} />
+              <span>{user.specialty} · {user.consultorio}</span>
+            </span>
+          )}
+          {user?.role === 'admin' && (
+            <span
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#A94384]/10 text-[#A94384] border border-[#A94384]/20"
+            >
+              <Crown size={13} />
+              <span>Dirección Médica & Administrativa</span>
+            </span>
+          )}
+        </div>
 
         {/* Resumen claro del día */}
         <p className="welcome-summary-text">

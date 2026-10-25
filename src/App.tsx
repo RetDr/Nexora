@@ -5,6 +5,10 @@ import { QuickSearchModal } from './components/layout/QuickSearchModal'
 import { QuickCreateModal } from './components/layout/QuickCreateModal'
 import { Toast } from './components/ui/Toast'
 
+// Auth System
+import { AuthProvider, useAuth } from './context/AuthContext'
+import { LoginPage } from './pages/auth/LoginPage'
+
 // Pages
 import { DashboardPage } from './pages/dashboard/DashboardPage'
 import { SchedulingPage } from './pages/manufacturing/SchedulingPage'
@@ -23,7 +27,9 @@ import { ReportBuilderPage } from './pages/reporting/ReportBuilderPage'
 import { DirectoryProfileDrawer } from './pages/hr/DirectoryProfileDrawer'
 import { SettingsPage } from './pages/settings/SettingsPage'
 
-export function App() {
+function AppShell() {
+  const { isAuthenticated } = useAuth()
+
   const getPathFromHash = () => {
     const raw = window.location.hash.replace(/^#/, '')
     return raw || '/inicio' // Por defecto abre la pestaña Inicio
@@ -135,8 +141,23 @@ export function App() {
       return <SettingsPage onToast={showToast} />
     }
 
-    // Default fallback: Agenda de citas
-    return <SchedulingPage onNavigate={navigate} onOpenCreate={() => setIsCreateOpen(true)} />
+    // Default fallback: Dashboard de inicio
+    return <DashboardPage onNavigate={navigate} />
+  }
+
+  // Si no está autenticado, renderizar la pantalla de Login 3D
+  if (!isAuthenticated) {
+    return (
+      <div className={`cadra-app-root ${darkMode ? 'cadra-dark' : ''}`}>
+        <LoginPage
+          onLoginSuccess={() => {
+            navigate('/inicio')
+            showToast('¡Bienvenido al Sistema Clínico de VitaDent!')
+          }}
+        />
+        <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
+      </div>
+    )
   }
 
   return (
@@ -214,6 +235,14 @@ export function App() {
         </div>
       </footer>
     </div>
+  )
+}
+
+export function App() {
+  return (
+    <AuthProvider>
+      <AppShell />
+    </AuthProvider>
   )
 }
 

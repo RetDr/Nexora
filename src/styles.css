@@ -4529,13 +4529,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .metric-choice-card.selected {
-  background-color: #eff6ff;
-  border-color: #93c5fd;
+  background-color: #fdf2f8;
+  border-color: #f472b6;
+  box-shadow: 0 0 0 1px rgba(169, 67, 132, 0.2);
 }
 
 .cadra-dark .metric-choice-card.selected {
-  background-color: rgba(37, 99, 235, 0.15);
-  border-color: rgba(37, 99, 235, 0.4);
+  background-color: rgba(169, 67, 132, 0.18);
+  border-color: rgba(169, 67, 132, 0.45);
 }
 
 .metric-choice-icon {
@@ -4551,13 +4552,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .metric-choice-card.selected .metric-choice-icon {
-  background-color: #dbeafe;
-  color: #1d4ed8;
+  background-color: #fce7f3;
+  color: #A94384;
 }
 
 .cadra-dark .metric-choice-card.selected .metric-choice-icon {
-  background-color: rgba(37, 99, 235, 0.3);
-  color: #93c5fd;
+  background-color: rgba(169, 67, 132, 0.35);
+  color: #f472b6;
 }
 
 .metric-choice-texts strong {
@@ -4610,7 +4611,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .relative-bar-track {
   width: 100%;
-  height: 6px;
+  height: 7px;
   background-color: var(--border-light);
   border-radius: 9999px;
   overflow: hidden;
@@ -4618,9 +4619,181 @@ h1, h2, h3, h4, h5, h6 {
 
 .relative-bar-fill {
   height: 100%;
-  background-color: #2563eb;
+  background-color: #A94384;
   border-radius: 9999px;
-  transition: width 0.3s ease;
+  transition: width 0.35s ease;
+}
+
+/* VitaDent KPI & Reporting Enhanced Styles */
+.kpi-card-magenta {
+  background: linear-gradient(180deg, #A94384 0%, #872e68 100%);
+  color: #ffffff;
+  border: 1px solid #bf4f96;
+  border-bottom: 2.5px solid #6b1e51;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3),
+              inset 0 -1px 0 rgba(0, 0, 0, 0.35),
+              0 3px 8px rgba(169, 67, 132, 0.22),
+              0 10px 24px -4px rgba(169, 67, 132, 0.25);
+}
+
+.kpi-card-magenta .kpi-card-top {
+  color: #fce7f3;
+}
+
+.kpi-card-magenta .kpi-main-number {
+  color: #ffffff;
+}
+
+.cadra-app-root.cadra-dark .kpi-card-magenta {
+  background: linear-gradient(180deg, #872e68 0%, #5d1b46 100%);
+  border: 1px solid #9e367c;
+  border-bottom: 2.5px solid #451233;
+}
+
+.report-filters-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-card);
+  padding: 10px 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.report-type-pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.report-type-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.report-type-btn:hover {
+  background: var(--bg-card-subtle);
+  color: var(--text-main);
+}
+
+.report-type-btn.active {
+  background: linear-gradient(180deg, #A94384 0%, #8E356E 100%);
+  color: #ffffff;
+  border: 1px solid #7c2d5f;
+  border-bottom: 2px solid #63224b;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 2px 6px rgba(169, 67, 132, 0.25);
+}
+
+.report-filter-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.report-filter-select {
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
+  background: var(--bg-card-subtle);
+  color: var(--text-main);
+  font-size: 12.5px;
+  font-weight: 500;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.report-filter-select:focus {
+  border-color: #A94384;
+}
+
+/* Official Clinical Print Header & Print Stylesheet */
+.clinical-print-header {
+  display: none;
+}
+
+.clinical-print-footer {
+  display: none;
+}
+
+@media print {
+  @page {
+    margin: 1cm;
+    size: A4 portrait;
+  }
+
+  body, .cadra-app-root {
+    background: #ffffff !important;
+    color: #111827 !important;
+  }
+
+  .cadra-header,
+  .cadra-left-dock,
+  .cadra-breadcrumbs,
+  .cadra-header-actions,
+  .report-filters-bar,
+  .cadra-sub-tabs,
+  .cadra-floor-pill,
+  .no-print {
+    display: none !important;
+  }
+
+  .cadra-shell-body {
+    display: block !important;
+  }
+
+  .cadra-main-viewport {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .cadra-page-container {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .clinical-print-header {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #A94384;
+    padding-bottom: 14px;
+    margin-bottom: 18px;
+  }
+
+  .clinical-print-footer {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 36px;
+    padding-top: 16px;
+    border-top: 1px solid #cbd5e1;
+    page-break-inside: avoid;
+  }
+
+  .cadra-kpi-card, .cadra-card {
+    box-shadow: none !important;
+    border: 1px solid #cbd5e1 !important;
+    break-inside: avoid;
+  }
 }
 
 /* ==========================================================================
@@ -6876,4 +7049,775 @@ h1, h2, h3, h4, h5, h6 {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+
+/* ==========================================================================
+   VITADENT AUTHENTICATION & LOGIN SYSTEM (3D TACTILE STYLES)
+   ========================================================================== */
+
+.vita-auth-container {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  background: radial-gradient(circle at 50% 20%, rgba(169, 67, 132, 0.08) 0%, transparent 60%),
+              linear-gradient(180deg, #f7f7f4 0%, #eaeae5 100%);
+  position: relative;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.cadra-app-root.cadra-dark .vita-auth-container {
+  background: radial-gradient(circle at 50% 20%, rgba(192, 38, 211, 0.12) 0%, transparent 60%),
+              linear-gradient(180deg, #0e0f11 0%, #17181c 100%);
+}
+
+.vita-auth-glow-top {
+  position: absolute;
+  top: -140px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 700px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(169, 67, 132, 0.18) 0%, rgba(169, 67, 132, 0) 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.vita-auth-glow-bottom {
+  position: absolute;
+  bottom: -100px;
+  right: 10%;
+  width: 480px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(138, 138, 143, 0.12) 0%, rgba(138, 138, 143, 0) 70%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.vita-auth-card {
+  width: 100%;
+  max-width: 530px;
+  background-color: var(--bg-card);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 24px 50px -12px rgba(169, 67, 132, 0.16),
+              0 12px 24px -6px rgba(0, 0, 0, 0.06),
+              0 1px 3px rgba(0, 0, 0, 0.03);
+  padding: 36px 34px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+  z-index: 10;
+  box-sizing: border-box;
+  animation: fadeIn 0.35s ease-out;
+}
+
+.cadra-app-root.cadra-dark .vita-auth-card {
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 54px -10px rgba(0, 0, 0, 0.6),
+              0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.vita-auth-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.vita-auth-logo-wrapper {
+  margin-bottom: 14px;
+  display: flex;
+  justify-content: center;
+}
+
+.vita-auth-logo {
+  height: 48px;
+  width: auto;
+  max-width: 250px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.06));
+}
+
+.vita-auth-badge-security {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background-color: rgba(169, 67, 132, 0.08);
+  color: #A94384;
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  border: 1px solid rgba(169, 67, 132, 0.18);
+  letter-spacing: 0.02em;
+}
+
+.cadra-app-root.cadra-dark .vita-auth-badge-security {
+  background-color: rgba(192, 38, 211, 0.15);
+  color: #f5d0fe;
+  border-color: rgba(192, 38, 211, 0.3);
+}
+
+.vita-auth-title {
+  font-size: 21px;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+  margin: 0 0 6px 0;
+}
+
+.vita-auth-subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  margin: 0;
+  max-width: 440px;
+}
+
+.vita-auth-alert-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.4;
+  animation: fadeIn 0.2s ease;
+}
+
+.cadra-app-root.cadra-dark .vita-auth-alert-error {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.vita-auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.vita-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vita-form-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: 0.01em;
+}
+
+.vita-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.vita-link-btn {
+  background: none;
+  border: none;
+  font-size: 11.5px;
+  color: #A94384;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.15s ease;
+}
+
+.vita-link-btn:hover {
+  color: #8E356E;
+}
+
+.vita-input-box {
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-card-subtle);
+  border: 1.5px solid var(--border-light);
+  border-radius: 12px;
+  padding: 0 12px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.vita-input-box:focus-within {
+  border-color: #A94384;
+  background-color: var(--bg-card);
+  box-shadow: 0 0 0 3px rgba(169, 67, 132, 0.12);
+}
+
+.vita-input-icon {
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.vita-input-box:focus-within .vita-input-icon {
+  color: #A94384;
+}
+
+.vita-input-field {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 11px 0;
+  font-size: 13.5px;
+  color: var(--text-main);
+  font-family: inherit;
+}
+
+.vita-input-field::placeholder {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.vita-password-toggle-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.vita-password-toggle-btn:hover {
+  color: var(--text-main);
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.vita-remember-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: -2px;
+}
+
+.vita-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+}
+
+.vita-checkbox {
+  accent-color: #A94384;
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+
+/* Botón 3D Magenta de Acción Principal */
+.vita-btn-primary-3d {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #A94384 0%, #8E356E 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(169, 67, 132, 0.38),
+              inset 0 1px 1px rgba(255, 255, 255, 0.3);
+  transition: all 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
+  margin-top: 4px;
+}
+
+.vita-btn-primary-3d:hover:not(:disabled) {
+  background: linear-gradient(135deg, #b84a91 0%, #983876 100%);
+  box-shadow: 0 6px 20px rgba(169, 67, 132, 0.48),
+              inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  transform: translateY(-1.5px);
+}
+
+.vita-btn-primary-3d:active:not(:disabled) {
+  transform: translateY(1px) scale(0.99);
+  box-shadow: 0 2px 8px rgba(169, 67, 132, 0.35);
+}
+
+.vita-btn-primary-3d:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+.vita-btn-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vita-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Divisor Decorativo */
+.vita-auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 6px 0 2px 0;
+}
+
+.vita-divider-line {
+  flex: 1;
+  height: 1px;
+  background-color: var(--border-light);
+}
+
+.vita-divider-text {
+  font-size: 10.5px;
+  font-weight: 800;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Selector Rápido de Roles Demo en 1 Clic */
+.vita-quick-roles-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vita-quick-roles-tip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 0 0 2px 0;
+}
+
+.vita-roles-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.vita-role-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background-color: var(--bg-card-subtle);
+  border: 1px solid var(--border-light);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.18s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.vita-role-card:hover {
+  background-color: var(--bg-card);
+  border-color: #A94384;
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 12px rgba(169, 67, 132, 0.12), 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.vita-role-card:active {
+  transform: translateY(0.5px) scale(0.99);
+}
+
+.vita-role-card.selected {
+  border-color: #10b981;
+  background-color: rgba(16, 185, 129, 0.06);
+}
+
+.vita-role-card-admin {
+  background: linear-gradient(135deg, rgba(169, 67, 132, 0.04) 0%, rgba(169, 67, 132, 0.01) 100%);
+  border: 1px solid rgba(169, 67, 132, 0.22);
+}
+
+.vita-role-card-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.vita-role-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 12px;
+  position: relative;
+  flex-shrink: 0;
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+}
+
+.vita-role-avatar-badge {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  background-color: var(--bg-card);
+  border-radius: 50%;
+  width: 15px;
+  height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  color: #A94384;
+}
+
+.vita-role-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.vita-role-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vita-role-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.vita-role-tag {
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.vita-role-tag.admin {
+  background-color: rgba(169, 67, 132, 0.12);
+  color: #A94384;
+}
+
+.vita-role-tag.doctor {
+  background-color: var(--bg-container);
+  color: var(--text-secondary);
+}
+
+.vita-role-specialty {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.2;
+}
+
+.vita-role-card-right {
+  display: flex;
+  align-items: center;
+}
+
+.vita-role-enter-pill {
+  font-size: 11px;
+  font-weight: 700;
+  color: #A94384;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background-color: rgba(169, 67, 132, 0.08);
+  border: 1px solid rgba(169, 67, 132, 0.2);
+  transition: all 0.15s ease;
+}
+
+.vita-role-card:hover .vita-role-enter-pill {
+  background-color: #A94384;
+  color: #ffffff;
+}
+
+/* Pie de tarjeta */
+.vita-auth-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-light);
+  font-size: 11px;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.vita-auth-footer-note,
+.vita-auth-footer-help {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Pie inferior de página */
+.vita-auth-page-footer {
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  z-index: 10;
+}
+
+/* ==========================================================================
+   HEADER USER PROFILE & DROPDOWN MENU (3D TACTILE)
+   ========================================================================== */
+
+.cadra-user-profile-wrapper {
+  position: relative;
+}
+
+.cadra-user-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 310px;
+  background-color: var(--bg-card);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 18px;
+  box-shadow: 0 18px 40px -10px rgba(0, 0, 0, 0.18),
+              0 6px 16px -4px rgba(0, 0, 0, 0.08);
+  padding: 16px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: fadeIn 0.18s ease-out;
+}
+
+.cadra-app-root.cadra-dark .cadra-user-dropdown-menu {
+  border-color: rgba(255, 255, 255, 0.09);
+  box-shadow: 0 18px 45px -8px rgba(0, 0, 0, 0.65);
+}
+
+.cadra-user-dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.cadra-user-dropdown-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 15px;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  flex-shrink: 0;
+}
+
+.cadra-user-dropdown-details {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.cadra-user-dropdown-name {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cadra-user-dropdown-email {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cadra-user-dropdown-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #A94384;
+  background-color: rgba(169, 67, 132, 0.1);
+  padding: 2px 7px;
+  border-radius: 9999px;
+  margin-top: 3px;
+  width: fit-content;
+}
+
+/* Switch User Section */
+.cadra-user-switch-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cadra-user-switch-title {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cadra-user-switch-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.cadra-user-switch-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background-color: var(--bg-card-subtle);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+}
+
+.cadra-user-switch-item:hover {
+  background-color: var(--color-interactive-hover);
+  border-color: var(--border-light);
+}
+
+.cadra-user-switch-item.active {
+  background-color: rgba(169, 67, 132, 0.08);
+  border-color: rgba(169, 67, 132, 0.3);
+}
+
+.cadra-user-switch-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cadra-user-switch-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cadra-user-switch-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.cadra-user-switch-tag {
+  font-size: 9.5px;
+  color: var(--text-secondary);
+}
+
+/* Acciones finales del dropdown */
+.cadra-user-dropdown-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-light);
+}
+
+.cadra-user-dropdown-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-main);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  width: 100%;
+  text-align: left;
+}
+
+.cadra-user-dropdown-action-btn:hover {
+  background-color: var(--color-interactive-hover);
+}
+
+.cadra-user-logout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #dc2626;
+  background-color: rgba(220, 38, 38, 0.08);
+  border: 1px solid rgba(220, 38, 38, 0.2);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  margin-top: 4px;
+}
+
+.cadra-user-logout-btn:hover {
+  background-color: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+  box-shadow: 0 3px 10px rgba(220, 38, 38, 0.3);
 }

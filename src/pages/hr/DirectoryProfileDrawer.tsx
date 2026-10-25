@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useAuth } from '../../context/AuthContext'
 import { LiveFloorPill } from '../../components/ui/LiveFloorPill'
 import { AnimatedCounter } from '../../components/ui/AnimatedCounter'
 import {
@@ -30,8 +31,17 @@ export const DirectoryProfileDrawer: React.FC<DirectoryProfileDrawerProps> = ({
   onCloseDrawer,
   onToast,
 }) => {
+  const { user } = useAuth()
   const [filterDepartment, setFilterDepartment] = useState('All')
   const [internalDrawerOpen, setInternalDrawerOpen] = useState(false)
+
+  const activeName = user?.name || 'Nathalia Leon'
+  const activeInitials = user?.initials || 'NL'
+  const activeRole = user?.role === 'admin' ? 'Administradora General · Dirección VitaDent' : `${user?.specialty || 'Especialista'} · ${user?.consultorio || ''}`
+  const activeEmail = user?.email || 'administracion@vitadent.com.co'
+  const activePhone = user?.phone || '+57 311 405 2910'
+  const activeColor = user?.avatarColor || '#A94384'
+  const activeTag = user?.role === 'admin' ? 'Acceso Total Admin' : `Médico Tratante · ${user?.consultorio || ''}`
 
   const isDrawerActive = showDrawer || internalDrawerOpen
 
@@ -256,16 +266,26 @@ export const DirectoryProfileDrawer: React.FC<DirectoryProfileDrawerProps> = ({
             {/* Profile Header */}
             <div className="drawer-header-block">
               <div className="relative">
-                <div className="drawer-avatar-circle" style={{ backgroundColor: '#A94384', color: '#ffffff', fontWeight: 800 }}>NL</div>
+                <div
+                  className="drawer-avatar-circle"
+                  style={{
+                    backgroundColor: activeColor,
+                    color: '#ffffff',
+                    fontWeight: 800,
+                    boxShadow: `0 3px 12px ${activeColor}50`,
+                  }}
+                >
+                  {activeInitials}
+                </div>
                 <span className="drawer-online-status-dot" />
               </div>
 
               <div className="drawer-name-info">
-                <h2 className="drawer-user-name">Nathalia Leon</h2>
-                <div className="drawer-user-role">Administradora General · Dirección VitaDent</div>
+                <h2 className="drawer-user-name">{activeName}</h2>
+                <div className="drawer-user-role">{activeRole}</div>
                 <div className="drawer-tags-row">
                   <span className="cadra-tag-pill tag-green">● En línea · Activo</span>
-                  <span className="cadra-tag-pill tag-neutral">Acceso Total Admin</span>
+                  <span className="cadra-tag-pill tag-neutral">{activeTag}</span>
                   <span className="cadra-tag-pill tag-blue">Tú</span>
                 </div>
               </div>
@@ -275,14 +295,14 @@ export const DirectoryProfileDrawer: React.FC<DirectoryProfileDrawerProps> = ({
             <div className="drawer-quick-actions">
               <button
                 className="drawer-action-btn"
-                onClick={() => window.open('mailto:administracion@vitadent.com.co')}
+                onClick={() => window.open(`mailto:${activeEmail}`)}
               >
                 <Mail size={14} />
                 <span>Email</span>
               </button>
               <button
                 className="drawer-action-btn"
-                onClick={() => window.open('tel:+573114052910')}
+                onClick={() => window.open(`tel:${activePhone}`)}
               >
                 <Phone size={14} />
                 <span>Llamar</span>
@@ -290,7 +310,7 @@ export const DirectoryProfileDrawer: React.FC<DirectoryProfileDrawerProps> = ({
               <button
                 className="drawer-action-btn"
                 onClick={() => {
-                  navigator.clipboard?.writeText('administracion@vitadent.com.co')
+                  navigator.clipboard?.writeText(activeEmail)
                   onToast('Email copiado al portapapeles')
                 }}
               >
@@ -303,12 +323,12 @@ export const DirectoryProfileDrawer: React.FC<DirectoryProfileDrawerProps> = ({
             <div className="drawer-details-grid">
               <div className="drawer-field-card">
                 <span className="drawer-field-label">Email</span>
-                <span className="drawer-field-val">administracion@vitadent.com.co</span>
+                <span className="drawer-field-val">{activeEmail}</span>
               </div>
 
               <div className="drawer-field-card">
                 <span className="drawer-field-label">Teléfono</span>
-                <span className="drawer-field-val">+57 311 405 2910</span>
+                <span className="drawer-field-val">{activePhone}</span>
               </div>
 
               <div className="drawer-field-card">

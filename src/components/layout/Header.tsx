@@ -1,6 +1,8 @@
-import React, { useState, useRef, useLayoutEffect, useCallback } from 'react'
-import { Bell, Check } from 'lucide-react'
+import React, { useState, useRef, useLayoutEffect, useCallback, useEffect } from 'react'
+import { Bell, Check, LogOut, UserCheck, Crown, Stethoscope, ChevronDown } from 'lucide-react'
 import { vitadentConfig } from '../../config/clinic.config'
+import { useAuth } from '../../context/AuthContext'
+import { VITA_USERS } from '../../types/auth'
 
 interface HeaderProps {
   currentPath: string
@@ -11,8 +13,12 @@ interface HeaderProps {
 type NavKey = 'inicio' | 'agenda' | 'pacientes' | 'pagos' | 'stock' | 'precios' | 'informes'
 
 export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenProfile }) => {
+  const { user, logout, loginAs } = useAuth()
   const [showNotifications, setShowNotifications] = useState(false)
+  const [showUserMenu, setShowUserMenu] = useState(false)
   const [hasUnread, setHasUnread] = useState(true)
+
+  const userMenuRef = useRef<HTMLDivElement | null>(null)
 
   // Sliding pill state
   const navBarRef = useRef<HTMLElement | null>(null)
@@ -31,6 +37,21 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenP
     width: 0,
     ready: false,
   })
+
+  // Cerrar menú de usuario al hacer clic fuera
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setShowUserMenu(false)
+      }
+    }
+    if (showUserMenu) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showUserMenu])
 
   const getActiveModuleKey = useCallback((): NavKey => {
     if (currentPath === '/inicio' || currentPath === '/dashboard' || currentPath === '/' || currentPath === '') return 'inicio'
@@ -93,6 +114,10 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenP
     { id: 4, title: 'Presupuesto ortodoncia aceptado: Laura Gómez', time: '2h ago', urgent: false },
   ]
 
+  const userInitial = user?.initials || 'NL'
+  const userColor = user?.avatarColor || '#A94384'
+  const isDoc = user?.role === 'doctor'
+
   return (
     <header className="cadra-header">
       {/* Brand VitaDent con Logo Horizontal */}
@@ -137,6 +162,7 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenP
             className="cadra-icon-circle-btn"
             onClick={() => {
               setShowNotifications(!showNotifications)
+              setShowUserMenu(false)
               setHasUnread(false)
             }}
             title="Notificaciones clínicas"
@@ -168,21 +194,132 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenP
           )}
         </div>
 
-        {/* User Profile Avatar: Admin Nathalia Leon */}
-        <button
-          className="cadra-avatar-btn"
-          onClick={onOpenProfile}
-          title="Nathalia Leon (Administradora General)"
-          style={{
-            backgroundColor: '#A94384',
-            color: '#ffffff',
-            fontWeight: 700,
-            boxShadow: '0 2px 8px rgba(169, 67, 132, 0.35)',
-            border: '2px solid rgba(255, 255, 255, 0.8)',
-          }}
-        >
-          NL
-        </button>
+        {/* User Profile Avatar & Dropdown */}
+        <div className="cadra-user-profile-wrapper" ref={userMenuRef}>
+          <button
+            className="cadra-avatar-btn flex items-center justify-center gap-1"
+            onClick={() => {
+              setShowUserMenu(!showUserMenu)
+              setShowNotifications(false)
+            }}
+            title={`${user?.name || 'Usuario'} (${user?.title || 'Personal Clínico'})`}
+            style={{
+              backgroundColor: userColor,
+              color: '#ffffff',
+              fontWeight: 700,
+              boxShadow: `0 2px 8px ${userColor}55`,
+              border: '2px solid rgba(255, 255, 255, 0.85)',
+              position: 'relative',
+            }}
+          >
+            <span>{userInitial}</span>
+          </button>
+
+          {/* Menú Desplegable Táctil del Usuario */}
+          {showUserMenu && (
+            <div className="cadra-user-dropdown-menu">
+              {/* Encabezado con datos del usuario activo */}
+              <div className="cadra-user-dropdown-header">
+                <div
+                  className="cadra-user-dropdown-avatar"
+                  style={{
+                    backgroundColor: userColor,
+                    boxShadow: `0 3px 10px ${userColor}40`,
+                  }}
+                >
+                  {userInitial}
+                </div>
+                <div className="cadra-user-dropdown-details">
+                  <span className="cadra-user-dropdown-name">{user?.name}</span>
+                  <span className="cadra-user-dropdown-email">{user?.email}</span>
+                  <span className="cadra-user-dropdown-badge">
+                    {user?.role === 'admin' ? (
+                      <>
+                        <Crown size={11} />
+                        <span>Administración General</span>
+                      </>
+                    ) : (
+                      <>
+                        <Stethoscope size={11} />
+                        <span>{user?.consultorio || 'Especialista'}</span>
+                      </>
+                    )}
+                  </span>
+                </div>
+              </div>
+
+              {/* Selector Rápido: Cambiar de Usuario */}
+              <div className="cadra-user-switch-section">
+                <span className="cadra-user-switch-title">
+                  <UserCheck size={12} />
+                  <span>Cambiar de Usuario (1 clic)</span>
+                </span>
+
+                <div className="cadra-user-switch-list">
+                  {VITA_USERS.map((u) => {
+                    const isCurrent = u.id === user?.id
+                    return (
+                      <button
+                        key={u.id}
+                        type="button"
+                        className={`cadra-user-switch-item ${isCurrent ? 'active' : ''}`}
+                        onClick={() => {
+                          loginAs(u.id)
+                          setShowUserMenu(false)
+                        }}
+                        title={`Cambiar a ${u.name}`}
+                      >
+                        <div className="cadra-user-switch-left">
+                          <span
+                            className="cadra-user-switch-avatar"
+                            style={{ backgroundColor: u.avatarColor }}
+                          >
+                            {u.initials}
+                          </span>
+                          <div className="flex flex-col text-left">
+                            <span className="cadra-user-switch-name">{u.name}</span>
+                            <span className="cadra-user-switch-tag">
+                              {u.role === 'admin' ? 'Administradora' : u.consultorio}
+                            </span>
+                          </div>
+                        </div>
+                        {isCurrent && <Check size={14} className="text-[#A94384]" />}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              {/* Acciones del Usuario */}
+              <div className="cadra-user-dropdown-actions">
+                <button
+                  type="button"
+                  className="cadra-user-dropdown-action-btn"
+                  onClick={() => {
+                    setShowUserMenu(false)
+                    onOpenProfile()
+                  }}
+                >
+                  <span>👤 Ver Mi Ficha Clínica</span>
+                </button>
+
+                {/* Botón de Cerrar Sesión */}
+                <button
+                  type="button"
+                  className="cadra-user-logout-btn"
+                  onClick={() => {
+                    setShowUserMenu(false)
+                    logout()
+                  }}
+                  title="Cerrar la sesión activa y regresar al login"
+                >
+                  <LogOut size={15} />
+                  <span>Cerrar Sesión</span>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   )
