@@ -915,7 +915,7 @@ export const ledgerEntriesData: LedgerEntry[] = [
     relativeDate: 'Hoy',
     entry: 'Pago Factura Insumos y Laboratorio Dental',
     ref: 'FAC-LAB-01',
-    source: 'Suppliers',
+    source: 'Purchases',
     amount: 1840000,
     isDebit: false,
     accountCode: '511010 — Insumos & Laboratorio Dental',

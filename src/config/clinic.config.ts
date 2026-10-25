@@ -40,6 +40,7 @@ export interface ClinicConfig {
     bgDark: string           // (#121214)
     logoPath: string
     symbolPath: string
+    logoHorizontalPath?: string
   }
   navigation: Array<{
     key: string
@@ -52,6 +53,13 @@ export interface ClinicConfig {
   criticalStock: string[]
   paymentMethods: string[]
   insurances: string[]
+  admin?: {
+    name: string
+    role: string
+    initials: string
+    email: string
+    phone: string
+  }
 }
 
 export const vitadentConfig: ClinicConfig = {

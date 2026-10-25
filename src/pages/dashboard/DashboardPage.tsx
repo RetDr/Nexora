@@ -16,7 +16,8 @@ import {
   Package,
   ArrowUpRight,
   ShieldCheck,
-  DollarSign
+  DollarSign,
+  Crown
 } from 'lucide-react'
 
 interface DashboardPageProps {
