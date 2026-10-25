@@ -108,3 +108,4 @@ Lista de 5 a 10 materiales cuyo control de inventario es prioritario:
 Solo necesitas responder con los datos que tengas disponibles (no hace falta que estén todos al 100%, podemos usar valores por defecto para lo que falte), y nosotros generaremos:
 1. El archivo central [`src/config/clinic.config.ts`](file:///c:/Users/danie/OneDrive/Documentos/NEXORA/src/config/clinic.config.ts) que inyectará toda tu información en la app.
 2. La actualización automática del `Header`, la `Agenda Gantt` y el `Catálogo POS`.
+
