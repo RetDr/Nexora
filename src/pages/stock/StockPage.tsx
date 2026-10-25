@@ -66,11 +66,11 @@ export const StockPage: React.FC<StockPageProps> = ({ onNavigate, onOpenCreate }
     <div className="cadra-page-container">
       {/* Breadcrumbs */}
       <div className="cadra-breadcrumbs">
-        <span>Larkspur</span>
+        <span>VitaDent</span>
         <span className="crumb-sep">&gt;</span>
-        <span>Inventory</span>
+        <span>Inventario</span>
         <span className="crumb-sep">&gt;</span>
-        <span className="crumb-active">Stock</span>
+        <span className="crumb-active">Materiales & Consumibles Críticos</span>
       </div>
 
       {/* Header with Submodule Pills — Structured Exactly Like Real.png */}
@@ -79,24 +79,24 @@ export const StockPage: React.FC<StockPageProps> = ({ onNavigate, onOpenCreate }
           <div className="title-with-submodules">
             <h1 className="cadra-page-title">Stock</h1>
             <div className="cadra-submodule-pills">
-              <button className="submodule-pill active" onClick={() => onNavigate('/inventory/stock')}>
+              <button className="submodule-pill active" onClick={() => onNavigate('/stock')}>
                 <Boxes size={14} />
-                <span>Inventory</span>
-                <span className="cadra-badge badge-orange">6</span>
+                <span>Materiales</span>
+                <span className="cadra-badge badge-orange">1</span>
               </button>
               <button className="submodule-pill" onClick={() => onNavigate('/purchasing/orders')}>
                 <ShoppingCart size={13} />
-                <span>Purchasing</span>
+                <span>Pedidos Depósito</span>
               </button>
               <button className="submodule-pill" onClick={() => onNavigate('/logistics/shipments')}>
                 <Truck size={13} />
-                <span>Logistics</span>
+                <span>Laboratorio Dental</span>
               </button>
             </div>
           </div>
 
           <div className="cadra-sub-tabs">
-            {['Stock', 'Warehouses', 'Movements'].map((t) => (
+            {['Stock Crítico', 'Almacén Central', 'Movimientos de Entrada'].map((t) => (
               <button
                 key={t}
                 className={`cadra-sub-tab ${activeTab === t ? 'active' : ''}`}
@@ -114,9 +114,9 @@ export const StockPage: React.FC<StockPageProps> = ({ onNavigate, onOpenCreate }
 
           {/* Bottom row: Action Buttons */}
           <div className="page-header-actions-row">
-            <button className="cadra-btn-secondary" onClick={() => alert('Exporting stock report...')}>
+            <button className="cadra-btn-secondary" onClick={() => alert('Exportando inventario de insumos a Excel...')}>
               <Download size={14} />
-              <span>Export</span>
+              <span>Exportar</span>
             </button>
 
             <button className="cadra-btn-primary" onClick={onOpenCreate}>

@@ -71,27 +71,27 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({ onNavigate, onOpenCr
     <div className="cadra-page-container">
       {/* Breadcrumbs */}
       <div className="cadra-breadcrumbs">
-        <span>Larkspur</span>
+        <span>VitaDent</span>
         <span className="crumb-sep">&gt;</span>
-        <span className="crumb-active">Contacts</span>
+        <span className="crumb-active">Directorio de Pacientes & Convenios</span>
       </div>
 
       {/* Header with Submodule Pills */}
       <div className="cadra-page-header">
         <div className="title-with-submodules">
-          <h1 className="cadra-page-title">Contacts</h1>
+          <h1 className="cadra-page-title">Pacientes</h1>
           <div className="cadra-submodule-pills">
-            <button className="submodule-pill" onClick={() => onNavigate('/sales/pipeline')}>
-              <span>Sales</span>
-              <span className="cadra-badge badge-orange">4</span>
+            <button className="submodule-pill" onClick={() => onNavigate('/presupuestos')}>
+              <span>Presupuestos</span>
+              <span className="cadra-badge badge-orange">6</span>
             </button>
-            <button className="submodule-pill" onClick={() => onNavigate('/pos')}>
+            <button className="submodule-pill" onClick={() => onNavigate('/precios')}>
               <ShoppingBag size={13} />
-              <span>POS</span>
+              <span>Precios & Caja</span>
             </button>
-            <button className="submodule-pill active" onClick={() => onNavigate('/contacts')}>
+            <button className="submodule-pill active" onClick={() => onNavigate('/pacientes')}>
               <Users size={13} />
-              <span>Contacts</span>
+              <span>Pacientes</span>
             </button>
           </div>
         </div>
@@ -99,7 +99,7 @@ export const ContactsPage: React.FC<ContactsPageProps> = ({ onNavigate, onOpenCr
         <div className="cadra-header-actions">
           <button className="cadra-btn-primary" onClick={onOpenCreate}>
             <Plus size={15} />
-            <span>New contact</span>
+            <span>Nuevo Paciente</span>
           </button>
         </div>
       </div>

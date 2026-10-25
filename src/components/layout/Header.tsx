@@ -1,6 +1,6 @@
 import React, { useState, useRef, useLayoutEffect, useCallback } from 'react'
-import { Bell, Bike, Check } from 'lucide-react'
-import { AnimatedCounter } from '../ui/AnimatedCounter'
+import { Bell, Check } from 'lucide-react'
+import { vitadentConfig } from '../../config/clinic.config'
 
 interface HeaderProps {
   currentPath: string
@@ -8,7 +8,7 @@ interface HeaderProps {
   onOpenProfile: () => void
 }
 
-type ModuleKey = 'dashboard' | 'sales' | 'manufacturing' | 'inventory' | 'accounting' | 'hr' | 'reporting'
+type NavKey = 'agenda' | 'pacientes' | 'pagos' | 'inicio' | 'presupuestos' | 'stock' | 'precios' | 'informes'
 
 export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenProfile }) => {
   const [showNotifications, setShowNotifications] = useState(false)
@@ -16,14 +16,15 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenP
 
   // Sliding pill state
   const navBarRef = useRef<HTMLElement | null>(null)
-  const itemRefs = useRef<Record<ModuleKey, HTMLButtonElement | null>>({
-    dashboard: null,
-    sales: null,
-    manufacturing: null,
-    inventory: null,
-    accounting: null,
-    hr: null,
-    reporting: null,
+  const itemRefs = useRef<Record<NavKey, HTMLButtonElement | null>>({
+    agenda: null,
+    pacientes: null,
+    pagos: null,
+    inicio: null,
+    presupuestos: null,
+    stock: null,
+    precios: null,
+    informes: null,
   })
 
   const [pillStyle, setPillStyle] = useState<{ left: number; width: number; ready: boolean }>({
@@ -32,18 +33,19 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenP
     ready: false,
   })
 
-  const getActiveModuleKey = useCallback((): ModuleKey => {
-    if (currentPath === '/dashboard' || currentPath === '' || currentPath === '/') return 'dashboard'
-    if (currentPath.startsWith('/sales') || currentPath === '/pos' || currentPath === '/contacts') return 'sales'
-    if (currentPath.startsWith('/manufacturing')) return 'manufacturing'
-    if (currentPath.startsWith('/inventory') || currentPath.startsWith('/purchasing') || currentPath.startsWith('/logistics')) return 'inventory'
-    if (currentPath.startsWith('/accounting')) return 'accounting'
-    if (currentPath.startsWith('/hr')) return 'hr'
-    if (currentPath.startsWith('/reporting')) return 'reporting'
-    return 'dashboard'
+  const getActiveModuleKey = useCallback((): NavKey => {
+    if (currentPath === '/agenda' || currentPath.startsWith('/manufacturing')) return 'agenda'
+    if (currentPath === '/pacientes' || currentPath.startsWith('/hr') || currentPath === '/contacts') return 'pacientes'
+    if (currentPath === '/pagos' || currentPath.startsWith('/accounting')) return 'pagos'
+    if (currentPath === '/inicio' || currentPath === '/dashboard') return 'inicio'
+    if (currentPath === '/presupuestos' || currentPath.startsWith('/sales')) return 'presupuestos'
+    if (currentPath === '/stock' || currentPath.startsWith('/inventory') || currentPath.startsWith('/purchasing') || currentPath.startsWith('/logistics')) return 'stock'
+    if (currentPath === '/precios' || currentPath === '/pos') return 'precios'
+    if (currentPath === '/informes' || currentPath.startsWith('/reporting')) return 'informes'
+    return 'agenda'
   }, [currentPath])
 
-  const isModuleActive = (key: ModuleKey) => getActiveModuleKey() === key
+  const isModuleActive = (key: NavKey) => getActiveModuleKey() === key
 
   // Update sliding pill position
   const updatePill = useCallback(() => {
@@ -87,22 +89,27 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenP
   }, [updatePill])
 
   const notifications = [
-    { id: 1, title: 'WO-2043 is behind plan', time: '12m ago', urgent: true },
-    { id: 2, title: 'SHP-7711 held at customs (Blaine, WA)', time: '35m ago', urgent: true },
-    { id: 3, title: 'Payment received: $24,145.92 from Rosewood Bikes', time: '1h ago', urgent: false },
-    { id: 4, title: 'Arriving this week: 190 units across 2 POs', time: '2h ago', urgent: false },
+    { id: 1, title: 'Paciente Carlos García en recepción (Box 1)', time: '5m ago', urgent: true },
+    { id: 2, title: 'Stock crítico: Anestesia con vasoconstrictor baja', time: '20m ago', urgent: true },
+    { id: 3, title: 'Pago recibido: $2.500.000 Implante (Dra. Valenzuela)', time: '1h ago', urgent: false },
+    { id: 4, title: 'Presupuesto ortodoncia aceptado: Laura Gómez', time: '2h ago', urgent: false },
   ]
 
   return (
     <header className="cadra-header">
-      {/* Brand */}
-      <div className="cadra-brand" onClick={() => onNavigate('/dashboard')}>
-        <div className="cadra-brand-icon">
-          <Bike size={18} strokeWidth={2.2} />
-        </div>
+      {/* Brand VitaDent */}
+      <div className="cadra-brand" onClick={() => onNavigate('/agenda')}>
+        <img
+          src="/vitadent_symbol.png"
+          alt="VitaDent"
+          style={{ height: '36px', width: 'auto', objectFit: 'contain' }}
+        />
         <div className="cadra-brand-titles">
-          <span className="cadra-brand-name">Cadra</span>
-          <span className="cadra-brand-sub">Larkspur Cycles</span>
+          <span className="cadra-brand-name">
+            <span style={{ color: '#A94384' }}>Vita</span>
+            <span style={{ color: '#8A8A8F' }}>Dent</span>
+          </span>
+          <span className="cadra-brand-sub">clínica odontológica</span>
         </div>
       </div>
 
@@ -118,69 +125,20 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenP
           aria-hidden="true"
         />
 
-        <button
-          ref={(el) => { itemRefs.current.dashboard = el }}
-          className={`cadra-nav-item ${isModuleActive('dashboard') ? 'active' : ''}`}
-          onClick={() => onNavigate('/dashboard')}
-        >
-          <span>Dashboard</span>
-        </button>
-
-        <button
-          ref={(el) => { itemRefs.current.sales = el }}
-          className={`cadra-nav-item ${isModuleActive('sales') ? 'active' : ''}`}
-          onClick={() => onNavigate('/sales/pipeline')}
-        >
-          <span>Sales</span>
-          <span className="cadra-badge badge-orange">4</span>
-        </button>
-
-        <button
-          ref={(el) => { itemRefs.current.manufacturing = el }}
-          className={`cadra-nav-item ${isModuleActive('manufacturing') ? 'active' : ''}`}
-          onClick={() => onNavigate('/manufacturing/scheduling')}
-        >
-          <span>Manufacturing</span>
-          <span className="cadra-badge badge-orange">1</span>
-        </button>
-
-        <button
-          ref={(el) => { itemRefs.current.inventory = el }}
-          className={`cadra-nav-item ${isModuleActive('inventory') ? 'active' : ''}`}
-          onClick={() => onNavigate('/inventory/stock')}
-        >
-          <span>Stock</span>
-          <span className="cadra-badge badge-orange">6</span>
-        </button>
-
-        <button
-          ref={(el) => { itemRefs.current.accounting = el }}
-          className={`cadra-nav-item ${isModuleActive('accounting') ? 'active' : ''}`}
-          onClick={() => onNavigate('/accounting/ledger')}
-        >
-          <span>Accounting</span>
-          <span className="cadra-badge badge-orange">1</span>
-        </button>
-
-        <button
-          ref={(el) => { itemRefs.current.hr = el }}
-          className={`cadra-nav-item ${isModuleActive('hr') ? 'active' : ''}`}
-          onClick={() => onNavigate('/hr/directory')}
-        >
-          <span>HR</span>
-          <span className="cadra-badge badge-orange">3</span>
-        </button>
-
-        <button
-          ref={(el) => { itemRefs.current.reporting = el }}
-          className={`cadra-nav-item ${isModuleActive('reporting') ? 'active' : ''}`}
-          onClick={() => onNavigate('/reporting/overview')}
-        >
-          <span>Reporting</span>
-        </button>
+        {vitadentConfig.navigation.map((item) => (
+          <button
+            key={item.key}
+            ref={(el) => { itemRefs.current[item.key as NavKey] = el }}
+            className={`cadra-nav-item ${isModuleActive(item.key as NavKey) ? 'active' : ''}`}
+            onClick={() => onNavigate(item.path)}
+          >
+            <span>{item.label}</span>
+            {item.badge && <span className="cadra-badge">{item.badge}</span>}
+          </button>
+        ))}
       </nav>
 
-      {/* Right Header Status & Controls — Matches Real.png */}
+      {/* Right Header Status & Controls */}
       <div className="cadra-header-right">
         {/* Notifications */}
         <div className="notification-dropdown-wrapper">
@@ -190,17 +148,17 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenP
               setShowNotifications(!showNotifications)
               setHasUnread(false)
             }}
-            title="Notifications"
+            title="Notificaciones clínicas"
           >
             <Bell size={18} />
-            {hasUnread && <span className="notification-dot" />}
+            {hasUnread && <span className="notification-dot" style={{ backgroundColor: '#A94384' }} />}
           </button>
 
           {showNotifications && (
             <div className="cadra-dropdown-menu notifications-menu">
               <div className="notifications-header">
-                <strong>Activity & Alerts</strong>
-                <span className="badge-count">4</span>
+                <strong>Alertas Clínicas</strong>
+                <span className="badge-count" style={{ backgroundColor: '#A94384' }}>4</span>
               </div>
               <div className="notifications-list">
                 {notifications.map((n) => (
@@ -223,9 +181,10 @@ export const Header: React.FC<HeaderProps> = ({ currentPath, onNavigate, onOpenP
         <button
           className="cadra-avatar-btn"
           onClick={onOpenProfile}
-          title="Noor Haddad (Operations Lead)"
+          title="Dra. Sofía Valenzuela (Directora Médica)"
+          style={{ backgroundColor: '#A94384', color: '#ffffff', fontWeight: 700 }}
         >
-          NH
+          SV
         </button>
       </div>
     </header>

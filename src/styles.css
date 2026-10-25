@@ -15,8 +15,10 @@
   --color-text-secondary: #575a61;
   --color-text-muted: #8b8f97;
   --color-border: #e6e6e2;
-  --color-accent: #d95c37;
+  --color-accent: #A94384; /* VitaDent Magenta */
+  --color-accent-hover: #8E356E;
   --color-accent-contrast: #ffffff;
+  --color-secondary: #8A8A8F; /* VitaDent Metallic Slate Grey */
   --color-interactive-hover: #f0f0ec;
   --color-input-background: #f9f9f8;
   --color-chart-grid: rgba(0, 0, 0, 0.06);
@@ -37,8 +39,8 @@
   --bg-container: #ebebe7;
   --bg-dark-card: #141517;
   --text-dark-card: #ffffff;
-  --bg-blue-card: #d8e4f0;
-  --text-blue-card: #1e3a5f;
+  --bg-blue-card: #fdf2f8; /* Sutil magenta pastel para tarjetas destacadas */
+  --text-blue-card: #A94384;
 
   --border-light: var(--color-border);
   --border-card: #e5e5e0;
@@ -50,7 +52,7 @@
   --text-dim: #a1a5ad;
 
   --accent-terracotta: var(--color-accent);
-  --accent-terracotta-hover: #c44d29;
+  --accent-terracotta-hover: var(--color-accent-hover);
   --accent-green: #15803d;
   --accent-green-bg: #dcfce7;
   --accent-blue: #2563eb;
@@ -81,8 +83,10 @@
   --color-text-secondary: #9ca3af;
   --color-text-muted: #6b7280;
   --color-border: #282a2e;
-  --color-accent: #e06844;
+  --color-accent: #c026d3; /* VitaDent Magenta para modo oscuro */
+  --color-accent-hover: #d946ef;
   --color-accent-contrast: #ffffff;
+  --color-secondary: #a1a1aa;
   --color-interactive-hover: #26272c;
   --color-input-background: #1f2024;
   --color-chart-grid: rgba(255, 255, 255, 0.08);
@@ -92,8 +96,8 @@
   --bg-card-subtle: var(--color-input-background);
   --bg-container: #26272c;
   --bg-dark-card: #08090a;
-  --bg-blue-card: #1e293b;
-  --text-blue-card: #93c5fd;
+  --bg-blue-card: #3b0764;
+  --text-blue-card: #f5d0fe;
 
   --border-light: var(--color-border);
   --border-card: #2c2e33;

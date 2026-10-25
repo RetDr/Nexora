@@ -45,29 +45,29 @@ export const GeneralLedgerPage: React.FC<GeneralLedgerPageProps> = ({ onNavigate
     <div className="cadra-page-container">
       {/* Breadcrumbs */}
       <div className="cadra-breadcrumbs">
-        <span>Larkspur</span>
+        <span>VitaDent</span>
         <span className="crumb-sep">&gt;</span>
-        <span>Accounting</span>
+        <span>Contabilidad</span>
         <span className="crumb-sep">&gt;</span>
-        <span className="crumb-active">General ledger</span>
+        <span className="crumb-active">Libro Mayor</span>
       </div>
 
       {/* Header with two-tier right cluster */}
       <div className="cadra-page-header">
         <div className="page-header-left">
-          <h1 className="cadra-page-title">General ledger</h1>
+          <h1 className="cadra-page-title">Libro Mayor</h1>
           <div className="cadra-sub-tabs">
             <button className="cadra-sub-tab active" onClick={() => onNavigate('/accounting/ledger')}>
-              General ledger
+              Libro Mayor
             </button>
             <button className="cadra-sub-tab" onClick={() => onNavigate('/accounting/invoices')}>
-              Invoices
+              Facturas
             </button>
-            <button className="cadra-sub-tab" onClick={() => onNavigate('/accounting/payments')}>
-              Payments
+            <button className="cadra-sub-tab" onClick={() => onNavigate('/pagos')}>
+              Cobros & Pagos
             </button>
             <button className="cadra-sub-tab" onClick={() => onNavigate('/accounting/ledger')}>
-              Statements
+              Extractos
             </button>
           </div>
         </div>

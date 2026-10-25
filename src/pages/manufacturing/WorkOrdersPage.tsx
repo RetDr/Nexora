@@ -42,23 +42,23 @@ export const WorkOrdersPage: React.FC<WorkOrdersPageProps> = ({ onNavigate, onOp
     <div className="cadra-page-container">
       {/* Breadcrumbs */}
       <div className="cadra-breadcrumbs">
-        <span>Larkspur</span>
+        <span>VitaDent</span>
         <span className="crumb-sep">&gt;</span>
-        <span>Manufacturing</span>
+        <span>Agenda</span>
         <span className="crumb-sep">&gt;</span>
-        <span className="crumb-active">Work orders</span>
+        <span className="crumb-active">Citas & Tratamientos</span>
       </div>
 
       {/* Header — Proportioned Like Real.png */}
       <div className="cadra-page-header">
         <div className="page-header-left-col">
-          <h1 className="cadra-page-title">Work orders</h1>
+          <h1 className="cadra-page-title">Tratamientos</h1>
           <div className="cadra-sub-tabs">
-            <button className="cadra-sub-tab" onClick={() => onNavigate('/manufacturing/scheduling')}>
-              Scheduling
+            <button className="cadra-sub-tab" onClick={() => onNavigate('/agenda')}>
+              Turnos Sillones
             </button>
             <button className="cadra-sub-tab active" onClick={() => onNavigate('/manufacturing/orders')}>
-              Work orders
+              Citas & Tratamientos
             </button>
           </div>
         </div>
@@ -118,11 +118,11 @@ export const WorkOrdersPage: React.FC<WorkOrdersPageProps> = ({ onNavigate, onOp
           </div>
         </div>
 
-        {/* Card 4: Bikes built */}
+        {/* Card 4: Tratamientos completados */}
         <div className="cadra-kpi-card kpi-card-light">
           <div className="kpi-card-top">
-            <Bike size={16} className="kpi-icon-dim" />
-            <span className="kpi-label">Bikes built in November</span>
+            <span style={{ fontSize: '14px' }}>🦷</span>
+            <span className="kpi-label">Tratamientos completados en Noviembre</span>
           </div>
           <div className="kpi-number-row">
             <span className="kpi-main-number">

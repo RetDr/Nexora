@@ -17,13 +17,13 @@ interface SettingsPageProps {
 
 export const SettingsPage: React.FC<SettingsPageProps> = ({ onToast }) => {
   const [activeTab, setActiveTab] = useState('company')
-  const [tradingName, setTradingName] = useState('Larkspur Cycle Works')
-  const [legalEntity, setLegalEntity] = useState('Larkspur Cycle Works LLC')
-  const [address, setAddress] = useState('2210 SE Division St, Portland, OR 97202')
-  const [taxId, setTaxId] = useState('93-4418207')
-  const [billingEmail, setBillingEmail] = useState('hello@larkspurcycles.com')
-  const [phone, setPhone] = useState('(503) 555-0100')
-  const [currency, setCurrency] = useState('USD')
+  const [tradingName, setTradingName] = useState('VitaDent')
+  const [legalEntity, setLegalEntity] = useState('VitaDent Clínica Odontológica S.A.S.')
+  const [address, setAddress] = useState('Carrera 15 # 93-40, Consultorio 502, Bogotá, Colombia')
+  const [taxId, setTaxId] = useState('RUT: 900.582.194-1')
+  const [billingEmail, setBillingEmail] = useState('administracion@vitadent.com.co')
+  const [phone, setPhone] = useState('+57 (601) 744-1234')
+  const [currency, setCurrency] = useState('COP')
 
   const navItems = [
     { id: 'company', label: 'Company', sub: 'Name, address, tax ID', icon: Building2 },
@@ -42,12 +42,12 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ onToast }) => {
     <div className="cadra-page-container">
       {/* Breadcrumbs */}
       <div className="cadra-breadcrumbs">
-        <span>Larkspur</span>
+        <span>VitaDent</span>
         <span className="crumb-sep">&gt;</span>
-        <span className="crumb-active">Settings</span>
+        <span className="crumb-active">Configuración de la Clínica</span>
       </div>
 
-      <h1 className="cadra-page-title mb-4">Settings</h1>
+      <h1 className="cadra-page-title mb-4">Configuración</h1>
 
       <div className="settings-split-3-col">
         {/* Col 1: Settings Navigation */}

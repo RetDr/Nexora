@@ -55,29 +55,29 @@ export const ShipmentsPage: React.FC<ShipmentsPageProps> = ({ onNavigate, onOpen
     <div className="cadra-page-container">
       {/* Breadcrumbs */}
       <div className="cadra-breadcrumbs">
-        <span>Larkspur</span>
+        <span>VitaDent</span>
         <span className="crumb-sep">&gt;</span>
-        <span>Logistics</span>
+        <span>Logística Dental</span>
         <span className="crumb-sep">&gt;</span>
-        <span className="crumb-active">Shipments</span>
+        <span className="crumb-active">Envíos de Laboratorio & Prótesis</span>
       </div>
 
       {/* Header with Submodule Pills */}
       <div className="cadra-page-header">
         <div className="title-with-submodules">
-          <h1 className="cadra-page-title">Shipments</h1>
+          <h1 className="cadra-page-title">Laboratorio Dental</h1>
           <div className="cadra-submodule-pills">
-            <button className="submodule-pill" onClick={() => onNavigate('/inventory/stock')}>
-              <span>Inventory</span>
-              <span className="cadra-badge badge-orange">6</span>
+            <button className="submodule-pill" onClick={() => onNavigate('/stock')}>
+              <span>Materiales</span>
+              <span className="cadra-badge badge-orange">1</span>
             </button>
             <button className="submodule-pill" onClick={() => onNavigate('/purchasing/orders')}>
               <Boxes size={13} />
-              <span>Purchasing</span>
+              <span>Pedidos Depósito</span>
             </button>
             <button className="submodule-pill active" onClick={() => onNavigate('/logistics/shipments')}>
               <Truck size={13} />
-              <span>Logistics</span>
+              <span>Laboratorio Dental</span>
             </button>
           </div>
         </div>

@@ -112,44 +112,44 @@ export const POSPage: React.FC<POSPageProps> = ({ onNavigate, onToast }) => {
     <div className="cadra-page-container">
       {/* Breadcrumbs */}
       <div className="cadra-breadcrumbs">
-        <span>Larkspur</span>
+        <span>VitaDent</span>
         <span className="crumb-sep">&gt;</span>
-        <span className="crumb-active">Point of sale</span>
+        <span className="crumb-active">Catálogo de Tarifas & Cobro en Recepción</span>
       </div>
 
       {/* Header with Submodule Pills */}
       <div className="cadra-page-header">
         <div className="title-with-submodules">
-          <h1 className="cadra-page-title">Point of sale</h1>
+          <h1 className="cadra-page-title">Precios & Cobros</h1>
           <div className="cadra-submodule-pills">
-            <button className="submodule-pill" onClick={() => onNavigate('/sales/pipeline')}>
-              <span>Sales</span>
-              <span className="cadra-badge badge-orange">4</span>
+            <button className="submodule-pill" onClick={() => onNavigate('/presupuestos')}>
+              <span>Presupuestos</span>
+              <span className="cadra-badge badge-orange">6</span>
             </button>
-            <button className="submodule-pill active" onClick={() => onNavigate('/pos')}>
+            <button className="submodule-pill active" onClick={() => onNavigate('/precios')}>
               <ShoppingBag size={13} />
-              <span>POS</span>
+              <span>Precios & Caja</span>
             </button>
-            <button className="submodule-pill" onClick={() => onNavigate('/contacts')}>
+            <button className="submodule-pill" onClick={() => onNavigate('/pacientes')}>
               <Users size={13} />
-              <span>Contacts</span>
+              <span>Pacientes</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* Division St Showroom Till Banner */}
+      {/* Caja Recepción VitaDent */}
       <div className="showroom-till-banner">
         <div className="till-info-left">
-          <div className="till-icon-circle">
+          <div className="till-icon-circle" style={{ backgroundColor: '#fdf2f8', color: '#A94384' }}>
             <Store size={18} />
           </div>
           <div>
             <div className="till-title-line">
-              <span className="till-name">Division St showroom</span>
-              <span className="cadra-tag-pill tag-green">● Till open</span>
+              <span className="till-name">Caja Principal — Recepción VitaDent</span>
+              <span className="cadra-tag-pill tag-green">● Caja Abierta</span>
             </div>
-            <span className="till-subtext">Till 1 · Inès Moreau on the floor · opened 10:00 AM</span>
+            <span className="till-subtext">Caja 1 · Recepción y Coordinación · Turno Activo · 0% IVA Salud</span>
           </div>
         </div>
 
@@ -157,11 +157,11 @@ export const POSPage: React.FC<POSPageProps> = ({ onNavigate, onToast }) => {
           className="cadra-btn-secondary"
           onClick={() => {
             if (lastOrder) setShowReceiptModal(true)
-            else onToast('No receipt on record for this session.')
+            else onToast('No hay recibo reciente en esta sesión.')
           }}
         >
           <Receipt size={14} />
-          <span>Last receipt</span>
+          <span>Último recibo</span>
         </button>
       </div>
 
@@ -428,8 +428,8 @@ export const POSPage: React.FC<POSPageProps> = ({ onNavigate, onToast }) => {
           <div className="receipt-modal-box" onClick={(e) => e.stopPropagation()}>
             <div className="receipt-modal-head">
               <div>
-                <strong>Larkspur Cycle Works</strong>
-                <p className="text-xs text-secondary">2210 SE Division St, Portland, OR</p>
+                <strong>VitaDent — Clínica Odontológica</strong>
+                <p className="text-xs text-secondary">RUT: 900.582.194-1 · Régimen Exento de IVA Salud</p>
               </div>
               <button className="icon-close-btn" onClick={() => setShowReceiptModal(false)}>
                 <X size={16} />
@@ -437,26 +437,26 @@ export const POSPage: React.FC<POSPageProps> = ({ onNavigate, onToast }) => {
             </div>
 
             <div className="receipt-meta-box">
-              <div>Receipt: <strong>{lastOrder.orderId}</strong></div>
-              <div>Customer: <strong>{lastOrder.customer}</strong></div>
-              <div>Date: {lastOrder.time}</div>
+              <div>Recibo / Factura: <strong>{lastOrder.orderId}</strong></div>
+              <div>Paciente: <strong>{lastOrder.customer}</strong></div>
+              <div>Fecha: {lastOrder.time}</div>
             </div>
 
             <div className="receipt-items-list">
               {lastOrder.items.map((i: CartItem) => (
                 <div key={i.product.id} className="receipt-item-line">
                   <span>{i.quantity}× {i.product.name}</span>
-                  <span>${(i.product.price * i.quantity).toLocaleString()}</span>
+                  <span>COP ${(i.product.price * i.quantity).toLocaleString('es-CO')}</span>
                 </div>
               ))}
             </div>
 
             <div className="receipt-total-box">
               <div className="flex justify-between font-bold text-lg">
-                <span>Total Paid</span>
-                <span>${lastOrder.total.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                <span>Total Cancelado</span>
+                <span>COP ${lastOrder.total.toLocaleString('es-CO', { minimumFractionDigits: 0 })}</span>
               </div>
-              <p className="text-xs text-muted text-center mt-3">Thank you for riding with Larkspur Cycles!</p>
+              <p className="text-xs text-muted text-center mt-3">¡Gracias por confiar en VitaDent Clínica Odontológica!</p>
             </div>
           </div>
         </div>

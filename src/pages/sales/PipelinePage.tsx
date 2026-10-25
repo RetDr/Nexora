@@ -33,11 +33,11 @@ export const PipelinePage: React.FC<PipelinePageProps> = ({ onNavigate, onOpenCr
   })
 
   const columns = [
-    { key: 'quote', title: 'Quote', count: 4, val: '$35,805', dotColor: '#94a3b8' },
-    { key: 'confirmed', title: 'Confirmed', count: 2, val: '$15,064', dotColor: '#3b82f6' },
-    { key: 'production', title: 'In production', count: 6, val: '$108,676', dotColor: '#2563eb' },
-    { key: 'ready', title: 'Ready to ship', count: 1, val: '$7,620', dotColor: '#d97706' },
-    { key: 'shipped', title: 'Shipped', count: 1, val: '$10,146', dotColor: '#78350f' },
+    { key: 'quote', title: 'Valoración', count: 1, val: '$3.200.000', dotColor: '#94a3b8' },
+    { key: 'confirmed', title: 'Aprobado', count: 2, val: '$7.500.000', dotColor: '#3b82f6' },
+    { key: 'production', title: 'En tratamiento', count: 1, val: '$1.800.000', dotColor: '#A94384' },
+    { key: 'ready', title: 'Finalizado', count: 1, val: '$850.000', dotColor: '#10b981' },
+    { key: 'shipped', title: 'Alta clínica', count: 1, val: '$1.000.000', dotColor: '#059669' },
   ] as const
 
   const moveDeal = (dealId: string, nextStage: SaleDeal['stage']) => {
@@ -50,29 +50,29 @@ export const PipelinePage: React.FC<PipelinePageProps> = ({ onNavigate, onOpenCr
     <div className="cadra-page-container">
       {/* Breadcrumbs */}
       <div className="cadra-breadcrumbs">
-        <span>Larkspur</span>
+        <span>VitaDent</span>
         <span className="crumb-sep">&gt;</span>
-        <span>Sales</span>
+        <span>Tratamientos</span>
         <span className="crumb-sep">&gt;</span>
-        <span className="crumb-active">Pipeline</span>
+        <span className="crumb-active">Presupuestos</span>
       </div>
 
       {/* Header with Submodule Pills */}
       <div className="cadra-page-header">
         <div className="title-with-submodules">
-          <h1 className="cadra-page-title">Pipeline</h1>
+          <h1 className="cadra-page-title">Presupuestos</h1>
           <div className="cadra-submodule-pills">
-            <button className="submodule-pill active" onClick={() => onNavigate('/sales/pipeline')}>
-              <span>Sales</span>
-              <span className="cadra-badge badge-orange">4</span>
+            <button className="submodule-pill active" onClick={() => onNavigate('/presupuestos')}>
+              <span>Presupuestos</span>
+              <span className="cadra-badge badge-orange">6</span>
             </button>
-            <button className="submodule-pill" onClick={() => onNavigate('/pos')}>
+            <button className="submodule-pill" onClick={() => onNavigate('/precios')}>
               <ShoppingBag size={13} />
-              <span>POS</span>
+              <span>Precios & Caja</span>
             </button>
-            <button className="submodule-pill" onClick={() => onNavigate('/contacts')}>
+            <button className="submodule-pill" onClick={() => onNavigate('/pacientes')}>
               <Users size={13} />
-              <span>Contacts</span>
+              <span>Pacientes</span>
             </button>
           </div>
         </div>
@@ -80,7 +80,7 @@ export const PipelinePage: React.FC<PipelinePageProps> = ({ onNavigate, onOpenCr
         <div className="cadra-header-actions">
           {/* Secondary sub-tabs */}
           <div className="cadra-sub-tabs">
-            {['Pipeline', 'Sales orders', 'Quotes', 'Customers'].map((t) => (
+            {['Pipeline', 'Planes de Tratamiento', 'Valoraciones', 'Pacientes'].map((t) => (
               <button
                 key={t}
                 className={`cadra-sub-tab ${activeTab === t ? 'active' : ''}`}
@@ -91,14 +91,14 @@ export const PipelinePage: React.FC<PipelinePageProps> = ({ onNavigate, onOpenCr
             ))}
           </div>
 
-          <button className="cadra-btn-secondary" onClick={() => alert('Exporting pipeline...')}>
+          <button className="cadra-btn-secondary" onClick={() => alert('Exportando presupuestos...')}>
             <Download size={14} />
-            <span>Export</span>
+            <span>Exportar</span>
           </button>
 
           <button className="cadra-btn-primary" onClick={onOpenCreate}>
             <Plus size={15} />
-            <span>New quote</span>
+            <span>Nuevo Presupuesto</span>
           </button>
         </div>
       </div>

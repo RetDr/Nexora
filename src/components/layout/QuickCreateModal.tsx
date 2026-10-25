@@ -31,8 +31,8 @@ export const QuickCreateModal: React.FC<QuickCreateModalProps> = ({ isOpen, onCl
       <div className="cadra-action-modal" onClick={(e) => e.stopPropagation()}>
         <div className="action-modal-header">
           <div>
-            <span className="cadra-eyebrow">NEW RECORD</span>
-            <h2>Create {recordType.replace('_', ' ')}</h2>
+            <span className="cadra-eyebrow">NUEVO REGISTRO CLÍNICO</span>
+            <h2>Crear {recordType === 'work_order' ? 'Cita' : recordType === 'sales_quote' ? 'Presupuesto' : recordType === 'contact' ? 'Paciente' : 'Pedido de Insumos'}</h2>
           </div>
           <button className="icon-close-btn" onClick={onClose}>
             <X size={18} />
@@ -41,22 +41,22 @@ export const QuickCreateModal: React.FC<QuickCreateModalProps> = ({ isOpen, onCl
 
         <form onSubmit={handleSubmit} className="action-modal-form">
           <div className="form-group">
-            <label>Type of Record</label>
+            <label>Tipo de Registro</label>
             <select value={recordType} onChange={(e) => setRecordType(e.target.value)}>
-              <option value="work_order">Work Order</option>
-              <option value="sales_quote">Sales Quote</option>
-              <option value="purchase_order">Purchase Order</option>
-              <option value="contact">Contact</option>
+              <option value="work_order">Cita en Sillón / Turno</option>
+              <option value="sales_quote">Presupuesto / Tratamiento</option>
+              <option value="purchase_order">Pedido a Depósito Dental</option>
+              <option value="contact">Paciente / Convenio</option>
             </select>
           </div>
 
           <div className="form-group">
-            <label>Name or Description *</label>
+            <label>Descripción / Tratamiento *</label>
             <input
               autoFocus
               type="text"
               required
-              placeholder="e.g. Commuter Seven ×15 frameset"
+              placeholder="Ej. Limpieza con ultrasonido o Implante Straumann"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
@@ -64,10 +64,10 @@ export const QuickCreateModal: React.FC<QuickCreateModalProps> = ({ isOpen, onCl
 
           <div className="form-row-2">
             <div className="form-group">
-              <label>Customer or Vendor</label>
+              <label>Paciente o Proveedor</label>
               <input
                 type="text"
-                placeholder="e.g. Rosewood Bikes"
+                placeholder="Ej. Carlos García o Dentales Antioquia"
                 value={customer}
                 onChange={(e) => setCustomer(e.target.value)}
               />

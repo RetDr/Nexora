@@ -31,36 +31,36 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
     <div className="cadra-page-container">
       {/* Breadcrumbs */}
       <div className="cadra-breadcrumbs">
-        <span>Larkspur</span>
+        <span>VitaDent</span>
         <span className="crumb-sep">&gt;</span>
-        <span className="crumb-active">Dashboard</span>
+        <span className="crumb-active">Panel Principal</span>
       </div>
 
-      <h1 className="cadra-page-title mb-4">Dashboard</h1>
+      <h1 className="cadra-page-title mb-4">Inicio</h1>
 
       {/* Top Banner Grid: Greeting + Cash On Hand */}
       <div className="dashboard-top-hero-grid">
         {/* Morning Greeting & Time Scrubber */}
         <div className="cadra-card dashboard-welcome-card">
-          <div className="welcome-date-header">WEDNESDAY, NOVEMBER 11</div>
-          <h2 className="welcome-greeting-title">Good morning, Noor.</h2>
+          <div className="welcome-date-header">MIÉRCOLES, 11 DE NOVIEMBRE</div>
+          <h2 className="welcome-greeting-title">Buenos días, Dra. Sofía.</h2>
           <p className="welcome-summary-text">
-            <strong><AnimatedCounter value={5} /> operations</strong> on the floor,{' '}
-            <strong><AnimatedCounter value={2} /> shipments</strong> on the road and{' '}
-            <strong><AnimatedCounter value={2} /> showroom sales</strong> so far.{' '}
-            <span className="text-warning-red font-semibold cursor-pointer" onClick={() => onNavigate('/manufacturing/orders')}>
-              <AnimatedCounter value={1} /> work order needs a look.
+            <strong><AnimatedCounter value={4} /> sillones</strong> en atención,{' '}
+            <strong><AnimatedCounter value={12} /> pacientes</strong> citados hoy y{' '}
+            <strong><AnimatedCounter value={3} /> presupuestos</strong> aceptados.{' '}
+            <span className="text-warning-red font-semibold cursor-pointer" onClick={() => onNavigate('/stock')}>
+              <AnimatedCounter value={1} /> insumo crítico bajo stock (Anestesia).
             </span>
           </p>
 
           <div className="welcome-action-buttons">
-            <button className="cadra-btn-primary" onClick={() => onNavigate('/manufacturing/scheduling')}>
+            <button className="cadra-btn-primary" onClick={() => onNavigate('/agenda')}>
               <Factory size={14} />
-              <span>Open schedule</span>
+              <span>Ver Agenda Sillones</span>
             </button>
-            <button className="cadra-btn-secondary" onClick={() => onNavigate('/sales/pipeline')}>
+            <button className="cadra-btn-secondary" onClick={() => onNavigate('/presupuestos')}>
               <Tag size={14} />
-              <span>Pipeline</span>
+              <span>Presupuestos</span>
             </button>
           </div>
 
@@ -158,14 +158,14 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
         <div className="cadra-kpi-card kpi-card-dark">
           <div className="kpi-card-top">
             <span className="kpi-icon-pill-circle">$</span>
-            <span className="kpi-label">Revenue this month</span>
+            <span className="kpi-label">Facturación mes (COP)</span>
           </div>
           <div className="kpi-main-number">
-            <AnimatedCounter value="$93,474" duration={750} delay={100} />
+            <AnimatedCounter value="$48.500.000" duration={750} delay={100} />
           </div>
           <div className="kpi-sub-spark-row">
             <span className="kpi-subtext">
-              <TrendingUp size={13} className="inline mr-1" /> 11 days in · on pace for $256k
+              <TrendingUp size={13} className="inline mr-1" /> Ritmo de crecimiento +14% vs mes anterior
             </span>
             <svg className="mini-sparkline" viewBox="0 0 60 20">
               <path d="M 0 16 Q 15 18, 30 8 T 60 12" fill="none" stroke="#ffffff" strokeWidth="2" />
@@ -173,37 +173,37 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
           </div>
         </div>
 
-        {/* Card 2: Bikes built (14 days) */}
+        {/* Card 2: Pacientes atendidos */}
         <div className="cadra-kpi-card kpi-card-blue">
           <div className="kpi-card-top">
-            <Bike size={16} className="kpi-icon-blue" />
-            <span className="kpi-label">Bikes built (14 days)</span>
+            <span style={{ fontSize: '14px' }}>🦷</span>
+            <span className="kpi-label">Tratamientos realizados</span>
           </div>
           <div className="kpi-main-number">
-            <AnimatedCounter value="57" duration={650} delay={150} />
+            <AnimatedCounter value="142" duration={650} delay={150} />
           </div>
           <div className="kpi-sub-spark-row">
             <span className="kpi-subtext">
-              <TrendingUp size={13} className="inline mr-1" /> 3 so far today
+              <TrendingUp size={13} className="inline mr-1" /> 12 programados hoy
             </span>
             <svg className="mini-sparkline" viewBox="0 0 60 20">
-              <path d="M 0 14 L 10 18 L 20 8 L 30 16 L 40 6 L 50 12 L 60 8" fill="none" stroke="#25476a" strokeWidth="2" />
+              <path d="M 0 14 L 10 18 L 20 8 L 30 16 L 40 6 L 50 12 L 60 8" fill="none" stroke="#A94384" strokeWidth="2" />
             </svg>
           </div>
         </div>
 
-        {/* Card 3: Open order book */}
+        {/* Card 3: Presupuestos activos */}
         <div className="cadra-kpi-card kpi-card-light">
           <div className="kpi-card-top">
             <Tag size={16} className="kpi-icon-dim" />
-            <span className="kpi-label">Open order book</span>
+            <span className="kpi-label">Presupuestos en curso</span>
           </div>
           <div className="kpi-main-number">
-            <AnimatedCounter value="$131,360" duration={750} delay={200} />
+            <AnimatedCounter value="$21.450.000" duration={750} delay={200} />
           </div>
           <div className="kpi-sub-spark-row">
             <span className="kpi-subtext text-emerald-700">
-              <TrendingUp size={13} className="inline mr-1" /> 9 orders confirmed or building
+              <TrendingUp size={13} className="inline mr-1" /> 6 planes aceptados o en valoración
             </span>
             <svg className="mini-sparkline" viewBox="0 0 60 20">
               <path d="M 0 18 Q 30 16, 45 10 T 60 4" fill="none" stroke="#10b981" strokeWidth="2" />
@@ -211,21 +211,21 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
           </div>
         </div>
 
-        {/* Card 4: On-time delivery */}
+        {/* Card 4: Puntualidad y asistencia */}
         <div className="cadra-kpi-card kpi-card-light">
           <div className="kpi-card-top">
             <CheckCircle2 size={16} className="kpi-icon-dim" />
-            <span className="kpi-label">On-time delivery</span>
+            <span className="kpi-label">Asistencia y Puntualidad</span>
           </div>
           <div className="kpi-main-number">
-            <AnimatedCounter value="91%" duration={650} delay={250} />
+            <AnimatedCounter value="96%" duration={650} delay={250} />
           </div>
           <div className="kpi-sub-spark-row">
-            <span className="kpi-subtext text-warning-red">
-              <TrendingDown size={13} className="inline mr-1" /> down 2 pts from October
+            <span className="kpi-subtext text-emerald-700">
+              <TrendingUp size={13} className="inline mr-1" /> Alta tasa de confirmación de citas
             </span>
             <svg className="mini-sparkline" viewBox="0 0 60 20">
-              <path d="M 0 6 Q 20 18, 35 10 T 60 8" fill="none" stroke="#92400e" strokeWidth="2" />
+              <path d="M 0 6 Q 20 18, 35 10 T 60 8" fill="none" stroke="#10b981" strokeWidth="2" />
             </svg>
           </div>
         </div>
@@ -245,13 +245,13 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onNavigate }) => {
                 className={`pill-switch-btn ${chartMode === 'revenue' ? 'active' : ''}`}
                 onClick={() => setChartMode('revenue')}
               >
-                Revenue & cost
+                Ingresos & Costos
               </button>
               <button
                 className={`pill-switch-btn ${chartMode === 'bikes' ? 'active' : ''}`}
                 onClick={() => setChartMode('bikes')}
               >
-                Bikes built
+                Tratamientos realizados
               </button>
             </div>
           </div>

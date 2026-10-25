@@ -26,29 +26,29 @@ export const InvoicesPage: React.FC<InvoicesPageProps> = ({ onNavigate, onOpenCr
     <div className="cadra-page-container">
       {/* Breadcrumbs */}
       <div className="cadra-breadcrumbs">
-        <span>Larkspur</span>
+        <span>VitaDent</span>
         <span className="crumb-sep">&gt;</span>
-        <span>Accounting</span>
+        <span>Facturación</span>
         <span className="crumb-sep">&gt;</span>
-        <span className="crumb-active">Invoices</span>
+        <span className="crumb-active">Facturas de Tratamientos</span>
       </div>
 
       {/* Header with two-tier right cluster */}
       <div className="cadra-page-header">
         <div className="page-header-left">
-          <h1 className="cadra-page-title">Invoices</h1>
+          <h1 className="cadra-page-title">Facturas</h1>
           <div className="cadra-sub-tabs">
             <button className="cadra-sub-tab" onClick={() => onNavigate('/accounting/ledger')}>
-              General ledger
+              Libro Mayor
             </button>
             <button className="cadra-sub-tab active" onClick={() => onNavigate('/accounting/invoices')}>
-              Invoices
+              Facturas
             </button>
-            <button className="cadra-sub-tab" onClick={() => onNavigate('/accounting/payments')}>
-              Payments
+            <button className="cadra-sub-tab" onClick={() => onNavigate('/pagos')}>
+              Cobros & Pagos
             </button>
             <button className="cadra-sub-tab" onClick={() => onNavigate('/accounting/ledger')}>
-              Statements
+              Extractos
             </button>
           </div>
         </div>
@@ -197,15 +197,15 @@ export const InvoicesPage: React.FC<InvoicesPageProps> = ({ onNavigate, onOpenCr
         {/* Right: Who owes the most */}
         <aside className="cadra-card debtors-side-card">
           <div className="side-card-title-row">
-            <span className="text-xs font-bold text-muted tracking-wider">WHO OWES THE MOST</span>
+            <span className="text-xs font-bold text-muted tracking-wider">SALDOS PENDIENTES DE COBRO</span>
           </div>
 
           <div className="debtors-list">
             {[
-              { num: 1, name: 'Harbor & Hill Bikes', loc: 'San Diego, CA · net 30', amt: '$14,364', initials: 'H&' },
-              { num: 2, name: 'Saltmarsh Bicycle Co.', loc: 'Charleston, SC · net 30', amt: '$10,146', initials: 'SB' },
-              { num: 3, name: 'Two Rivers Cycle', loc: 'Pittsburgh, PA · net 30', amt: '$7,620', initials: 'TR' },
-              { num: 4, name: 'Copper Canyon Cycles', loc: 'Tucson, AZ · net 30', amt: '$5,854', initials: 'CC', isLate: true },
+              { num: 1, name: 'EPS Sura (Radicación Masiva)', loc: 'Medellín · Convenio 30 días', amt: 'COP $4.120.000', initials: 'SU' },
+              { num: 2, name: 'Andrés Felipe Mendoza', loc: 'Bogotá · Tratamiento Endodoncia', amt: 'COP $350.000', initials: 'AM' },
+              { num: 3, name: 'Mateo Fernández Silva', loc: 'Bogotá · Cirugía Cordales', amt: 'COP $250.000', initials: 'MF' },
+              { num: 4, name: 'Laura Gómez Restrepo', loc: 'Bogotá · Control Ortodoncia', amt: 'COP $100.000', initials: 'LG', isLate: false },
             ].map((d) => (
               <div key={d.num} className="debtor-row-item">
                 <span className="debtor-index">{d.num}</span>

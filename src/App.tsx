@@ -26,7 +26,7 @@ import { SettingsPage } from './pages/settings/SettingsPage'
 export function App() {
   const getPathFromHash = () => {
     const raw = window.location.hash.replace(/^#/, '')
-    return raw || '/manufacturing/scheduling' // Default to flagship reference screen or dashboard
+    return raw || '/agenda' // Por defecto abre la Agenda de Sillones de VitaDent
   }
 
   const [currentPath, setCurrentPath] = useState<string>(getPathFromHash)
@@ -78,26 +78,36 @@ export function App() {
 
   // Render current view
   const renderView = () => {
-    if (currentPath === '/dashboard' || currentPath === '/' || currentPath === '') {
+    // VitaDent routes + legacy alias routes
+    if (currentPath === '/agenda' || currentPath === '/manufacturing/scheduling') {
+      return <SchedulingPage onNavigate={navigate} onOpenCreate={() => setIsCreateOpen(true)} />
+    }
+    if (currentPath === '/pacientes' || currentPath === '/contacts') {
+      return <ContactsPage onNavigate={navigate} onOpenCreate={() => setIsCreateOpen(true)} />
+    }
+    if (currentPath === '/pagos' || currentPath === '/accounting/payments') {
+      return <PaymentsPage onNavigate={navigate} onOpenCreate={() => setIsCreateOpen(true)} onToast={showToast} />
+    }
+    if (currentPath === '/inicio' || currentPath === '/dashboard' || currentPath === '/' || currentPath === '') {
       return <DashboardPage onNavigate={navigate} />
     }
-    if (currentPath === '/manufacturing/scheduling') {
-      return <SchedulingPage onNavigate={navigate} onOpenCreate={() => setIsCreateOpen(true)} />
+    if (currentPath === '/presupuestos' || currentPath === '/sales/pipeline' || currentPath.startsWith('/sales')) {
+      return <PipelinePage onNavigate={navigate} onOpenCreate={() => setIsCreateOpen(true)} />
+    }
+    if (currentPath === '/stock' || currentPath === '/inventory/stock') {
+      return <StockPage onNavigate={navigate} onOpenCreate={() => setIsCreateOpen(true)} />
+    }
+    if (currentPath === '/precios' || currentPath === '/pos') {
+      return <POSPage onNavigate={navigate} onToast={showToast} />
+    }
+    if (currentPath === '/informes' || currentPath === '/reporting/overview' || currentPath === '/reporting') {
+      return <ReportingOverviewPage onNavigate={navigate} />
+    }
+    if (currentPath === '/reporting/builder') {
+      return <ReportBuilderPage onNavigate={navigate} />
     }
     if (currentPath === '/manufacturing/orders') {
       return <WorkOrdersPage onNavigate={navigate} onOpenCreate={() => setIsCreateOpen(true)} />
-    }
-    if (currentPath === '/sales/pipeline' || currentPath.startsWith('/sales')) {
-      return <PipelinePage onNavigate={navigate} onOpenCreate={() => setIsCreateOpen(true)} />
-    }
-    if (currentPath === '/pos') {
-      return <POSPage onNavigate={navigate} onToast={showToast} />
-    }
-    if (currentPath === '/contacts') {
-      return <ContactsPage onNavigate={navigate} onOpenCreate={() => setIsCreateOpen(true)} />
-    }
-    if (currentPath === '/inventory/stock') {
-      return <StockPage onNavigate={navigate} onOpenCreate={() => setIsCreateOpen(true)} />
     }
     if (currentPath === '/purchasing/orders') {
       return <PurchaseOrdersPage onNavigate={navigate} onOpenCreate={() => setIsCreateOpen(true)} />
@@ -111,16 +121,7 @@ export function App() {
     if (currentPath === '/accounting/invoices') {
       return <InvoicesPage onNavigate={navigate} onOpenCreate={() => setIsCreateOpen(true)} />
     }
-    if (currentPath === '/accounting/payments') {
-      return <PaymentsPage onNavigate={navigate} onOpenCreate={() => setIsCreateOpen(true)} onToast={showToast} />
-    }
-    if (currentPath === '/reporting/overview') {
-      return <ReportingOverviewPage onNavigate={navigate} />
-    }
-    if (currentPath === '/reporting/builder') {
-      return <ReportBuilderPage onNavigate={navigate} />
-    }
-    if (currentPath.startsWith('/hr')) {
+    if (currentPath.startsWith('/hr') || currentPath === '/equipo') {
       return (
         <DirectoryProfileDrawer
           onNavigate={navigate}
@@ -134,7 +135,7 @@ export function App() {
       return <SettingsPage onToast={showToast} />
     }
 
-    // Default fallback
+    // Default fallback: Agenda de sillones
     return <SchedulingPage onNavigate={navigate} onOpenCreate={() => setIsCreateOpen(true)} />
   }
 
@@ -193,16 +194,16 @@ export function App() {
         </main>
       </div>
 
-      {/* Cadra Footer */}
+      {/* VitaDent Footer */}
       <footer className="cadra-app-footer">
         <div className="footer-left">
-          <span>Cadra Operations Platform</span>
+          <span>VitaDent — Gestión Odontológica Integral</span>
           <span className="footer-sep">•</span>
-          <span>Larkspur Cycles Free Workspace</span>
+          <span>Clínica Odontológica Principal</span>
         </div>
         <div className="footer-right">
           <span className="green-live-dot" />
-          <span>All production lines running smoothly</span>
+          <span>Boxes y agenda en línea · Sincronizado</span>
         </div>
       </footer>
     </div>

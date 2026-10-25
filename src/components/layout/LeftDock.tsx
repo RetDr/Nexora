@@ -51,8 +51,8 @@ export const LeftDock: React.FC<LeftDockProps> = ({
 
       <button
         className="dock-item"
-        onClick={() => onNavigate('/dashboard')}
-        title="Operations Dashboard"
+        onClick={() => onNavigate('/inicio')}
+        title="Inicio / Resumen General"
         aria-label="Dashboard"
       >
         <Target size={17} strokeWidth={2.2} />

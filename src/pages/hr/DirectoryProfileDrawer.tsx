@@ -42,75 +42,75 @@ export const DirectoryProfileDrawer: React.FC<DirectoryProfileDrawerProps> = ({
 
   const teamMembers = [
     {
-      id: 's-noor',
-      name: 'Noor Haddad',
-      initials: 'NH',
-      role: 'Operations lead',
-      dept: 'Operations',
-      status: 'Present · in 7:00 AM',
+      id: 's-valenzuela',
+      name: 'Dra. Sofía Valenzuela',
+      initials: 'SV',
+      role: 'Directora Médica & Odontología General',
+      dept: 'Odontología General',
+      status: 'En consulta · Box 1',
       fullTime: true,
-      email: 'noor@larkspurcycles.com',
-      phone: '(503) 555-0142',
+      email: 'sofia.valenzuela@vitadent.com.co',
+      phone: '+57 311 405 2910',
       isMe: true,
     },
     {
-      id: 's-alex',
-      name: 'Alex Thorne',
-      initials: 'AT',
-      role: 'Master TIG Welder',
-      dept: 'Fabrication',
-      status: 'Present · in 6:45 AM',
+      id: 's-soto',
+      name: 'Dr. Alejandro Soto',
+      initials: 'AS',
+      role: 'Especialista en Ortodoncia',
+      dept: 'Ortodoncia',
+      status: 'En consulta · Box 2',
       fullTime: true,
-      email: 'alex@larkspurcycles.com',
-      phone: '(503) 555-0143',
+      email: 'alejandro.soto@vitadent.com.co',
+      phone: '+57 312 904 1120',
     },
     {
-      id: 's-fiona',
-      name: 'Fiona Walsh',
-      initials: 'FW',
-      role: 'Tube Cutting & Mitering',
-      dept: 'Fabrication',
-      status: 'Present · in 7:00 AM',
+      id: 's-rivas',
+      name: 'Dra. Claudia Rivas',
+      initials: 'CR',
+      role: 'Especialista en Endodoncia',
+      dept: 'Endodoncia',
+      status: 'Disponible · Box 3',
       fullTime: true,
-      email: 'fiona@larkspurcycles.com',
-      phone: '(503) 555-0144',
+      email: 'claudia.rivas@vitadent.com.co',
+      phone: '+57 315 882 1904',
     },
     {
-      id: 's-jack',
-      name: 'Jack Bailey',
-      initials: 'JB',
-      role: 'Finishing & Powder Coat',
-      dept: 'Finishing',
-      status: 'Present · in 7:15 AM',
+      id: 's-pineda',
+      name: 'Dr. Marcos Pineda',
+      initials: 'MP',
+      role: 'Cirugía Maxilofacial & Implantes',
+      dept: 'Cirugía & Implantes',
+      status: 'En cirugía · Box 4',
       fullTime: true,
-      email: 'jack@larkspurcycles.com',
-      phone: '(503) 555-0145',
+      email: 'marcos.pineda@vitadent.com.co',
+      phone: '+57 318 765 4321',
     },
     {
-      id: 's-hannah',
-      name: 'Hannah Kim',
-      initials: 'HK',
-      role: 'Quality Assurance & Assembly',
-      dept: 'Assembly',
-      status: 'Present · in 7:30 AM',
+      id: 's-morales',
+      name: 'Camila Morales',
+      initials: 'CM',
+      role: 'Higienista & Auxiliar Dental',
+      dept: 'Apoyo Clínico',
+      status: 'Esterilización e Instrumental',
       fullTime: true,
-      email: 'hannah.k@larkspurcycles.com',
-      phone: '(503) 555-0146',
+      email: 'camila.m@vitadent.com.co',
+      phone: '+57 310 998 1234',
     },
     {
-      id: 's-ines',
-      name: 'Inès Moreau',
-      initials: 'IM',
-      role: 'Showroom Lead',
-      dept: 'Sales',
-      status: 'Present · in 9:30 AM',
+      id: 's-pena',
+      name: 'Andrea Peña',
+      initials: 'AP',
+      role: 'Recepción & Coordinación Pacientes',
+      dept: 'Recepción & Caja',
+      status: 'Atención al Paciente',
       fullTime: true,
-      email: 'ines@larkspurcycles.com',
-      phone: '(503) 555-0147',
+      email: 'recepcion@vitadent.com.co',
+      phone: '+57 601 744 1234',
     },
   ]
 
-  const departments = ['All', 'Operations', 'Fabrication', 'Finishing', 'Assembly', 'Sales']
+  const departments = ['All', 'Odontología General', 'Ortodoncia', 'Endodoncia', 'Cirugía & Implantes', 'Apoyo Clínico', 'Recepción & Caja']
 
   const filteredMembers = teamMembers.filter((m) => {
     if (filterDepartment === 'All') return true
@@ -121,15 +121,15 @@ export const DirectoryProfileDrawer: React.FC<DirectoryProfileDrawerProps> = ({
     <div className="cadra-page-container relative">
       {/* Breadcrumbs */}
       <div className="cadra-breadcrumbs">
-        <span>Larkspur</span>
+        <span>VitaDent</span>
         <span className="crumb-sep">&gt;</span>
-        <span className="crumb-active">Directory</span>
+        <span className="crumb-active">Equipo Médico & Personal</span>
       </div>
 
       {/* Header with two-tier right cluster */}
       <div className="cadra-page-header">
         <div className="page-header-left">
-          <h1 className="cadra-page-title">Directory</h1>
+          <h1 className="cadra-page-title">Directorio Médico</h1>
         </div>
 
         <div className="page-header-right-cluster">
@@ -245,17 +245,17 @@ export const DirectoryProfileDrawer: React.FC<DirectoryProfileDrawerProps> = ({
             {/* Profile Header */}
             <div className="drawer-header-block">
               <div className="relative">
-                <div className="drawer-avatar-circle">NH</div>
+                <div className="drawer-avatar-circle" style={{ backgroundColor: '#A94384', color: '#ffffff' }}>SV</div>
                 <span className="drawer-online-status-dot" />
               </div>
 
               <div className="drawer-name-info">
-                <h2 className="drawer-user-name">Noor Haddad</h2>
-                <div className="drawer-user-role">Operations lead · Operations</div>
+                <h2 className="drawer-user-name">Dra. Sofía Valenzuela</h2>
+                <div className="drawer-user-role">Directora Médica · Odontología General & Estética</div>
                 <div className="drawer-tags-row">
-                  <span className="cadra-tag-pill tag-green">● Present · in 7:00 AM</span>
-                  <span className="cadra-tag-pill tag-neutral">Full-time</span>
-                  <span className="cadra-tag-pill tag-blue">You</span>
+                  <span className="cadra-tag-pill tag-green">● En consulta · Box 1</span>
+                  <span className="cadra-tag-pill tag-neutral">Comisión 35%</span>
+                  <span className="cadra-tag-pill tag-blue">Tú</span>
                 </div>
               </div>
             </div>
@@ -264,27 +264,27 @@ export const DirectoryProfileDrawer: React.FC<DirectoryProfileDrawerProps> = ({
             <div className="drawer-quick-actions">
               <button
                 className="drawer-action-btn"
-                onClick={() => window.open('mailto:noor@larkspurcycles.com')}
+                onClick={() => window.open('mailto:sofia.valenzuela@vitadent.com.co')}
               >
                 <Mail size={14} />
                 <span>Email</span>
               </button>
               <button
                 className="drawer-action-btn"
-                onClick={() => window.open('tel:5035550142')}
+                onClick={() => window.open('tel:+573114052910')}
               >
                 <Phone size={14} />
-                <span>Call</span>
+                <span>Llamar</span>
               </button>
               <button
                 className="drawer-action-btn"
                 onClick={() => {
-                  navigator.clipboard?.writeText('noor@larkspurcycles.com')
-                  onToast('Email copied to clipboard')
+                  navigator.clipboard?.writeText('sofia.valenzuela@vitadent.com.co')
+                  onToast('Email copiado al portapapeles')
                 }}
               >
                 <Copy size={14} />
-                <span>Copy email</span>
+                <span>Copiar email</span>
               </button>
             </div>
 
@@ -292,40 +292,40 @@ export const DirectoryProfileDrawer: React.FC<DirectoryProfileDrawerProps> = ({
             <div className="drawer-details-grid">
               <div className="drawer-field-card">
                 <span className="drawer-field-label">Email</span>
-                <span className="drawer-field-val">noor@larkspurcycles.com</span>
+                <span className="drawer-field-val">sofia.valenzuela@vitadent.com.co</span>
               </div>
 
               <div className="drawer-field-card">
-                <span className="drawer-field-label">Phone</span>
-                <span className="drawer-field-val">(503) 555-0142</span>
+                <span className="drawer-field-label">Teléfono</span>
+                <span className="drawer-field-val">+57 311 405 2910</span>
               </div>
 
               <div className="drawer-field-card">
-                <span className="drawer-field-label">Works from</span>
-                <span className="drawer-field-val">Southeast Works</span>
+                <span className="drawer-field-label">Consultorio Principal</span>
+                <span className="drawer-field-val">Sillón 1 — Sede Principal</span>
               </div>
 
               <div className="drawer-field-card">
-                <span className="drawer-field-label">Reports to</span>
-                <span className="drawer-field-val">Owner group</span>
+                <span className="drawer-field-label">Especialidad</span>
+                <span className="drawer-field-val">Odontología General & Estética Dental</span>
               </div>
 
               <div className="drawer-field-card">
-                <span className="drawer-field-label">Started</span>
-                <span className="drawer-field-val">Nov 7, 2021</span>
-                <span className="text-xs text-muted">5.0 yrs with Larkspur</span>
+                <span className="drawer-field-label">En VitaDent</span>
+                <span className="drawer-field-val">Desde Ene 2020</span>
+                <span className="text-xs text-muted">Directora Médica Fundadora</span>
               </div>
 
               <div className="drawer-field-card">
-                <span className="drawer-field-label">Employment</span>
-                <span className="drawer-field-val">Full-time</span>
-                <span className="text-xs text-muted">$98,000 a year</span>
+                <span className="drawer-field-label">Esquema Honorarios</span>
+                <span className="drawer-field-val">35% sobre tratamientos realizados</span>
+                <span className="text-xs text-muted">Liquidación quincenal</span>
               </div>
 
               <div className="drawer-field-card">
-                <span className="drawer-field-label">Team</span>
-                <span className="drawer-field-val">Operations</span>
-                <span className="text-xs text-muted">2 people</span>
+                <span className="drawer-field-label">Equipo Clínico</span>
+                <span className="drawer-field-val">Cuerpo Médico VitaDent</span>
+                <span className="text-xs text-muted">6 profesionales en turno</span>
               </div>
             </div>
 

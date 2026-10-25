@@ -22,23 +22,23 @@ export const ReportingOverviewPage: React.FC<ReportingOverviewPageProps> = ({ on
     <div className="cadra-page-container">
       {/* Breadcrumbs */}
       <div className="cadra-breadcrumbs">
-        <span>Larkspur</span>
+        <span>VitaDent</span>
         <span className="crumb-sep">&gt;</span>
-        <span>Reporting</span>
+        <span>Informes</span>
         <span className="crumb-sep">&gt;</span>
-        <span className="crumb-active">Overview</span>
+        <span className="crumb-active">Rendimiento Clínico</span>
       </div>
 
       {/* Header with two-tier right cluster */}
       <div className="cadra-page-header">
         <div className="page-header-left">
-          <h1 className="cadra-page-title">Overview</h1>
+          <h1 className="cadra-page-title">Informes</h1>
           <div className="cadra-sub-tabs">
-            <button className="cadra-sub-tab active" onClick={() => onNavigate('/reporting/overview')}>
-              Overview
+            <button className="cadra-sub-tab active" onClick={() => onNavigate('/informes')}>
+              Rendimiento Clínico
             </button>
             <button className="cadra-sub-tab" onClick={() => onNavigate('/reporting/builder')}>
-              Report builder
+              Generador de Reportes
             </button>
           </div>
         </div>

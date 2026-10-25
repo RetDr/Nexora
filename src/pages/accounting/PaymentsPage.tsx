@@ -55,29 +55,29 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onOpenCr
     <div className="cadra-page-container">
       {/* Breadcrumbs */}
       <div className="cadra-breadcrumbs">
-        <span>Larkspur</span>
+        <span>VitaDent</span>
         <span className="crumb-sep">&gt;</span>
-        <span>Accounting</span>
+        <span>Facturación & Cobros</span>
         <span className="crumb-sep">&gt;</span>
-        <span className="crumb-active">Payments</span>
+        <span className="crumb-active">Pagos & Honorarios Médicos</span>
       </div>
 
       {/* Header with two-tier right cluster */}
       <div className="cadra-page-header">
         <div className="page-header-left">
-          <h1 className="cadra-page-title">Payments</h1>
+          <h1 className="cadra-page-title">Pagos</h1>
           <div className="cadra-sub-tabs">
             <button className="cadra-sub-tab" onClick={() => onNavigate('/accounting/ledger')}>
-              General ledger
+              Libro Mayor
             </button>
             <button className="cadra-sub-tab" onClick={() => onNavigate('/accounting/invoices')}>
-              Invoices
+              Facturas Tratamientos
             </button>
-            <button className="cadra-sub-tab active" onClick={() => onNavigate('/accounting/payments')}>
-              Payments
+            <button className="cadra-sub-tab active" onClick={() => onNavigate('/pagos')}>
+              Cobros & Honorarios
             </button>
             <button className="cadra-sub-tab" onClick={() => onNavigate('/accounting/ledger')}>
-              Statements
+              Extractos
             </button>
           </div>
         </div>
@@ -87,12 +87,12 @@ export const PaymentsPage: React.FC<PaymentsPageProps> = ({ onNavigate, onOpenCr
           <div className="cadra-header-actions">
             <button className="cadra-btn-primary" onClick={onOpenCreate}>
               <CreditCard size={15} />
-              <span>Record payment</span>
+              <span>Registrar Pago</span>
             </button>
 
-            <button className="cadra-btn-secondary" onClick={() => alert('Exporting payment ledger...')}>
+            <button className="cadra-btn-secondary" onClick={() => alert('Exportando registro de pagos...')}>
               <Download size={14} />
-              <span>Export</span>
+              <span>Exportar</span>
             </button>
           </div>
         </div>

@@ -24,8 +24,8 @@ export const SchedulingPage: React.FC<SchedulingPageProps> = ({ onNavigate, onOp
   const [rangeMode, setRangeMode] = useState<'Week' | 'Month' | 'Quarter'>('Week')
   const [groupMode, setGroupMode] = useState<'Orders' | 'Work centers'>('Orders')
   const [viewMode, setViewMode] = useState<'Timeline' | 'Agenda'>('Timeline')
-  const [expandedOrders, setExpandedOrders] = useState<Record<string, boolean>>({ 'WO-2047': true, 'WO-2041': true })
-  const [selectedOrder, setSelectedOrder] = useState('WO-2047')
+  const [expandedOrders, setExpandedOrders] = useState<Record<string, boolean>>({ 'BOX-1': true, 'BOX-2': true, 'BOX-3': true, 'BOX-4': true })
+  const [selectedOrder, setSelectedOrder] = useState('BOX-1')
 
   const toggleExpand = (code: string) => {
     setExpandedOrders((prev) => ({ ...prev, [code]: !prev[code] }))
@@ -47,23 +47,23 @@ export const SchedulingPage: React.FC<SchedulingPageProps> = ({ onNavigate, onOp
     <div className="cadra-page-container">
       {/* Breadcrumbs */}
       <div className="cadra-breadcrumbs">
-        <span>Larkspur</span>
+        <span>VitaDent</span>
         <span className="crumb-sep">&gt;</span>
-        <span>Manufacturing</span>
+        <span>Agenda</span>
         <span className="crumb-sep">&gt;</span>
-        <span className="crumb-active">Scheduling</span>
+        <span className="crumb-active">Sillones Odontológicos</span>
       </div>
 
       {/* Page Title & Top Actions — Proportioned Like Real.png */}
       <div className="cadra-page-header">
         <div className="page-header-left-col">
-          <h1 className="cadra-page-title">Scheduling</h1>
+          <h1 className="cadra-page-title">Agenda</h1>
           <div className="cadra-sub-tabs">
-            <button className="cadra-sub-tab active" onClick={() => onNavigate('/manufacturing/scheduling')}>
-              Scheduling
+            <button className="cadra-sub-tab active" onClick={() => onNavigate('/agenda')}>
+              Turnos Sillones
             </button>
             <button className="cadra-sub-tab" onClick={() => onNavigate('/manufacturing/orders')}>
-              Work orders
+              Citas & Procedimientos
             </button>
           </div>
         </div>
@@ -72,14 +72,14 @@ export const SchedulingPage: React.FC<SchedulingPageProps> = ({ onNavigate, onOp
           <LiveFloorPill time="12:02 PM" onNavigate={onNavigate} />
 
           <div className="page-header-actions-row">
-            <button className="cadra-btn-secondary" onClick={() => alert('Exporting schedule to CSV...')}>
+            <button className="cadra-btn-secondary" onClick={() => alert('Exportando agenda clínica a Excel/PDF...')}>
               <Download size={14} />
-              <span>Export</span>
+              <span>Exportar</span>
             </button>
 
             <button className="cadra-btn-primary" onClick={onOpenCreate}>
               <Plus size={15} />
-              <span>New work order</span>
+              <span>Nueva Cita</span>
             </button>
           </div>
         </div>
@@ -241,9 +241,9 @@ export const SchedulingPage: React.FC<SchedulingPageProps> = ({ onNavigate, onOp
                         <div
                           className="gantt-overall-bar"
                           style={{
-                            left: `${(order.code === 'WO-2047' ? 0.3 : order.code === 'WO-2041' ? 0 : 1.5) * (100 / 7)}%`,
-                            width: `${(order.code === 'WO-2047' ? 5.8 : order.code === 'WO-2041' ? 4.5 : 2.8) * (100 / 7)}%`,
-                            backgroundColor: order.code === 'WO-2043' ? '#ef4444' : '#7298ba',
+                            left: `${(order.code === 'BOX-1' ? 0.3 : order.code === 'BOX-2' ? 0.1 : 1.2) * (100 / 7)}%`,
+                            width: `${(order.code === 'BOX-1' ? 5.8 : order.code === 'BOX-2' ? 4.8 : 3.6) * (100 / 7)}%`,
+                            backgroundColor: order.color || '#A94384',
                           }}
                         />
                       </div>
